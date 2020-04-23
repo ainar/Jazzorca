@@ -8,6 +8,7 @@ import CompactPlayer from '../Components/CompactPlayer';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import Related from '../Components/Related';
 import Queue from '../Components/Queue';
+import { Dimensions } from 'react-native';
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -61,6 +62,10 @@ class PlayerTabContainer extends React.Component {
             tabBar={() => <></>}
             backBehavior='initialRoute'
             initialRouteName='Player'
+            initialLayout={{
+                height: 0,
+                width: Dimensions.get('window').width,
+            }}
         >
             <PlayerTab.Screen name="Queue" component={Queue} />
             <PlayerTab.Screen name="Player" component={JOPlayer} />
