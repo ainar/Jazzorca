@@ -4,18 +4,18 @@
 - enlever les doublons dans la recherche x
 - faire un component titre et artiste courant x
 - mettre le activity indicator ailleurs qu'à la place du caret x (autre chose)
-- redux :
+- redux : x
 	- reducer TrackPlayer (App va faire des dispatch et connecter éléments "Player", qui vont disparaitre)
 		state isFetching (pour indiquer le chargement dans les éléments "Player")
-		state currentTrack (pour afficher les infos dans les éléments "Player") <- prendre les infos ici (dont le thumbnail) plutôt que dans TrackPlayer
-		state cache (liste de tracks avec les uri)
+		state currentTrack (pour afficher les infos dans les éléments "Player") <- prendre les infos ici (dont le thumbnail) plutôt que dans TrackPlayer x
+		state cache (liste de tracks avec les uri) x
 	- reducer history à persister
 		state listenedTracks (map track => count, lastListened)
 		state allRelatedTracks (map track => lastRelation, relations (video IDs où a été trouvé le track))
 	utiliser les actions creator pour combiner des actions entre les 2 reducers + map dispatchtoprops
-- autoplay (autoplay on ou off paramétrable)
-	- ajouter automatiquement (dès le lancement d'un morceau) le premier morceau conseillé si la tracklist est vide
-- afficher la liste de lecture (trackplayer queue ou state queue dans TrackPlayer reducer) et réordonnable
+- autoplay (autoplay on ou off paramétrable) x
+	- ajouter automatiquement (dès le lancement d'un morceau) le premier morceau conseillé si la tracklist est vide x
+- afficher la liste de lecture (trackplayer queue ou state queue dans TrackPlayer reducer) x et réordonnable
 - playlists
 	- screen playlist (stack avec tracklist ?)
 	- ajouter (depuis tracklist) / supprimer(depuis screen playlist) tracks à la playlist

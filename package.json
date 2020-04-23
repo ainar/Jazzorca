@@ -16,6 +16,7 @@
     "@react-navigation/material-bottom-tabs": "^5.1.9",
     "@react-navigation/material-top-tabs": "^5.1.9",
     "@react-navigation/native": "^5.1.5",
+    "@react-navigation/routers": "ainar/react-navigation.git#react-navigation-routers-v5.4.0-gitpkg",
     "@react-navigation/stack": "^5.2.11",
     "moment": "^2.24.0",
     "react": "16.11.0",

@@ -57,6 +57,7 @@ export async function skip(track, dispatch) {
     })
 
     return TrackPlayer.skip(track.id)
+        .then(() => TrackPlayer.play())
 }
 
 export async function play() {

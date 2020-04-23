@@ -9,13 +9,6 @@ class ConnectedApp extends React.Component {
     constructor(props) {
         super(props)
 
-        // Init
-        TrackPlayer.getState()
-            .then(state => this._setPlayerState(state))
-
-        TrackPlayer.getCurrentTrack()
-            .then(trackId => this._setCurrentTrack(trackId))
-
         // Event
         TrackPlayer.addEventListener(
             'playback-state',
@@ -45,15 +38,12 @@ class ConnectedApp extends React.Component {
             })
 
             // if it's the last track, add a related track
-            if (this.props.currentTrack !== undefined) {
-                TrackPlayer.getQueue()
-                    .then(queue => {
-                        if (queue.findIndex(t => t.videoId === this.props.currentTrack) === queue.length - 1) {
-                            const related = this.props.cache[this.props.currentTrack].related.results
-                            const unseenRelatedTrack = related.find(t => queue.findIndex(tq => tq.videoId === t.videoId) === -1)
-                            add(unseenRelatedTrack, this.props.dispatch, this.props.cache)
-                        }
-                    })
+            if (this.props.queue.size > 0) {
+                if (Array.from(this.props.queue)[this.props.queue.size - 1][0] === queueId) {
+                    const related = track.related.results
+                    const unseenRelatedTrack = related.find(t => Array.from(this.props.queue).findIndex(tq => tq[1] === t.videoId) === -1)
+                    add(unseenRelatedTrack, this.props.dispatch, this.props.cache)
+                }
             }
         }
     }

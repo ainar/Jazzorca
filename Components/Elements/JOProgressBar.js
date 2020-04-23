@@ -45,8 +45,7 @@ class JOProgressBar extends TrackPlayer.ProgressComponent {
     render() {
         if (this._slider !== undefined &&
             !this._isSliding &&
-            !this._positionUpdating &&
-            this.props.playerState === TrackPlayer.STATE_PLAYING) {
+            !this._positionUpdating) {
 
             this._slider.setNativeProps({ value: this.state.position })
         }
