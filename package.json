@@ -7,16 +7,17 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@react-native-community/masked-view": "^0.1.9",
     "@react-native-community/slider": "^2.0.9",
     "@react-navigation/bottom-tabs": "^5.2.6",
+    "@react-navigation/core": "ainar/react-navigation#react-navigation-core-v5.3.4-gitpkg",
     "@react-navigation/material-bottom-tabs": "^5.1.9",
-    "@react-navigation/material-top-tabs": "^5.1.9",
-    "@react-navigation/native": "^5.1.5",
-    "@react-navigation/routers": "ainar/react-navigation.git#react-navigation-routers-v5.4.0-gitpkg",
+    "@react-navigation/material-top-tabs": "ainar/react-navigation.git#react-navigation-material-top-tabs-v5.1.9-gitpkg",
+    "@react-navigation/native": "ainar/react-navigation.git#react-navigation-native-v5.1.6-gitpkg",
     "@react-navigation/stack": "^5.2.11",
     "moment": "^2.24.0",
     "react": "16.11.0",
@@ -45,6 +46,8 @@
     "jest": "^24.9.0",
     "metro": "^0.59.0",
     "metro-react-native-babel-preset": "^0.58.0",
+    "patch-package": "^6.2.2",
+    "postinstall-postinstall": "^2.1.0",
     "react-test-renderer": "16.11.0"
   },
   "jest": {
