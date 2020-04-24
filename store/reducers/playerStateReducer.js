@@ -33,8 +33,7 @@ export function playerState(state = initState, action) {
             if (action.value !== undefined)
                 newState = {
                     ...state,
-                    currentTrack: action.value.videoId,
-                    currentPositionInQueue: action.value.id
+                    currentTrack: action.value
                 }
             return newState || state
 

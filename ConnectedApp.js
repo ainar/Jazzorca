@@ -17,7 +17,7 @@ class ConnectedApp extends React.Component {
 
         TrackPlayer.addEventListener(
             'playback-track-changed',
-            ({ nextTrack }) => this._setCurrentTrack(nextTrack)
+            ({ nextTrack, position }) => this._setCurrentTrack(nextTrack, position)
         )
     }
 
@@ -28,13 +28,13 @@ class ConnectedApp extends React.Component {
         })
     }
 
-    _setCurrentTrack(queueId) {
+    _setCurrentTrack(queueId, position) {
         if (queueId !== undefined) {
             seekTo(0)
             const track = this.props.cache[this.props.queue.get(queueId)]
             this.props.dispatch({
                 type: 'SKIP_TO_TRACK',
-                value: track
+                value: track.videoId
             })
 
             // if it's the last track, add a related track

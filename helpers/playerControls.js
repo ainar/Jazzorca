@@ -51,13 +51,9 @@ export async function add(track, dispatch, cache) {
 }
 
 export async function skip(track, dispatch) {
-    dispatch({
-        type: 'SKIP_TO_TRACK',
-        value: track
-    })
-
-    return TrackPlayer.skip(track.id)
-        .then(() => TrackPlayer.play())
+    TrackPlayer.skip(track.id)
+    TrackPlayer.play()
+    return track
 }
 
 export async function play() {
