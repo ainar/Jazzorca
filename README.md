@@ -12,6 +12,7 @@ JazzOrca is a React Native app (not Expo). So you need to follow the guidelines 
 
 Otherwise, building for Android is as simple as:
 ```
+yarn
 cd android
 ./gradlew assembleRelease
 ```
