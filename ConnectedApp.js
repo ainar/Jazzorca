@@ -3,7 +3,7 @@ import { View, StatusBar } from 'react-native'
 import Navigation from './Navigation/Navigation'
 import { connect } from 'react-redux'
 import TrackPlayer from 'react-native-track-player'
-import { getTrack, addToQueue, resetQueue } from './helpers/playerControls'
+import { getTrack, addToQueue, resetQueue, setCurrentTrack } from './helpers/playerControls'
 
 class ConnectedApp extends React.Component {
     constructor(props) {
@@ -36,10 +36,7 @@ class ConnectedApp extends React.Component {
     
         if (queueId !== undefined) {
             const track = queue.get(queueId)
-            dispatch({
-                type: 'SKIP_TO_TRACK',
-                value: track
-            })
+            dispatch(setCurrentTrack(track))
 
             // if it's the last track, add a related track
             if (queue.size > 0 && Array.from(queue)[queue.size - 1][0] === queueId) {

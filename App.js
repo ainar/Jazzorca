@@ -6,6 +6,8 @@ import setupPlayer from './helpers/setupPlayer';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import RNBootSplash from "react-native-bootsplash";
 import ConnectedApp from './ConnectedApp';
+import { PersistGate } from 'redux-persist/integration/react';
+import { persistStore } from 'redux-persist';
 
 const MyTheme = {
     ...DefaultTheme,
@@ -23,12 +25,14 @@ class App extends React.Component {
     }
 
     render() {
-
+        let persistor = persistStore(Store)
         return (
             <Provider store={Store}>
-                <NavigationContainer theme={MyTheme}>
-                    <ConnectedApp />
-                </NavigationContainer>
+                <PersistGate persistor={persistor}>
+                    <NavigationContainer theme={MyTheme}>
+                        <ConnectedApp />
+                    </NavigationContainer>
+                </PersistGate>
             </Provider>
         );
     }

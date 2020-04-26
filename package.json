@@ -11,6 +11,8 @@
     "postinstall": "patch-package"
   },
   "dependencies": {
+    "@actra-development-oss/redux-persist-transform-filter-immutable": "^1.0.0",
+    "@react-native-community/async-storage": "^1.9.0",
     "@react-native-community/masked-view": "^0.1.9",
     "@react-native-community/slider": "^2.0.9",
     "@react-navigation/bottom-tabs": "^5.2.6",
@@ -20,6 +22,7 @@
     "@react-navigation/native": "ainar/react-navigation.git#react-navigation-native-v5.1.6-gitpkg",
     "@react-navigation/stack": "^5.2.11",
     "@types/uuid": "^7.0.3",
+    "immutable": "^4.0.0-rc.12",
     "moment": "^2.24.0",
     "react": "16.11.0",
     "react-native": "0.62.2",
@@ -39,6 +42,10 @@
     "react-redux": "^7.2.0",
     "redux": "^4.0.5",
     "redux-logger": "^3.0.6",
+    "redux-persist": "^6.0.0",
+    "redux-persist-immutable": "^4.3.1",
+    "redux-persist-immutable-state": "^3.2.5",
+    "redux-persist-transform-immutable": "^5.0.0",
     "redux-thunk": "^2.3.0"
   },
   "devDependencies": {

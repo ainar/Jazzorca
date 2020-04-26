@@ -64,6 +64,19 @@ export function addToQueue(track) {
     }
 }
 
+export function setCurrentTrack(track) {
+    return dispatch => {
+        dispatch({
+            type: 'SKIP_TO_TRACK',
+            value: track
+        })
+        dispatch({
+            type: 'ADD_TO_HISTORY',
+            value: track
+        })
+    }
+}
+
 export function skip(trackId) {
     TrackPlayer.skip(trackId)
     TrackPlayer.play()

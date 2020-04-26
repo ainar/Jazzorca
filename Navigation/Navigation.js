@@ -9,6 +9,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import Related from '../Components/Related';
 import Queue from '../Components/Queue';
 import { Dimensions } from 'react-native';
+import Home from '../Components/Home';
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -30,6 +31,10 @@ class TabContainer extends React.Component {
                     },
                 }}
             >
+                <Tab.Screen name="Home" component={Home} options={{
+                    tabBarIcon: () => (<Icon name='home' size={20} />),
+                    title: 'Accueil'
+                }} />
                 <Tab.Screen name="Search" component={Search} options={{
                     tabBarIcon: () => (<Icon name='search1' size={20} />),
                     title: 'Rechercher'
