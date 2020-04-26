@@ -24,6 +24,7 @@ export const resetQueue = () => ({
 export function playNow(track, cache) {
     return async dispatch => {
         dispatch(fetchStart())
+        dispatch(setCurrentTrack(track))
         await TrackPlayer.pause()
         const newTrack = await getTrack(track, cache)
         dispatch(addToQueue(newTrack))
@@ -65,14 +66,20 @@ export function addToQueue(track) {
 }
 
 export function setCurrentTrack(track) {
-    if (track === undefined) {
-        console.error('track is undefined')
-    }
     return dispatch => {
         dispatch({
             type: 'SKIP_TO_TRACK',
             value: track
         })
+    }
+}
+
+export function autoSetCurrentTrack(track) {
+    if (track === undefined) {
+        console.error('track is undefined')
+    }
+    return dispatch => {
+        dispatch(setCurrentTrack(track))
         dispatch({
             type: 'ADD_TO_HISTORY',
             value: track
@@ -82,7 +89,7 @@ export function setCurrentTrack(track) {
 
 export function skip(trackId) {
     TrackPlayer.skip(trackId)
-    TrackPlayer.play()
+    return TrackPlayer.play()
 }
 
 export function reset() {

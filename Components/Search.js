@@ -58,8 +58,7 @@ class Search extends React.Component {
 
     _onPress(track) {
         const { dispatch, cache } = this.props
-        const action = playNow(track, cache)
-        dispatch(action)
+        return dispatch(playNow(track, cache))
     }
 
     render() {

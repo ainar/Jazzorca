@@ -19,7 +19,7 @@ class Related extends React.Component {
     _onPress(track) {
         const { navigation, dispatch, cache } = this.props
         navigation.navigate('Player')
-        dispatch(playNow(track, cache))
+        return dispatch(playNow(track, cache))
     }
 
     _loadNextPage() {
