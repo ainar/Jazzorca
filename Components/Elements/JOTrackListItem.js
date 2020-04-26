@@ -6,7 +6,8 @@ import Icon from 'react-native-vector-icons/AntDesign'
 class JOTrackListItem extends React.Component {
 
     _displayNowPlaying() {
-        if (this.props.nowPlaying === this.props.track.videoId) {
+        const { nowPlaying, track } = this.props
+        if (nowPlaying !== undefined && nowPlaying.videoId === track.videoId) {
             return <Icon name='caretright' size={30} style={styles.is_playing_icon} />
         }
     }

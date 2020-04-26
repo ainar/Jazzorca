@@ -1,66 +1,77 @@
 import TrackPlayer, { STATE_BUFFERING, STATE_NONE, STATE_PAUSED, STATE_PLAYING, STATE_READY, STATE_STOPPED } from 'react-native-track-player';
+import 'react-native-get-random-values';
+import { v4 as uuid } from 'uuid'
+
 import { getTrackFromYT } from '../API/YouTubeAPI';
+
 
 export { STATE_BUFFERING, STATE_NONE, STATE_PAUSED, STATE_PLAYING, STATE_READY, STATE_STOPPED }
 
-export async function playNow(track, dispatch, cache) {
-    const fetchStart = {
-        type: 'FETCHING',
-        value: true
-    }
+const fetchStart = () => ({
+    type: 'FETCHING',
+    value: true
+})
 
-    const fetchStop = {
-        type: 'FETCHING',
-        value: false
-    }
+const fetchStop = () => ({
+    type: 'FETCHING',
+    value: false
+})
 
-    dispatch(fetchStart)
-    return pause()
-        .then(() => add(track, dispatch, cache))
-        .then(newTrack => skip(newTrack, dispatch))
-        .then(() => play())
-        .then(() => dispatch(fetchStop))
+export const resetQueue = () => ({
+    type: 'RESET_QUEUE'
+})
+
+export function playNow(track, cache) {
+    return async dispatch => {
+        dispatch(fetchStart())
+        await TrackPlayer.pause()
+        const newTrack = await getTrack(track, cache)
+        dispatch(addToQueue(newTrack))
+        TrackPlayer.getQueue()
+            .then(queue => {
+                if (queue.length > 1) TrackPlayer.skip(newTrack.id)
+            })
+        TrackPlayer.getState()
+            .then(state => {
+                if (state !== STATE_PLAYING) TrackPlayer.play()
+            })
+        return dispatch(fetchStop())
+    }
 }
 
-export async function add(track, dispatch, cache) {
-    if( typeof add.counter == 'undefined' ) {
-        add.counter = 0;
-    }
-    const id = add.counter
-    add.counter++;
-
-    let ytTrack = {}
+export async function getTrack(track, cache) {
+    let ytTrack
     if (cache[track.videoId] === undefined || cache[track.videoId].url === undefined) {
         ytTrack = await getTrackFromYT(track.videoId)
     } else {
         ytTrack = cache[track.videoId]
     }
 
-    const newTrack = {
+    return {
         ...track,
         ...ytTrack,
-        id: id.toString()
+        id: uuid()
     }
-
-    dispatch({
-        type: 'ADD_TRACK',
-        value: newTrack
-    })
-    await TrackPlayer.add(newTrack)
-    return newTrack
 }
 
-export async function skip(track, dispatch) {
-    TrackPlayer.skip(track.id)
-    TrackPlayer.play()
-    return track
-}
-
-export async function reset() {
-    return dispatch => 
+export function addToQueue(track) {
+    return async dispatch => {
+        await TrackPlayer.add(track)
         dispatch({
-            type: 'RESET_QUEUE'
+            type: 'ADD_TRACK',
+            value: track
         })
+    }
+}
+
+export function skip(trackId) {
+    TrackPlayer.skip(trackId)
+    TrackPlayer.play()
+}
+
+export function reset() {
+    TrackPlayer.reset()
+    return resetQueue()
 }
 
 export async function play() {

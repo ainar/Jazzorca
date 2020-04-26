@@ -12,8 +12,8 @@ class Queue extends Component {
                 <JOTitle>File d'attente</JOTitle>
                 <JOTrackList
                     data={this.props.queue}
-                    onPress={async track => skip(track, action => this.props.dispatch(action))}
-                    keyExtractor={track => track.id.toString()}
+                    onPress={track => skip(track.id)}
+                    keyExtractor={track => track.id}
                 />
             </JOScreen>
         )
@@ -23,7 +23,7 @@ class Queue extends Component {
 const mapStateToProps = (state) => {
     if (mapStateToProps.queueSize !== state.playerState.queue.size) {
         mapStateToProps.queue = Array.from(state.playerState.queue)
-            .map(([queueId, videoId]) => ({ ...state.playerState.cache[videoId], id: queueId }))
+            .map(([queueId, track]) => ({ ...track, id: queueId }))
         mapStateToProps.queueSize = state.playerState.queue.size;
     }
 

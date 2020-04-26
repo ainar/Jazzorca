@@ -13,7 +13,7 @@ class CurrentArtist extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-    track: state.playerState.cache[state.playerState.currentTrack]
+    track: state.playerState.currentTrack
 })
 
 export default connect(mapStateToProps)(CurrentArtist)

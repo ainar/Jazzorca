@@ -16,9 +16,10 @@ class Related extends React.Component {
         }
     }
 
-    onPress(track) {
-        this.props.navigation.navigate('Player')
-        playNow(track, action => this.props.dispatch(action), this.props.cache)
+    _onPress(track) {
+        const { navigation, dispatch, cache } = this.props
+        navigation.navigate('Player')
+        dispatch(playNow(track, cache))
     }
 
     _loadNextPage() {
@@ -44,7 +45,7 @@ class Related extends React.Component {
                     onEndReached={() => { this._loadNextPage() }}
                     loadingNextPage={this.state.loadingNextPage}
                     ListFooterComponentStyle={{ height: 40 }}
-                    onPress={(track) => this.onPress(track)}
+                    onPress={(track) => this._onPress(track)}
                 />
 
             )
@@ -62,7 +63,7 @@ class Related extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        track: state.playerState.cache[state.playerState.currentTrack],
+        track: state.playerState.currentTrack,
         cache: state.playerState.cache
     }
 }

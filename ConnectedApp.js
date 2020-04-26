@@ -3,7 +3,7 @@ import { View, StatusBar } from 'react-native'
 import Navigation from './Navigation/Navigation'
 import { connect } from 'react-redux'
 import TrackPlayer from 'react-native-track-player'
-import { add, seekTo, reset } from './helpers/playerControls'
+import { getTrack, addToQueue, resetQueue } from './helpers/playerControls'
 
 class ConnectedApp extends React.Component {
     constructor(props) {
@@ -17,40 +17,52 @@ class ConnectedApp extends React.Component {
 
         TrackPlayer.addEventListener(
             'playback-track-changed',
-            ({ nextTrack, position }) => this._setCurrentTrack(nextTrack, position)
+            ({ nextTrack }) => this._setCurrentTrack(nextTrack)
         )
     }
 
     _setPlayerState(state) {
-        this.props.dispatch({
+        const { dispatch } = this.props
+        
+        dispatch({
             type: 'SET_STATE',
             value: state
         })
     }
 
-    _setCurrentTrack(queueId, position) {
+    _setCurrentTrack(queueId) {
+        const { queue, dispatch } = this.props
+        console.log('playback-track-changed')
+    
         if (queueId !== undefined) {
-            seekTo(0)
-            const track = this.props.cache[this.props.queue.get(queueId)]
-            this.props.dispatch({
+            const track = queue.get(queueId)
+            dispatch({
                 type: 'SKIP_TO_TRACK',
-                value: track.videoId
+                value: track
             })
 
             // if it's the last track, add a related track
-            if (this.props.queue.size > 0) {
-                if (Array.from(this.props.queue)[this.props.queue.size - 1][0] === queueId) {
-                    const related = track.related.results
-                    const unseenRelatedTrack = related.find(t => Array.from(this.props.queue).findIndex(tq => tq[1] === t.videoId) === -1)
-                    add(unseenRelatedTrack, this.props.dispatch, this.props.cache)
-                }
+            if (queue.size > 0 && Array.from(queue)[queue.size - 1][0] === queueId) {
+                this._addRelatedTrackToQueue(track)
             }
         }
     }
 
+    async _addRelatedTrackToQueue(track) {
+        const { queue, dispatch, cache } = this.props
+        const related = track.related.results
+        const unseenRelatedTrack = related.find(
+            t => Array.from(queue)
+                .findIndex(tq => tq[1].videoId === t.videoId) === -1
+        )
+        const newTrack = await getTrack(unseenRelatedTrack, cache)
+        dispatch(addToQueue(newTrack))
+    }
+
     componentWillUnmount() {
+        console.log('will unmount')
         const { dispatch } = this.props
-        dispatch(reset())
+        dispatch(resetQueue())
     }
 
     render() {

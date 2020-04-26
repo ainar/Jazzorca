@@ -19,12 +19,14 @@
     "@react-navigation/material-top-tabs": "ainar/react-navigation.git#react-navigation-material-top-tabs-v5.1.9-gitpkg",
     "@react-navigation/native": "ainar/react-navigation.git#react-navigation-native-v5.1.6-gitpkg",
     "@react-navigation/stack": "^5.2.11",
+    "@types/uuid": "^7.0.3",
     "moment": "^2.24.0",
     "react": "16.11.0",
     "react-native": "0.62.2",
     "react-native-bootsplash": "^2.2.3",
     "react-native-elements": "^1.2.7",
     "react-native-gesture-handler": "^1.6.1",
+    "react-native-get-random-values": "^1.4.0",
     "react-native-navigation-bar-color": "^2.0.1",
     "react-native-paper": "^3.8.0",
     "react-native-reanimated": "^1.8.0",
@@ -35,7 +37,9 @@
     "react-native-unimodules": "^0.9.0",
     "react-native-vector-icons": "^6.6.0",
     "react-redux": "^7.2.0",
-    "redux": "^4.0.5"
+    "redux": "^4.0.5",
+    "redux-logger": "^3.0.6",
+    "redux-thunk": "^2.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.6.2",

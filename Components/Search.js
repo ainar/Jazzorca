@@ -56,6 +56,12 @@ class Search extends React.Component {
             })
     }
 
+    _onPress(track) {
+        const { dispatch, cache } = this.props
+        const action = playNow(track, cache)
+        dispatch(action)
+    }
+
     render() {
         return (
             <JOScreen style={[styles.main_component, this.props.style]}>
@@ -65,7 +71,7 @@ class Search extends React.Component {
                     loadingNextPage={this.state.loadingNextPage}
                     ListHeaderComponentStyle={{ height: 85 }}
                     ListFooterComponentStyle={{ height: 40 }}
-                    onPress={track => playNow(track, action => this.props.dispatch(action), this.props.cache)}
+                    onPress={track => this._onPress(track)}
                 />
                 <View style={styles.search_box}>
                     <JOSearchInput

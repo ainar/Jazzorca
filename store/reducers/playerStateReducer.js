@@ -46,7 +46,7 @@ export function playerState(state = initState, action) {
                 newCache[action.value.videoId] = { ...newCache[action.value.videoId], ...action.value }
 
             let newQueue = new Map(state.queue)
-            newQueue.set(action.value.id, action.value.videoId)
+            newQueue.set(action.value.id, action.value)
 
             newState = {
                 ...state,
@@ -57,8 +57,12 @@ export function playerState(state = initState, action) {
 
         case 'ADD_RELATED':
             newCache = { ...state.cache }
-            newCache[state.currentTrack].related = {
-                results: appendTracksWithoutDuplicate(newCache[state.currentTrack].related.results, action.value.results),
+            const currentTrackVideoId = state.currentTrack.videoId
+            newCache[currentTrackVideoId].related = {
+                results: appendTracksWithoutDuplicate(
+                    newCache[currentTrackVideoId].related.results,
+                    action.value.results
+                ),
                 continuationInfos: action.value.continuationInfos
             }
 
@@ -68,10 +72,12 @@ export function playerState(state = initState, action) {
             }
             return newState || state
 
-        case 'EMPTY_QUEUE':
+        case 'RESET_QUEUE':
             newState = {
                 ...state,
-                queue: new Map()
+                queue: new Map(),
+                currentTrack: undefined,
+                cache: []
             }
             return newState || state
 
