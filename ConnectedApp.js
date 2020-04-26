@@ -3,7 +3,7 @@ import { View, StatusBar } from 'react-native'
 import Navigation from './Navigation/Navigation'
 import { connect } from 'react-redux'
 import TrackPlayer from 'react-native-track-player'
-import { add, seekTo } from './helpers/playerControls'
+import { add, seekTo, reset } from './helpers/playerControls'
 
 class ConnectedApp extends React.Component {
     constructor(props) {
@@ -46,6 +46,11 @@ class ConnectedApp extends React.Component {
                 }
             }
         }
+    }
+
+    componentWillUnmount() {
+        const { dispatch } = this.props
+        dispatch(reset())
     }
 
     render() {

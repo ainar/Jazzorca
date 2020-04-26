@@ -68,6 +68,13 @@ export function playerState(state = initState, action) {
             }
             return newState || state
 
+        case 'EMPTY_QUEUE':
+            newState = {
+                ...state,
+                queue: new Map()
+            }
+            return newState || state
+
         default:
             return state
     }

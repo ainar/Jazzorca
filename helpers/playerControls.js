@@ -56,6 +56,13 @@ export async function skip(track, dispatch) {
     return track
 }
 
+export async function reset() {
+    return dispatch => 
+        dispatch({
+            type: 'RESET_QUEUE'
+        })
+}
+
 export async function play() {
     return TrackPlayer.play()
 }
