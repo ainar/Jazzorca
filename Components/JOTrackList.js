@@ -28,11 +28,13 @@ class JOTrackList extends React.Component {
                         nowPlaying={this.props.currentTrack}
                         onPlay={this.props.onPlay}
                         onPress={this.props.onPress}
+                        loading={this.props.loading}
                     />}
                 keyExtractor={data => data.videoId}
                 onEndReachedThreshold={0.01}
                 ListHeaderComponent={<View></View>}
                 ListFooterComponent={() => this._displayLoadingNextPage()}
+                ref={this.props.forwardRef}
                 {...this.props}
             />
         )
@@ -40,7 +42,8 @@ class JOTrackList extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-    currentTrack: state.playerState.currentTrack
+    currentTrack: state.playerState.currentTrack,
+    loading: state.playerState.loading
 })
 
 

@@ -32,14 +32,15 @@ class ConnectedApp extends React.Component {
 
     _setCurrentTrack(queueId) {
         const { queue, dispatch } = this.props
-        console.log('playback-track-changed')
     
         if (queueId !== undefined) {
-            const track = queue.get(queueId)
-            dispatch(setCurrentTrack(track))
+            const track = queue.find(t => t.id === queueId)
+            if (track !== undefined) {
+                dispatch(setCurrentTrack(track))
+            }
 
             // if it's the last track, add a related track
-            if (queue.size > 0 && Array.from(queue)[queue.size - 1][0] === queueId) {
+            if (queue.length > 0 && queue[queue.length - 1].id === queueId) {
                 this._addRelatedTrackToQueue(track)
             }
         }
@@ -49,8 +50,7 @@ class ConnectedApp extends React.Component {
         const { queue, dispatch, cache } = this.props
         const related = track.related.results
         const unseenRelatedTrack = related.find(
-            t => Array.from(queue)
-                .findIndex(tq => tq[1].videoId === t.videoId) === -1
+            t => queue.findIndex(tq => tq.videoId === t.videoId) === -1
         )
         const newTrack = await getTrack(unseenRelatedTrack, cache)
         dispatch(addToQueue(newTrack))

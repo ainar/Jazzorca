@@ -6,7 +6,7 @@ const initState = {
     loading: false,
     currentTrack: undefined,
     cache: {},
-    queue: new Map()
+    queue: []
 }
 
 export function playerState(state = initState, action) {
@@ -45,8 +45,8 @@ export function playerState(state = initState, action) {
             else
                 newCache[action.value.videoId] = { ...newCache[action.value.videoId], ...action.value }
 
-            let newQueue = new Map(state.queue)
-            newQueue.set(action.value.id, action.value)
+            let newQueue = [...state.queue]
+            newQueue.push({ ...action.value, id: action.value.id })
 
             newState = {
                 ...state,
@@ -78,6 +78,13 @@ export function playerState(state = initState, action) {
                 queue: new Map(),
                 currentTrack: undefined,
                 cache: []
+            }
+            return newState || state
+
+        case 'FETCHING':
+            newState = {
+                ...state,
+                loading: action.value
             }
             return newState || state
 

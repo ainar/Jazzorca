@@ -31,7 +31,7 @@ export function playNow(track, cache) {
             .then(queue => {
                 if (queue.length > 1) TrackPlayer.skip(newTrack.id)
             })
-        TrackPlayer.getState()
+        await TrackPlayer.getState()
             .then(state => {
                 if (state !== STATE_PLAYING) TrackPlayer.play()
             })
@@ -56,15 +56,18 @@ export async function getTrack(track, cache) {
 
 export function addToQueue(track) {
     return async dispatch => {
-        await TrackPlayer.add(track)
         dispatch({
             type: 'ADD_TRACK',
             value: track
         })
+        await TrackPlayer.add(track)
     }
 }
 
 export function setCurrentTrack(track) {
+    if (track === undefined) {
+        console.error('track is undefined')
+    }
     return dispatch => {
         dispatch({
             type: 'SKIP_TO_TRACK',

@@ -9,14 +9,14 @@ import { playNow } from '../helpers/playerControls'
 export class Home extends Component {
     _onPress(track) {
         const { cache } = this.props
-        this.props.dispatch(playNow(track, cache))
+        return this.props.dispatch(playNow(track, cache))
     }
 
     render() {
         return (
             <JOScreen>
                 <JOTitle>
-                    Accueil
+                    Titres récents
                 </JOTitle>
                 <JOTrackList
                     data={this.props.history}
