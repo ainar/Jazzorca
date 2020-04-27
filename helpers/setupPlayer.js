@@ -1,6 +1,6 @@
 import TrackPlayer from 'react-native-track-player'
 
-export default async function setupPlayer () {
+export default async function setupPlayer() {
     const playerOptions = {
         // One of RATING_HEART, RATING_THUMBS_UP_DOWN, RATING_3_STARS, RATING_4_STARS, RATING_5_STARS, RATING_PERCENTAGE
         ratingType: TrackPlayer.RATING_5_STARS,
@@ -28,9 +28,11 @@ export default async function setupPlayer () {
             TrackPlayer.CAPABILITY_STOP,
         ],
 
-        maxCacheSize: 200000
+        maxCacheSize: 200000,
+
+        icon: require('../assets/player_icon.png')
     }
 
-    
+
     return TrackPlayer.updateOptions(playerOptions)
 }

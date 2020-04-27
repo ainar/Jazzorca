@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet } from 'react-native'
+import { StyleSheet } from 'react-native'
 import { connect } from 'react-redux'
 import JOTrackList from './JOTrackList'
 import JOScreen from './JOScreen'
@@ -15,9 +15,7 @@ export class Home extends Component {
     render() {
         return (
             <JOScreen>
-                <JOTitle>
-                    Titres récents
-                </JOTitle>
+                <JOTitle>Dernières écoutes</JOTitle>
                 <JOTrackList
                     data={this.props.history}
                     onPress={track => this._onPress(track)}

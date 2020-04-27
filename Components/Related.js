@@ -56,7 +56,7 @@ class Related extends React.Component {
     render() {
         return (
             <JOScreen>
-                <JOTitle>Autres titres semblables</JOTitle>
+                <JOTitle>Recommandations</JOTitle>
                 {this._showRelated()}
             </JOScreen>
         )
