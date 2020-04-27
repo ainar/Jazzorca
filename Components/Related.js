@@ -23,10 +23,11 @@ class Related extends React.Component {
     }
 
     _loadNextPage() {
+        const { track, cache, dispatch } = this.props
         this.setState({ loadingNextPage: true })
-        ytRelatedNextPage(this.props.track.related.continuationInfos)
+        ytRelatedNextPage(cache[track.videoId].related.continuationInfos)
             .then(({ results, continuationInfos }) => {
-                this.props.dispatch({
+                dispatch({
                     type: 'ADD_RELATED',
                     value: { results, continuationInfos }
                 })
@@ -38,10 +39,11 @@ class Related extends React.Component {
     }
 
     _showRelated() {
-        if (this.props.track !== undefined)
+        const { track, cache } = this.props
+        if (track !== undefined && cache[track.videoId] !== undefined)
             return (
                 <JOTrackList
-                    data={this.props.track.related.results}
+                    data={cache[track.videoId].related.results}
                     onEndReached={() => { this._loadNextPage() }}
                     loadingNextPage={this.state.loadingNextPage}
                     ListFooterComponentStyle={{ height: 40 }}
