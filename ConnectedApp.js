@@ -1,15 +1,18 @@
 import React from 'react'
-import { View, StatusBar } from 'react-native'
-import Navigation from './Navigation/Navigation'
+import { View } from 'react-native'
 import { connect } from 'react-redux'
 import TrackPlayer from 'react-native-track-player'
+
+import Navigation from './Navigation/Navigation'
+import setupPlayer from './helpers/setupPlayer';
 import { getTrack, addToQueue, resetQueue, autoSetCurrentTrack } from './helpers/playerControls'
 
 class ConnectedApp extends React.Component {
     constructor(props) {
         super(props)
 
-        // Event
+        setupPlayer()
+
         TrackPlayer.addEventListener(
             'playback-state',
             ({ state }) => this._setPlayerState(state)
@@ -23,7 +26,7 @@ class ConnectedApp extends React.Component {
 
     _setPlayerState(state) {
         const { dispatch } = this.props
-        
+
         dispatch({
             type: 'SET_STATE',
             value: state
@@ -32,7 +35,7 @@ class ConnectedApp extends React.Component {
 
     _setCurrentTrack(queueId) {
         const { queue, dispatch } = this.props
-    
+
         if (queueId !== undefined) {
             const track = queue.find(t => t.id === queueId)
             if (track !== undefined) {
@@ -56,15 +59,19 @@ class ConnectedApp extends React.Component {
         dispatch(addToQueue(newTrack))
     }
 
-    componentWillUnmount() {
-        const { dispatch } = this.props
-        dispatch(resetQueue())
+    componentDidMount() {
+        const { dispatch, queue: queueState } = this.props
+        TrackPlayer.getQueue()
+            .then(queue => {
+                if (queue !== undefined && queue.length === 0 && queueState.length > 0) {
+                    dispatch(resetQueue())
+                }
+            })
     }
 
     render() {
         return (
             <View style={{ flex: 1, backgroundColor: 'black' }}>
-                <StatusBar translucent={true} backgroundColor={'rgba(0,0,0,0.5)'} />
                 <Navigation />
             </View>
         )

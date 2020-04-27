@@ -6,6 +6,7 @@
         <item name="android:textColor">#FFFFFF</item>
         <item name="android:windowBackground">@android:color/black</item>
         <item name="android:navigationBarColor">#000000</item>
+        <item name="android:windowTranslucentStatus">true</item>
     </style>
 
     <!-- BootTheme should inherit from AppTheme -->

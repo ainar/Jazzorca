@@ -2,14 +2,13 @@ import React from 'react';
 
 import { Provider } from 'react-redux';
 import Store from './store/configureStore'
-import setupPlayer from './helpers/setupPlayer';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
-import RNBootSplash from "react-native-bootsplash";
 import ConnectedApp from './ConnectedApp';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistStore } from 'redux-persist';
+import RNBootSplash from 'react-native-bootsplash';
 
-const MyTheme = {
+const DarkTheme = {
     ...DefaultTheme,
     colors: {
         ...DefaultTheme.colors,
@@ -20,16 +19,15 @@ const MyTheme = {
 class App extends React.Component {
     constructor(props) {
         super(props)
-        setupPlayer()
-            .then(() => RNBootSplash.hide({ duration: 250 }))
+        RNBootSplash.show();
     }
 
     render() {
-        let persistor = persistStore(Store)
+        let persistor = persistStore(Store, null, () => RNBootSplash.hide({ duration: 250 }))
         return (
             <Provider store={Store}>
                 <PersistGate persistor={persistor}>
-                    <NavigationContainer theme={MyTheme}>
+                    <NavigationContainer theme={DarkTheme}>
                         <ConnectedApp />
                     </NavigationContainer>
                 </PersistGate>
