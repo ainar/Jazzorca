@@ -1,5 +1,5 @@
 const initState = {
-    history: {}
+    history: []
 }
 
 export function history(state = initState, action) {
@@ -8,11 +8,11 @@ export function history(state = initState, action) {
     switch (action.type) {
         case 'ADD_TO_HISTORY':
             const newTrack = action.value
-            const newHistory = { ...state.history }
-            newHistory[newTrack.videoId] = {
+            const newHistory = [ ...state.history ]
+            newHistory.unshift({
                 ...newTrack,
-                lastListened: new Date().getTime()
-            }
+                timestamp: new Date().getTime()
+            })
 
             newState = {
                 ...state,

@@ -17,7 +17,7 @@ export class Home extends Component {
             <JOScreen>
                 <JOTitle>Dernières écoutes</JOTitle>
                 <JOTrackList
-                    data={this.props.history}
+                    data={this.props.lastListened}
                     onPress={track => this._onPress(track)}
                 />
             </JOScreen>
@@ -30,8 +30,20 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = (state) => {
+    let lastListened = [], i = 0
+    const history = state.history.history
+    while (lastListened.length < 20 && i < history.length) {
+        const ht = history[i]
+
+        if (lastListened.findIndex(t => t.videoId === ht.videoId) === -1) {
+            lastListened.push(ht)
+        }
+
+        ++i
+    }
+
     return {
-        history: Object.values(state.history.history).sort((a, b) => b.lastListened - a.lastListened),
+        lastListened: lastListened,
         cache: state.playerState.cache
     }
 }
