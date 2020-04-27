@@ -37,6 +37,9 @@ class ConnectedApp extends React.Component {
         const { queue, dispatch } = this.props
 
         if (queueId !== undefined) {
+            if (queue === undefined) {
+                console.error('queue should be defined here')
+            }
             const track = queue.find(t => t.id === queueId)
             if (track !== undefined) {
                 dispatch(autoSetCurrentTrack(track))

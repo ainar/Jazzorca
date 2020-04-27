@@ -1,14 +1,19 @@
 import React from 'react'
-import { View, StyleSheet, TouchableHighlight, Image, ActivityIndicator } from 'react-native'
+import { View, StyleSheet, TouchableOpacity, Image, ActivityIndicator, Modal, Button, TouchableWithoutFeedback } from 'react-native'
 import JOText from './JOText'
 import Icon from 'react-native-vector-icons/AntDesign'
+import JOButton from './JOButton'
+import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
+import { connect } from 'react-redux'
+import { addToQueue, getTrack } from '../../helpers/playerControls'
 
 class JOTrackListItem extends React.Component {
 
     constructor(props) {
         super(props)
         this.state = {
-            loading: false
+            loading: false,
+            modalVisible: false
         }
         this.playerLoading = false
     }
@@ -35,27 +40,68 @@ class JOTrackListItem extends React.Component {
             .then(() => this.setState({ loading: false }))
     }
 
+    _hideModal() {
+        this.setState({ modalVisible: false })
+    }
+
+    _showModal() {
+        this.setState({ modalVisible: true })
+    }
+
     render() {
         return (
-            <TouchableHighlight underlayColor="rgba(255,255,255, .2)" onPress={() => this._onPress()} disabled={this.state.loading}>
-                <View style={styles.main_component}>
-                    <View style={styles.imageBox}>
-                        <Image
-                            source={this.props.track.artwork}
-                            style={styles.thumbnail}
-                        />
-                        <JOText style={styles.lengthText}>
-                            {this.props.track.lengthText}
-                        </JOText>
-                        {this._displayNowPlaying()}
-                        {this._displayLoading()}
+            <>
+                <Modal
+                    visible={this.state.modalVisible}
+                    animationType='fade'
+                    onRequestClose={() => this._hideModal()}
+                    transparent={true}
+                    statusBarTranslucent={true}
+                    style={styles.modal}
+                >
+                    <TouchableWithoutFeedback
+                        onPress={() => this._hideModal()}
+                    >
+                        <View style={styles.modal_screen}>
+                            <View style={styles.modal_content}>
+                                <JOButton
+                                    icon={<MaterialCommunityIcon name='playlist-plus' size={30} />}
+                                    title={"Ajouter à la file d'attente"}
+                                    onPress={async () => {
+                                        const { track, cache, dispatch } = this.props
+                                        this._hideModal()
+                                        const ytTrack = await getTrack(track, cache)
+                                        dispatch(addToQueue(ytTrack))
+                                    }}
+                                />
+                            </View>
+                        </View>
+                    </TouchableWithoutFeedback>
+                </Modal>
+                <TouchableOpacity
+                    onLongPress={() => this._showModal()}
+                    onPress={() => this._onPress()}
+                    disabled={this.state.loading}
+                >
+                    <View style={styles.main_component}>
+                        <View style={styles.imageBox}>
+                            <Image
+                                source={this.props.track.artwork}
+                                style={styles.thumbnail}
+                            />
+                            <JOText style={styles.lengthText}>
+                                {this.props.track.lengthText}
+                            </JOText>
+                            {this._displayNowPlaying()}
+                            {this._displayLoading()}
+                        </View>
+                        <View style={styles.meta_block}>
+                            <JOText style={[styles.title, styles.meta, this._nowPlaying() ? styles.title_current : undefined]} numberOfLines={2} >{this.props.track.title}</JOText>
+                            <JOText style={[styles.artist, styles.meta]} numberOfLines={1} >{this.props.track.artist}</JOText>
+                        </View>
                     </View>
-                    <View style={styles.meta_block}>
-                        <JOText style={[styles.title, styles.meta, this._nowPlaying() ? styles.title_current : undefined]} numberOfLines={2} >{this.props.track.title}</JOText>
-                        <JOText style={[styles.artist, styles.meta]} numberOfLines={1} >{this.props.track.artist}</JOText>
-                    </View>
-                </View>
-            </TouchableHighlight>
+                </TouchableOpacity>
+            </>
         )
     }
 }
@@ -104,7 +150,21 @@ const styles = StyleSheet.create({
         textAlign: 'right',
         right: 6,
         bottom: 0
-    }
+    },
+    modal_screen: {
+        flex: 1,
+        alignItems: 'stretch',
+        justifyContent: 'center'
+    },
+    modal_content: {
+        backgroundColor: 'rgba(0,0,0,0.2)',
+        margin: 20
+    },
 })
 
-export default JOTrackListItem
+const mapStateToProps = (state) => ({
+    cache: state.playerState.cache
+})
+
+
+export default connect(mapStateToProps)(JOTrackListItem)
