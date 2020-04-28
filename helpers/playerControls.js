@@ -73,7 +73,6 @@ export function autoAddToQueue(track) {
             ...await getTrack(track, cache),
             autoPlay: true
         }
-        await TrackPlayer.add(newTrack)
         return dispatch(addToQueue(newTrack))
     }
 }
@@ -89,7 +88,6 @@ export function manualAddToQueue(track) {
             ...await getTrack(track, cache),
             autoPlay: false
         }
-        await TrackPlayer.add(newTrack)
         return dispatch(addToQueue(newTrack))
     }
 }
@@ -117,6 +115,7 @@ export function autoSetCurrentTrack(track) {
         console.error('track is undefined')
     }
     return dispatch => {
+        TrackPlayer.seekTo(0)
         dispatch(setCurrentTrack(track))
         dispatch({
             type: 'ADD_TO_HISTORY',
