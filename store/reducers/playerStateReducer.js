@@ -84,7 +84,7 @@ export function playerState(state = initState, action) {
         case 'RESET_QUEUE':
             newState = {
                 ...state,
-                queue: new Map(),
+                queue: [],
                 currentTrack: undefined,
                 cache: []
             }

@@ -39,15 +39,16 @@ class ConnectedApp extends React.Component {
         if (queueId !== undefined) {
             if (queue === undefined) {
                 console.error('queue should be defined here')
-            }
-            const track = queue.find(t => t.id === queueId)
-            if (track !== undefined) {
-                dispatch(autoSetCurrentTrack(track))
-            }
+            } else {
+                const track = queue.find(t => t.id === queueId)
+                if (track !== undefined) {
+                    dispatch(autoSetCurrentTrack(track))
+                }
 
-            // if it's the last track, add a related track
-            if (queue.length > 0 && queue[queue.length - 1].id === queueId) {
-                this._addRelatedTrackToQueue(track)
+                // if it's the last track, add a related track
+                if (queue.length > 0 && queue[queue.length - 1].id === queueId) {
+                    this._addRelatedTrackToQueue(track)
+                }
             }
         }
     }

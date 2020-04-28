@@ -7,6 +7,7 @@ import ConnectedApp from './ConnectedApp';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistStore } from 'redux-persist';
 import RNBootSplash from 'react-native-bootsplash';
+import TrackPlayer from 'react-native-track-player'
 
 const DarkTheme = {
     ...DefaultTheme,
@@ -20,6 +21,7 @@ class App extends React.Component {
     constructor(props) {
         super(props)
         RNBootSplash.show();
+        this.trackPlayer = TrackPlayer
     }
 
     render() {
