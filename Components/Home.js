@@ -8,8 +8,7 @@ import { playNow } from '../helpers/playerControls'
 
 export class Home extends Component {
     _onPress(track) {
-        const { cache, queue } = this.props
-        return this.props.dispatch(playNow(track, cache, queue))
+        return this.props.dispatch(playNow(track))
     }
 
     render() {
@@ -43,9 +42,7 @@ const mapStateToProps = (state) => {
     }
 
     return {
-        lastListened: lastListened,
-        cache: state.playerState.cache,
-        queue: state.playerState.queue
+        lastListened: lastListened
     }
 }
 

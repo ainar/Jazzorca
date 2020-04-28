@@ -17,9 +17,9 @@ class Related extends React.Component {
     }
 
     _onPress(track) {
-        const { navigation, dispatch, cache, queue } = this.props
+        const { navigation, dispatch } = this.props
         navigation.navigate('Player')
-        return dispatch(playNow(track, cache, queue))
+        return dispatch(playNow(track))
     }
 
     _loadNextPage() {
@@ -66,8 +66,7 @@ class Related extends React.Component {
 const mapStateToProps = (state) => {
     return {
         track: state.playerState.currentTrack,
-        cache: state.playerState.cache,
-        queue: state.playerState.queue,
+        cache: state.playerState.cache
     }
 }
 

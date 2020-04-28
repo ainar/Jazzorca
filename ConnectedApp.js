@@ -5,7 +5,7 @@ import TrackPlayer from 'react-native-track-player'
 
 import Navigation from './Navigation/Navigation'
 import setupPlayer from './helpers/setupPlayer';
-import { getTrack, addToQueue, resetQueue, autoSetCurrentTrack } from './helpers/playerControls'
+import { autoAddToQueue, resetQueue, autoSetCurrentTrack } from './helpers/playerControls'
 
 class ConnectedApp extends React.Component {
     constructor(props) {
@@ -53,16 +53,12 @@ class ConnectedApp extends React.Component {
     }
 
     async _addRelatedTrackToQueue(track) {
-        const { queue, dispatch, cache } = this.props
+        const { queue, dispatch } = this.props
         const related = track.related.results
         const unseenRelatedTrack = related.find(
             t => queue.findIndex(tq => tq.videoId === t.videoId) === -1
         )
-        const newTrack = {
-            ...await getTrack(unseenRelatedTrack, cache),
-            autoPlay: true
-        }
-        dispatch(addToQueue(newTrack))
+        dispatch(autoAddToQueue(unseenRelatedTrack))
     }
 
     componentDidMount() {
@@ -86,7 +82,6 @@ class ConnectedApp extends React.Component {
 
 const mapStateToProps = (state) => ({
     currentTrack: state.playerState.currentTrack,
-    cache: state.playerState.cache,
     queue: state.playerState.queue
 })
 

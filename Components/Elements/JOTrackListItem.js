@@ -68,10 +68,9 @@ class JOTrackListItem extends React.Component {
                                     icon={<MaterialCommunityIcon name='playlist-plus' size={30} />}
                                     title={"Ajouter à la file d'attente"}
                                     onPress={async () => {
-                                        const { track, cache, dispatch, queue } = this.props
+                                        const { track, dispatch } = this.props
                                         this._hideModal()
-                                        const ytTrack = await getTrack(track, cache)
-                                        dispatch(manualAddToQueue(ytTrack, queue))
+                                        dispatch(manualAddToQueue(track))
                                     }}
                                 />
                             </View>

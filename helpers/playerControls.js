@@ -21,15 +21,18 @@ export const resetQueue = () => ({
     type: 'RESET_QUEUE'
 })
 
-export function playNow(track, cache, queue) {
-    return async dispatch => {
+export function playNow(track) {
+    return async (dispatch, getState) => {
+        const currentTrack = getState().playerState.currentTrack
+        if (currentTrack !== undefined && currentTrack.videoId === track.videoId) {
+            return TrackPlayer.seekTo(0)
+        }
         await dispatch(fetchStart())
         await dispatch(setCurrentTrack(track))
         await TrackPlayer.pause()
-        const newTrack = await getTrack(track, cache)
-        await dispatch(manualAddToQueue(newTrack, queue))
+        await dispatch(manualAddToQueue(track))
         await TrackPlayer.getQueue().then(queue => {
-            if (queue.length > 1) TrackPlayer.skip(newTrack.id)
+            if (queue.length > 1) TrackPlayer.skip(queue[queue.length - 1].id)
         })
         await TrackPlayer.getState().then(state => {
             if (state !== STATE_PLAYING) TrackPlayer.play()
@@ -53,23 +56,41 @@ export async function getTrack(track, cache) {
     }
 }
 
-export function addToQueue(track) {
+function addToQueue(track) {
     return async dispatch => {
         await TrackPlayer.add(track)
-        dispatch({
+        return dispatch({
             type: 'ADD_TRACK',
             value: track
         })
     }
 }
 
-export function manualAddToQueue(track, queue) {
-    return async dispatch => {
+export function autoAddToQueue(track) {
+    return async (dispatch, getState) => {
+        const { cache } = getState().playerState
+        const newTrack = {
+            ...await getTrack(track, cache),
+            autoPlay: true
+        }
+        await TrackPlayer.add(newTrack)
+        return dispatch(addToQueue(newTrack))
+    }
+}
+
+export function manualAddToQueue(track) {
+    return async (dispatch, getState) => {
+        const { queue, cache } = getState().playerState
         const lastInQueue = queue[queue.length - 1]
         if (lastInQueue !== undefined && lastInQueue.autoPlay !== undefined && lastInQueue.autoPlay === true) {
             await dispatch(removeLastFromQueue(track))
         }
-        return dispatch(addToQueue(track))
+        const newTrack = {
+            ...await getTrack(track, cache),
+            autoPlay: false
+        }
+        await TrackPlayer.add(newTrack)
+        return dispatch(addToQueue(newTrack))
     }
 }
 
