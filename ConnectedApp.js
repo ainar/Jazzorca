@@ -58,7 +58,10 @@ class ConnectedApp extends React.Component {
         const unseenRelatedTrack = related.find(
             t => queue.findIndex(tq => tq.videoId === t.videoId) === -1
         )
-        const newTrack = await getTrack(unseenRelatedTrack, cache)
+        const newTrack = {
+            ...await getTrack(unseenRelatedTrack, cache),
+            autoPlay: true
+        }
         dispatch(addToQueue(newTrack))
     }
 

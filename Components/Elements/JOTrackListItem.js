@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/AntDesign'
 import JOButton from './JOButton'
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { connect } from 'react-redux'
-import { addToQueue, getTrack } from '../../helpers/playerControls'
+import { manualAddToQueue, getTrack } from '../../helpers/playerControls'
 
 class JOTrackListItem extends React.Component {
 
@@ -68,10 +68,10 @@ class JOTrackListItem extends React.Component {
                                     icon={<MaterialCommunityIcon name='playlist-plus' size={30} />}
                                     title={"Ajouter à la file d'attente"}
                                     onPress={async () => {
-                                        const { track, cache, dispatch } = this.props
+                                        const { track, cache, dispatch, queue } = this.props
                                         this._hideModal()
                                         const ytTrack = await getTrack(track, cache)
-                                        dispatch(addToQueue(ytTrack))
+                                        dispatch(manualAddToQueue(ytTrack, queue))
                                     }}
                                 />
                             </View>
@@ -163,7 +163,8 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = (state) => ({
-    cache: state.playerState.cache
+    cache: state.playerState.cache,
+    queue: state.playerState.queue
 })
 
 

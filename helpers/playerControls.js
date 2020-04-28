@@ -21,21 +21,19 @@ export const resetQueue = () => ({
     type: 'RESET_QUEUE'
 })
 
-export function playNow(track, cache) {
+export function playNow(track, cache, queue) {
     return async dispatch => {
-        dispatch(fetchStart())
-        dispatch(setCurrentTrack(track))
+        await dispatch(fetchStart())
+        await dispatch(setCurrentTrack(track))
         await TrackPlayer.pause()
         const newTrack = await getTrack(track, cache)
-        dispatch(addToQueue(newTrack))
-        TrackPlayer.getQueue()
-            .then(queue => {
-                if (queue.length > 1) TrackPlayer.skip(newTrack.id)
-            })
-        await TrackPlayer.getState()
-            .then(state => {
-                if (state !== STATE_PLAYING) TrackPlayer.play()
-            })
+        await dispatch(manualAddToQueue(newTrack, queue))
+        await TrackPlayer.getQueue().then(queue => {
+            if (queue.length > 1) TrackPlayer.skip(newTrack.id)
+        })
+        await TrackPlayer.getState().then(state => {
+            if (state !== STATE_PLAYING) TrackPlayer.play()
+        })
         return dispatch(fetchStop())
     }
 }
@@ -57,11 +55,30 @@ export async function getTrack(track, cache) {
 
 export function addToQueue(track) {
     return async dispatch => {
+        await TrackPlayer.add(track)
         dispatch({
             type: 'ADD_TRACK',
             value: track
         })
-        await TrackPlayer.add(track)
+    }
+}
+
+export function manualAddToQueue(track, queue) {
+    return async dispatch => {
+        const lastInQueue = queue[queue.length - 1]
+        if (lastInQueue !== undefined && lastInQueue.autoPlay !== undefined && lastInQueue.autoPlay === true) {
+            await dispatch(removeLastFromQueue(track))
+        }
+        return dispatch(addToQueue(track))
+    }
+}
+
+export function removeLastFromQueue(track) {
+    return async dispatch => {
+        await TrackPlayer.remove(track.id)
+        dispatch({
+            type: 'REMOVE_LAST_FROM_QUEUE'
+        })
     }
 }
 

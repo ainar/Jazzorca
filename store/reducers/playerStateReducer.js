@@ -10,7 +10,7 @@ const initState = {
 }
 
 export function playerState(state = initState, action) {
-    let newState, newCache
+    let newState, newCache, newQueue
     switch (action.type) {
         case 'SET_STATE':
             if (action.value === TrackPlayer.STATE_BUFFERING ||
@@ -45,12 +45,21 @@ export function playerState(state = initState, action) {
             else
                 newCache[action.value.videoId] = { ...newCache[action.value.videoId], ...action.value }
 
-            let newQueue = [...state.queue]
+            newQueue = [...state.queue]
             newQueue.push({ ...action.value, id: action.value.id })
 
             newState = {
                 ...state,
                 cache: newCache,
+                queue: newQueue
+            }
+            return newState || state
+
+        case 'REMOVE_LAST_FROM_QUEUE':
+            newQueue = [...state.queue]
+            newQueue.pop()
+            newState = {
+                ...state,
                 queue: newQueue
             }
             return newState || state

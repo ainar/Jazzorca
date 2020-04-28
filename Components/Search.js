@@ -57,8 +57,8 @@ class Search extends React.Component {
     }
 
     _onPress(track) {
-        const { dispatch, cache } = this.props
-        return dispatch(playNow(track, cache))
+        const { dispatch, cache, queue } = this.props
+        return dispatch(playNow(track, cache, queue))
     }
 
     render() {
@@ -113,7 +113,8 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = (state) => ({
-    cache: state.playerState.cache
+    cache: state.playerState.cache,
+    queue: state.playerState.queue,
 })
 
 export default connect(mapStateToProps)(Search)
