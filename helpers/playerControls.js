@@ -82,7 +82,7 @@ export function manualAddToQueue(track) {
         const { queue, cache } = getState().playerState
         const lastInQueue = queue[queue.length - 1]
         if (lastInQueue !== undefined && lastInQueue.autoPlay !== undefined && lastInQueue.autoPlay === true) {
-            await dispatch(removeLastFromQueue(track))
+            await dispatch(removeFromQueue(lastInQueue))
         }
         const newTrack = {
             ...await getTrack(track, cache),
@@ -92,11 +92,12 @@ export function manualAddToQueue(track) {
     }
 }
 
-export function removeLastFromQueue(track) {
-    return async dispatch => {
+export function removeFromQueue(track) {
+    return async (dispatch) => {
         await TrackPlayer.remove(track.id)
         dispatch({
-            type: 'REMOVE_LAST_FROM_QUEUE'
+            type: 'REMOVE_FROM_QUEUE',
+            value: track
         })
     }
 }

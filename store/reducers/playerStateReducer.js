@@ -55,9 +55,8 @@ export function playerState(state = initState, action) {
             }
             return newState || state
 
-        case 'REMOVE_LAST_FROM_QUEUE':
-            newQueue = [...state.queue]
-            newQueue.pop()
+        case 'REMOVE_FROM_QUEUE':
+            newQueue = [...state.queue.filter(t => t.id !== action.value.id)]
             newState = {
                 ...state,
                 queue: newQueue
