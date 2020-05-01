@@ -21,15 +21,6 @@ class TabContainer extends React.Component {
                     backgroundColor: 'black',
                     marginTop: 60
                 }}
-                tabBarOptions={{
-                    activeTintColor: 'white',
-                    labelPosition: 'beside-icon',
-                    labelStyle: {
-                    },
-                    tabStyle: {
-                        padding: 5,
-                    },
-                }}
             >
                 <Tab.Screen name="Home" component={Home} options={{
                     tabBarIcon: () => (<Icon name='home' size={20} />),

@@ -1,7 +1,14 @@
-import TrackPlayer from 'react-native-track-player'
+import TrackPlayer, { Track, State } from 'react-native-track-player'
 import { appendTracksWithoutDuplicate } from '../../helpers/utils'
+import { Action as ReduxAction } from 'redux'
 
-const initState = {
+const initState: {
+    playerState: State,
+    loading: boolean,
+    currentTrack: Track | undefined,
+    cache: { [k: string]: Track },
+    queue: Track[]
+} = {
     playerState: TrackPlayer.STATE_NONE,
     loading: false,
     currentTrack: undefined,
@@ -9,13 +16,15 @@ const initState = {
     queue: []
 }
 
-export function playerState(state = initState, action) {
+interface Action extends ReduxAction {
+    value: any
+}
+
+export function playerState(state = initState, action: Action) {
     let newState, newCache, newQueue
     switch (action.type) {
         case 'SET_STATE':
-            if (action.value === TrackPlayer.STATE_BUFFERING ||
-                action.value === TrackPlayer.STATE_CONNECTING) {
-
+            if (action.value === TrackPlayer.STATE_BUFFERING) {
                 newState = {
                     ...state,
                     loading: true
@@ -64,6 +73,11 @@ export function playerState(state = initState, action) {
             return newState || state
 
         case 'ADD_RELATED':
+            if (state.currentTrack === undefined) {
+                console.error('current track is undefined')
+                return state
+            }
+
             newCache = { ...state.cache }
             const currentTrackVideoId = state.currentTrack.videoId
             newCache[currentTrackVideoId].related = {

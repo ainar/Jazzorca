@@ -1,22 +1,31 @@
-import React from 'react'
-import JOScreen from './JOScreen'
-import JOTitle from './Elements/JOTitle'
-import JOTrackList from './JOTrackList'
-import { ytRelatedNextPage } from '../API/YouTubeAPI'
+import React, { ComponentProps } from 'react'
 import { connect } from 'react-redux'
 import { playNow } from '../helpers/playerControls'
+import { ytRelatedNextPage } from '../API/YouTubeAPI'
+import JOTitle from './Elements/JOTitle'
+import JOScreen from './JOScreen'
+import JOTrackList from './JOTrackList'
+import { Track } from 'react-native-track-player'
+import { ContinuationInfos } from '../helpers/types'
 
-class Related extends React.Component {
-    constructor(props) {
+interface RelatedProps extends ComponentProps<any> {
+
+}
+
+class Related extends React.Component<RelatedProps> {
+    state: {
+        loadingNextPage: boolean,
+    }
+
+    constructor(props: RelatedProps) {
         super(props)
 
         this.state = {
             loadingNextPage: false,
-            trackId: undefined
         }
     }
 
-    _onPress(track) {
+    _onPress(track: Track) {
         const { navigation, dispatch } = this.props
         navigation.navigate('Player')
         return dispatch(playNow(track))
@@ -26,7 +35,7 @@ class Related extends React.Component {
         const { track, cache, dispatch } = this.props
         this.setState({ loadingNextPage: true })
         ytRelatedNextPage(cache[track.videoId].related.continuationInfos)
-            .then(({ results, continuationInfos }) => {
+            .then(({ results, continuationInfos }: { results: Track[], continuationInfos: ContinuationInfos }) => {
                 dispatch({
                     type: 'ADD_RELATED',
                     value: { results, continuationInfos }
@@ -47,7 +56,7 @@ class Related extends React.Component {
                     onEndReached={() => { this._loadNextPage() }}
                     loadingNextPage={this.state.loadingNextPage}
                     ListFooterComponentStyle={{ height: 40 }}
-                    onPress={(track) => this._onPress(track)}
+                    onPress={(track: Track) => this._onPress(track)}
                 />
 
             )
@@ -63,7 +72,7 @@ class Related extends React.Component {
     }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: any) => {
     return {
         track: state.playerState.currentTrack,
         cache: state.playerState.cache

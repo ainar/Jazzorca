@@ -1,23 +1,40 @@
 import React from 'react'
-
-import { View, StyleSheet } from 'react-native'
+import { View, StyleSheet, ViewStyle, ImageURISource } from 'react-native'
+import { connect } from 'react-redux';
 import Slider from '@react-native-community/slider';
 import TrackPlayer from 'react-native-track-player'
-import JOText from './JOText';
 import { formatSeconds } from '../../helpers/utils'
-import { connect } from 'react-redux';
+import JOText from './JOText';
 
-class JOProgressBar extends TrackPlayer.ProgressComponent {
+interface JOProgressBarProps {
+    showTiming?: boolean,
+    style?: ViewStyle,
+    thumbImage?: ImageURISource
+}
 
-    constructor(props) {
+class JOProgressBar extends TrackPlayer.ProgressComponent<JOProgressBarProps> {
+    _isSliding: boolean
+    _slider: Slider | null
+    _positionUpdating: boolean
+    _isPlaying: boolean
+    _progressUpdates: boolean | undefined
+    _updateProgress: Function | any
+    _timer: number | undefined
+
+    constructor(props: JOProgressBarProps) {
         super(props)
         this._isSliding = false
-        this._slider = undefined
+        this._slider = null
         this._positionUpdating = false
         this._isPlaying = true
     }
 
-    _seekTo(position) {
+    static defaultProps = {
+        showTiming: true,
+        thumbImage: undefined
+    }
+
+    _seekTo(position: number) {
         this._positionUpdating = true;
         TrackPlayer.seekTo(position)
             .then(() => {
@@ -32,7 +49,7 @@ class JOProgressBar extends TrackPlayer.ProgressComponent {
     }
 
     _showTiming() {
-        if (this.props.showTiming === undefined || this.props.showTiming) {
+        if (this.props.showTiming) {
             return (
                 <View style={styles.time_information}>
                     <JOText style={styles.position}>{formatSeconds(this.state.position)}</JOText>
@@ -43,7 +60,7 @@ class JOProgressBar extends TrackPlayer.ProgressComponent {
     }
 
     render() {
-        if (this._slider !== undefined &&
+        if (this._slider !== null &&
             !this._isSliding &&
             !this._positionUpdating) {
 
@@ -89,7 +106,7 @@ const styles = StyleSheet.create({
 })
 
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state: any) => ({
     playerState: state.playerState.playerState
 })
 

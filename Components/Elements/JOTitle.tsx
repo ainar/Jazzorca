@@ -1,15 +1,15 @@
 import React from 'react'
 import { StyleSheet } from 'react-native'
-import JOText from './JOText'
+import JOText, { JOTextProps } from './JOText'
 
-class JOTitle extends React.Component {
-    render() {
-        return (
-            <JOText style={[this.props.style, styles.jo_title]}>
-                {this.props.children}
-            </JOText>
-        )
-    }
+interface JOTitleProps extends JOTextProps { }
+
+const JOTitle = (props: JOTitleProps) => {
+    return (
+        <JOText style={[props.style, styles.jo_title]}>
+            {props.children}
+        </JOText>
+    )
 }
 
 const styles = StyleSheet.create({

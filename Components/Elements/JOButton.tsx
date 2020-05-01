@@ -1,17 +1,25 @@
 import React from 'react'
-import { StyleSheet, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, TouchableOpacity, View, TouchableOpacityProperties } from 'react-native'
 import JOText from './JOText'
 
-const JOButton = (props) => {
-    const icon = props.icon ? props.icon : undefined
+interface JOButtonProps extends TouchableOpacityProperties {
+    title: string,
+    icon?: React.ReactNode
+}
+
+const JOButton = (props: JOButtonProps) => {
     return (
         <TouchableOpacity {...props}>
             <View style={styles.main_content}>
-                {icon}
+                {props.icon}
                 <JOText style={styles.label}>{props.title}</JOText>
             </View>
         </TouchableOpacity>
     )
+}
+
+JOButton.defaultProps = {
+    icon: undefined
 }
 
 export default JOButton

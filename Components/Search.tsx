@@ -1,30 +1,48 @@
 import React from 'react'
-import { View, StyleSheet, ActivityIndicator } from 'react-native'
+import { View, StyleSheet, ActivityIndicator, StyleProp, TextInputSubmitEditingEventData } from 'react-native'
 import JOScreen from './JOScreen'
 import JOTrackList from './JOTrackList'
 import JOSearchInput from './Elements/JOSearchInput'
-import { ytSearch, ytSearchNextPage } from '../API/YouTubeAPI'
+import { ytSearch, ytSearchNextPage, ContinuationInfos } from '../API/YouTubeAPI'
 import { appendTracksWithoutDuplicate } from '../helpers/utils'
 import { connect } from 'react-redux'
 import { playNow } from '../helpers/playerControls'
+import { Track } from 'react-native-track-player'
 
-class Search extends React.Component {
-    constructor(props) {
+interface SearchProps {
+    style: StyleProp<typeof JOScreen>,
+    dispatch: Function
+}
+
+class Search extends React.Component<SearchProps> {
+    query: string
+    continuationInfos: ContinuationInfos | undefined
+    results: Track[]
+
+    state: {
+        results: Track[],
+        loading: boolean,
+        loadingNextPage: boolean,
+    }
+
+    constructor(props: SearchProps) {
         super(props)
         this.state = {
             results: [],
             loading: false,
             loadingNextPage: false,
         }
+        this.results = []
         this.query = ''
+        this.continuationInfos = undefined
     }
 
-    async _search(nativeEvent) {
+    async _search(nativeEvent: TextInputSubmitEditingEventData) {
         this.query = nativeEvent.text
         this.setState({ loading: true, results: [] })
 
         await ytSearch(nativeEvent.text)
-            .then(results => {
+            .then((results: { results: Track[], continuationInfos: ContinuationInfos }) => {
                 this.continuationInfos = results.continuationInfos
                 this.setState({
                     results: results.results,
@@ -45,18 +63,19 @@ class Search extends React.Component {
 
     _loadNextPage() {
         this.setState({ loadingNextPage: true })
-        ytSearchNextPage(this.query, this.continuationInfos)
-            .then(({ results, continuationInfos }) => {
-                this.results = results
-                this.continuationInfos = continuationInfos
-                this.setState({
-                    results: appendTracksWithoutDuplicate(this.state.results, results),
-                    loadingNextPage: false
+        if (this.continuationInfos)
+            ytSearchNextPage(this.query, this.continuationInfos)
+                .then(({ results, continuationInfos }: { results: Track[], continuationInfos: ContinuationInfos }) => {
+                    this.results = results
+                    this.continuationInfos = continuationInfos
+                    this.setState({
+                        results: appendTracksWithoutDuplicate(this.state.results, results),
+                        loadingNextPage: false
+                    })
                 })
-            })
     }
 
-    _onPress(track) {
+    _onPress(track: Track) {
         const { dispatch } = this.props
         return dispatch(playNow(track))
     }
@@ -70,7 +89,7 @@ class Search extends React.Component {
                     loadingNextPage={this.state.loadingNextPage}
                     ListHeaderComponentStyle={{ height: 85 }}
                     ListFooterComponentStyle={{ height: 40 }}
-                    onPress={track => this._onPress(track)}
+                    onPress={(track: Track) => this._onPress(track)}
                 />
                 <View style={styles.search_box}>
                     <JOSearchInput

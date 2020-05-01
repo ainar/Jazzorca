@@ -1,22 +1,41 @@
 import React from 'react'
 import { View, StyleSheet, TouchableOpacity, Image, ActivityIndicator, Modal, Button, TouchableWithoutFeedback } from 'react-native'
-import JOText from './JOText'
-import Icon from 'react-native-vector-icons/AntDesign'
-import JOButton from './JOButton'
-import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { connect } from 'react-redux'
-import { manualAddToQueue, getTrack } from '../../helpers/playerControls'
+import { Track } from 'react-native-track-player'
+import Icon from 'react-native-vector-icons/AntDesign'
+import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
+import { manualAddToQueue } from '../../helpers/playerControls'
+import JOText from './JOText'
+import JOButton from './JOButton'
 
-class JOTrackListItem extends React.Component {
+interface JOTrackListItemProps {
+    nowPlaying: Track,
+    track: Track,
+    onPress: Function,
+    onPlay: Function,
+    dispatch: Function,
+    loading: boolean
+}
 
-    constructor(props) {
-        super(props)
+class JOTrackListItem extends React.Component<JOTrackListItemProps> {
+    state: {
+        loading: boolean,
+        modalVisible: boolean
+    }
+
+    playerLoading: boolean
+
+    constructor(props: JOTrackListItemProps) {
+        super(props);
+
         this.state = {
             loading: false,
             modalVisible: false
-        }
-        this.playerLoading = false
+        };
+
+        this.playerLoading = false;
     }
+
     _nowPlaying() {
         const { nowPlaying, track } = this.props
         return nowPlaying !== undefined && nowPlaying.videoId === track.videoId
@@ -56,8 +75,6 @@ class JOTrackListItem extends React.Component {
                     animationType='fade'
                     onRequestClose={() => this._hideModal()}
                     transparent={true}
-                    statusBarTranslucent={true}
-                    style={styles.modal}
                 >
                     <TouchableWithoutFeedback
                         onPress={() => this._hideModal()}
@@ -105,7 +122,7 @@ class JOTrackListItem extends React.Component {
     }
 }
 
-const styles = StyleSheet.create({
+const styles: any = StyleSheet.create({
     main_component: {
         paddingHorizontal: 10,
         alignItems: 'center',
@@ -161,7 +178,7 @@ const styles = StyleSheet.create({
     },
 })
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state: any) => ({
     cache: state.playerState.cache,
     queue: state.playerState.queue
 })

@@ -1,6 +1,6 @@
 import './helpers/playerControls'
-import { play, pause, stop, skipToNext, skipToPrevious, seekTo } from './helpers/playerControls';
-import { addEventListener } from 'react-native-track-player'
+import { skipToPrevious } from './helpers/playerControls';
+import { addEventListener, play, pause, stop, skipToNext, seekTo } from 'react-native-track-player'
 
 export default async function () {
     addEventListener('remote-play', () => play());

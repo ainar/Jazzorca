@@ -3,10 +3,22 @@ import { StyleSheet, View, TouchableOpacity } from 'react-native'
 import Icon from 'react-native-vector-icons/AntDesign'
 import { Animated, Easing } from 'react-native'
 import { connect } from 'react-redux';
-import { play, pause, STATE_PLAYING, skipToPrevious, skipToNext } from '../../helpers/playerControls';
+import { skipToPrevious } from '../../helpers/playerControls';
+import { play, pause, STATE_PLAYING, State, skipToNext } from 'react-native-track-player';
 
-class JOPlayerControls extends React.Component {
-    constructor(props) {
+interface JOPlayerControlsProps {
+    playerState: State,
+    loading: boolean,
+    middleButtonSize?: number,
+    buttonSize?: number
+}
+
+class JOPlayerControls extends React.Component<JOPlayerControlsProps> {
+    state: {
+        opacity: Animated.Value
+    }
+
+    constructor(props: JOPlayerControlsProps) {
         super(props)
 
         this.state = {
@@ -110,7 +122,7 @@ const styles = StyleSheet.create({
     }
 })
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state: any) => ({
     playerState: state.playerState.playerState,
     loading: state.playerState.loading
 })

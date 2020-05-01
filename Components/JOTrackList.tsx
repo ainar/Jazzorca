@@ -1,10 +1,20 @@
-import React from 'react'
+import React, { RefObject, ComponentProps } from 'react'
 import { View, FlatList, ActivityIndicator } from 'react-native'
 import JOTrackListItem from './Elements/JOTrackListItem'
-import TrackPlayer from 'react-native-track-player'
 import { connect } from 'react-redux'
+import { Track } from 'react-native-track-player'
 
-class JOTrackList extends React.Component {
+interface JOTrackListProps extends ComponentProps<any> {
+    onPress: Function,
+    loadingNextPage?: Function,
+    onPlay: Function,
+    loading: boolean,
+    currentTrack: Track,
+    forwardRef?: React.LegacyRef<FlatList<any>>,
+    data: Track[]
+}
+
+class JOTrackList extends React.Component<JOTrackListProps> {
 
     _displayLoadingNextPage() {
         if (this.props.loadingNextPage) {
@@ -41,7 +51,7 @@ class JOTrackList extends React.Component {
     }
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state: any) => ({
     currentTrack: state.playerState.currentTrack,
     loading: state.playerState.loading
 })

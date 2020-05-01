@@ -1,13 +1,13 @@
-import React, { Component } from 'react'
-import { StyleSheet } from 'react-native'
+import React, { Component, ComponentProps } from 'react'
 import { connect } from 'react-redux'
 import JOTrackList from './JOTrackList'
 import JOScreen from './JOScreen'
 import JOTitle from './Elements/JOTitle'
 import { playNow } from '../helpers/playerControls'
+import { Track } from 'react-native-track-player'
 
-export class Home extends Component {
-    _onPress(track) {
+export class Home extends Component<ComponentProps<any>> {
+    _onPress(track: Track) {
         return this.props.dispatch(playNow(track))
     }
 
@@ -17,28 +17,21 @@ export class Home extends Component {
                 <JOTitle>Dernières écoutes</JOTitle>
                 <JOTrackList
                     data={this.props.lastListened}
-                    onPress={track => this._onPress(track)}
+                    onPress={(track: Track) => this._onPress(track)}
                 />
             </JOScreen>
         )
     }
 }
 
-const styles = StyleSheet.create({
-
-})
-
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: any) => {
     let lastListened = [], i = 0
     const history = state.history.history
     while (lastListened.length < 20 && i < history.length) {
-        const ht = history[i]
-
+        const ht = history[i++]
         if (lastListened.findIndex(t => t.videoId === ht.videoId) === -1) {
             lastListened.push(ht)
         }
-
-        ++i
     }
 
     return {

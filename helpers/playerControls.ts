@@ -1,11 +1,13 @@
-import TrackPlayer, { STATE_BUFFERING, STATE_NONE, STATE_PAUSED, STATE_PLAYING, STATE_READY, STATE_STOPPED } from 'react-native-track-player';
+import TrackPlayer, { STATE_PLAYING, Track } from 'react-native-track-player';
 import 'react-native-get-random-values';
 import { v4 as uuid } from 'uuid'
 
 import { getTrackFromYT } from '../API/YouTubeAPI';
+import { ActionCreator, Action } from 'redux';
+import { ThunkAction } from 'redux-thunk';
 
 
-export { STATE_BUFFERING, STATE_NONE, STATE_PAUSED, STATE_PLAYING, STATE_READY, STATE_STOPPED }
+type ThunkResult<R> = ThunkAction<R, any, undefined, any>;
 
 const fetchStart = () => ({
     type: 'FETCHING',
@@ -21,8 +23,8 @@ export const resetQueue = () => ({
     type: 'RESET_QUEUE'
 })
 
-export function playNow(track) {
-    return async (dispatch, getState) => {
+export function playNow(track: Track) {
+    return async (dispatch: Function, getState: Function) => {
         const currentTrack = getState().playerState.currentTrack
         if (currentTrack !== undefined && currentTrack.videoId === track.videoId) {
             return TrackPlayer.seekTo(0)
@@ -41,7 +43,7 @@ export function playNow(track) {
     }
 }
 
-export async function getTrack(track, cache) {
+export async function getTrack(track: Track, cache: { [k: string]: Track }) {
     let ytTrack
     if (cache[track.videoId] === undefined || cache[track.videoId].url === undefined) {
         ytTrack = await getTrackFromYT(track.videoId)
@@ -56,8 +58,8 @@ export async function getTrack(track, cache) {
     }
 }
 
-function addToQueue(track) {
-    return async dispatch => {
+function addToQueue(track: Track) {
+    return async (dispatch: Function) => {
         await TrackPlayer.add(track)
         return dispatch({
             type: 'ADD_TRACK',
@@ -66,8 +68,8 @@ function addToQueue(track) {
     }
 }
 
-export function autoAddToQueue(track) {
-    return async (dispatch, getState) => {
+export function autoAddToQueue(track: Track) {
+    return async (dispatch: Function, getState: Function) => {
         const { cache } = getState().playerState
         const newTrack = {
             ...await getTrack(track, cache),
@@ -77,8 +79,8 @@ export function autoAddToQueue(track) {
     }
 }
 
-export function manualAddToQueue(track) {
-    return async (dispatch, getState) => {
+export function manualAddToQueue(track: Track) {
+    return async (dispatch: Function, getState: Function) => {
         const { queue, cache } = getState().playerState
         const lastInQueue = queue[queue.length - 1]
         if (lastInQueue !== undefined && lastInQueue.autoPlay !== undefined && lastInQueue.autoPlay === true) {
@@ -92,8 +94,8 @@ export function manualAddToQueue(track) {
     }
 }
 
-export function removeFromQueue(track) {
-    return async (dispatch) => {
+export function removeFromQueue(track: Track) {
+    return async (dispatch: Function) => {
         await TrackPlayer.remove(track.id)
         dispatch({
             type: 'REMOVE_FROM_QUEUE',
@@ -102,8 +104,8 @@ export function removeFromQueue(track) {
     }
 }
 
-export function setCurrentTrack(track) {
-    return dispatch => {
+export function setCurrentTrack(track: Track) {
+    return (dispatch: Function) => {
         dispatch({
             type: 'SKIP_TO_TRACK',
             value: track
@@ -111,11 +113,11 @@ export function setCurrentTrack(track) {
     }
 }
 
-export function autoSetCurrentTrack(track) {
+export function autoSetCurrentTrack(track: Track): ThunkResult<void> {
     if (track === undefined) {
         console.error('track is undefined')
     }
-    return dispatch => {
+    return (dispatch: Function) => {
         TrackPlayer.seekTo(0)
         dispatch(setCurrentTrack(track))
         dispatch({
@@ -125,7 +127,7 @@ export function autoSetCurrentTrack(track) {
     }
 }
 
-export function skip(trackId) {
+export function skip(trackId: string) {
     TrackPlayer.skip(trackId)
     return TrackPlayer.play()
 }
@@ -133,18 +135,6 @@ export function skip(trackId) {
 export function reset() {
     TrackPlayer.reset()
     return resetQueue()
-}
-
-export async function play() {
-    return TrackPlayer.play()
-}
-
-export async function pause() {
-    return TrackPlayer.pause()
-}
-
-export async function stop() {
-    return TrackPlayer.stop()
 }
 
 export async function skipToNext() {
@@ -161,6 +151,6 @@ export async function skipToPrevious() {
         })
 }
 
-export async function seekTo(seconds) {
+export async function seekTo(seconds: number) {
     return TrackPlayer.seekTo(seconds)
 }

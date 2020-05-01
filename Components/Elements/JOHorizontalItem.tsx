@@ -1,17 +1,27 @@
 import React from 'react'
-import { View, StyleSheet, Image } from 'react-native'
+import { View, StyleSheet, Image, ImageSourcePropType } from 'react-native'
 import JOText from './JOText'
 
-class JOHorizontalItem extends React.Component {
+interface JOHorizontalItemProps {
+    image: string,
+    title: string,
+    imagePromise: Function
+}
 
-    constructor(props) {
+class JOHorizontalItem extends React.Component {
+    props: JOHorizontalItemProps
+    state: {
+        image: ImageSourcePropType
+    }
+
+    constructor(props: JOHorizontalItemProps) {
         super(props)
         this.state = {
             image: undefined
         }
     }
 
-    _updateImage(imageURL) {
+    _updateImage(imageURL: string) {
         if (imageURL !== undefined) {
             this.setState({ image: { uri: imageURL } })
         }
@@ -22,7 +32,7 @@ class JOHorizontalItem extends React.Component {
             this._updateImage(this.props.image)
         else if (this.props.imagePromise !== undefined)
             this.props.imagePromise()
-                .then(imageURL => this._updateImage(imageURL))
+                .then((imageURL: string) => this._updateImage(imageURL))
     }
 
     render() {

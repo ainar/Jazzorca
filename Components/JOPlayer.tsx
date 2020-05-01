@@ -1,16 +1,16 @@
-import React from 'react'
+import React, { Component, ComponentProps } from 'react'
 import { StyleSheet, View, TouchableHighlight } from 'react-native'
+import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import JOProgressBar from './Elements/JOProgressBar'
 import JOPlayerControls from './Elements/JOPlayerControls';
-import JOScreen from './JOScreen';
 import CurrentArtist from './Elements/CurrentArtist';
 import CurrentArtwork from './Elements/CurrentArtwork';
 import CurrentTitle from './Elements/CurrentTitle';
-import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
-import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import JOText from './Elements/JOText';
+import JOScreen from './JOScreen';
 
-class JOPlayer extends React.Component {
+class JOPlayer extends Component<ComponentProps<any>> {
     render() {
         return (
             <JOScreen style={styles.main_component}>

@@ -1,38 +1,41 @@
 import React from 'react'
 import { StyleSheet, View, TouchableHighlight } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
+import { NavigationProp } from '@react-navigation/native'
 import JOPlayerControls from './Elements/JOPlayerControls'
 import JOProgressBar from './Elements/JOProgressBar'
 import CurrentTitle from './Elements/CurrentTitle'
 import CurrentArtist from './Elements/CurrentArtist'
 
-class CompactPlayer extends React.Component {
-    render() {
-        return (
-            <View style={styles.main_component}>
-                <JOProgressBar
-                    style={styles.progress_bar}
-                    thumbImage={require('../assets/transparentThumbImage.png')}
-                    showTiming={false}
-                />
-                <TouchableHighlight onPress={() => this.props.navigation.navigate('Player')}>
-                    <View style={styles.inner_component}>
-                        <View style={styles.meta}>
-                            <CurrentTitle numberOfLines={2} style={styles.title} />
-                            <CurrentArtist numberOfLines={1} style={styles.artist} />
-                        </View>
-                        <JOPlayerControls middleButtonSize={30} buttonSize={20} />
-                    </View>
-                </TouchableHighlight>
-            </View>
-        )
-    }
+interface CompactPlayerProps {
+    navigation: NavigationProp<any>
 }
 
-export default function (props) {
+const CompactPlayer = (props: CompactPlayerProps) => {
+    return (
+        <View style={styles.main_component} >
+            <JOProgressBar
+                style={styles.progress_bar}
+                thumbImage={require('../assets/transparentThumbImage.png')}
+                showTiming={false}
+            />
+            <TouchableHighlight onPress={() => props.navigation.navigate('Player')}>
+                <View style={styles.inner_component}>
+                    <View style={styles.meta}>
+                        <CurrentTitle numberOfLines={2} style={styles.title} />
+                        <CurrentArtist numberOfLines={1} style={styles.artist} />
+                    </View>
+                    <JOPlayerControls middleButtonSize={30} buttonSize={20} />
+                </View>
+            </TouchableHighlight>
+        </View>
+    )
+}
+
+export default function () {
     const navigation = useNavigation();
 
-    return <CompactPlayer {...props} navigation={navigation} />;
+    return <CompactPlayer navigation={navigation} />;
 }
 
 const styles = StyleSheet.create({
