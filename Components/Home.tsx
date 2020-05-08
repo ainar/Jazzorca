@@ -7,7 +7,7 @@ import { playNow } from '../store/actions'
 import { Track } from 'react-native-track-player'
 
 export class Home extends Component<ComponentProps<any>> {
-    _onPress(track: Track) {
+    async _onPress(track: Track) {
         return this.props.dispatch(playNow(track))
     }
 

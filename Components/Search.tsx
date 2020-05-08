@@ -75,7 +75,7 @@ class Search extends React.Component<SearchProps> {
                 })
     }
 
-    _onPress(track: Track) {
+    async _onPress(track: Track) {
         const { dispatch } = this.props
         return dispatch(playNow(track))
     }

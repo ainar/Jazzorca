@@ -97,9 +97,10 @@ function parsePlayerConfig(data: string) {
     try {
         return JSON.parse(config);
     } catch (e) {
-        console.error('error while parsing player config: ' + e);
         console.log(data);
     }
+
+    throw "error while parsing player config";
 }
 
 async function getVideoPage(videoId: string) {
@@ -177,19 +178,19 @@ interface Cipher {
 }
 
 export async function getTrackFromYT(videoId: string) {
-    const videoPage = await getVideoPage(videoId)
-    const playerConfig = parsePlayerConfig(videoPage)
-    const playerResponse = JSON.parse(playerConfig.args.player_response)
-    const artwork = { uri: _getThumbnailUrl(playerResponse) }
-    const bestAudioTrack = _getBestAudioTrack(playerResponse)
+    const videoPage = await getVideoPage(videoId);
+    const playerConfig = parsePlayerConfig(videoPage);
+    const playerResponse = JSON.parse(playerConfig.args.player_response);
+    const artwork = { uri: _getThumbnailUrl(playerResponse) };
+    const bestAudioTrack = _getBestAudioTrack(playerResponse);
 
-    const { initialData, xsrfToken } = parseInitialData(videoPage)
-    const { items, continuation, clickTrackingParams } = parseRelated(initialData)
+    const { initialData, xsrfToken } = parseInitialData(videoPage);
+    const { items, continuation, clickTrackingParams } = parseRelated(initialData);
 
     let url;
-    if (bestAudioTrack['url'] !== undefined)
+    if (bestAudioTrack['url'] !== undefined) {
         url = bestAudioTrack['url'];
-    else if (bestAudioTrack['cipher'] !== undefined) {
+    } else if (bestAudioTrack['cipher'] !== undefined) {
         const playerCode = await getPlayerCode(playerConfig);
         const decrypt = loadDecryptionCode(playerCode);
         const streamCipher = bestAudioTrack['cipher'];
@@ -212,7 +213,7 @@ export async function getTrackFromYT(videoId: string) {
                 session_token: xsrfToken,
             }
         }
-    }
+    };
 }
 
 /* YOUTUBE SEARCH */

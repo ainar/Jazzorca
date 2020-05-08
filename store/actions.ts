@@ -28,8 +28,8 @@ export function playNow(track: Track) {
         if (currentTrack !== undefined && currentTrack.videoId === track.videoId) {
             return TrackPlayer.seekTo(0)
         }
-        await dispatch(fetchStart())
-        await dispatch(setCurrentTrack(track))
+        dispatch(fetchStart())
+        dispatch(setCurrentTrack(track))
         await TrackPlayer.pause()
         await dispatch(manualAddToQueue(track))
         await TrackPlayer.getQueue().then(queue => {
@@ -45,9 +45,9 @@ export function playNow(track: Track) {
 export async function getTrack(track: Track, cache: { [k: string]: Track }) {
     let ytTrack
     if (cache[track.videoId] === undefined || cache[track.videoId].url === undefined) {
-        ytTrack = await getTrackFromYT(track.videoId)
+        ytTrack = await getTrackFromYT(track.videoId);
     } else {
-        ytTrack = cache[track.videoId]
+        ytTrack = cache[track.videoId];
     }
 
     return {
@@ -103,12 +103,10 @@ export function removeFromQueue(track: Track) {
     }
 }
 
-export function setCurrentTrack(track: Track) {
-    return (dispatch: Function) => {
-        dispatch({
+export function setCurrentTrack(track: Track | undefined) {
+    return {
             type: 'SKIP_TO_TRACK',
             value: track
-        })
     }
 }
 

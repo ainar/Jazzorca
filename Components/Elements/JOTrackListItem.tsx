@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { Track } from 'react-native-track-player'
 import Icon from 'react-native-vector-icons/AntDesign'
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
-import { manualAddToQueue } from '../../store/actions'
+import { manualAddToQueue, setCurrentTrack } from '../../store/actions'
 import JOText from './JOText'
 import JOButton from './JOButton'
 
@@ -20,7 +20,8 @@ interface JOTrackListItemProps {
 class JOTrackListItem extends React.Component<JOTrackListItemProps> {
     state: {
         loading: boolean,
-        modalVisible: boolean
+        modalVisible: boolean,
+        errorModalVisible: boolean
     }
 
     playerLoading: boolean
@@ -30,15 +31,16 @@ class JOTrackListItem extends React.Component<JOTrackListItemProps> {
 
         this.state = {
             loading: false,
-            modalVisible: false
+            modalVisible: false,
+            errorModalVisible: false
         };
 
         this.playerLoading = false;
     }
 
     _nowPlaying() {
-        const { nowPlaying, track } = this.props
-        return nowPlaying !== undefined && nowPlaying.videoId === track.videoId
+        const { nowPlaying, track } = this.props;
+        return nowPlaying !== undefined && nowPlaying.videoId === track.videoId;
     }
 
     _displayNowPlaying() {
@@ -54,22 +56,54 @@ class JOTrackListItem extends React.Component<JOTrackListItemProps> {
     }
 
     _onPress() {
-        this.setState({ loading: true })
+        this.setState({ loading: true });
         this.props.onPress(this.props.track)
-            .then(() => this.setState({ loading: false }))
+            .catch(() => {
+                this._showErrorModal();
+                this.props.dispatch(setCurrentTrack(undefined));
+            })
+            .finally(() => this.setState({ loading: false }));
     }
 
     _hideModal() {
-        this.setState({ modalVisible: false })
+        this.setState({ modalVisible: false });
+    }
+
+    _hideErrorModal() {
+        this.setState({ errorModalVisible: false });
     }
 
     _showModal() {
-        this.setState({ modalVisible: true })
+        this.setState({ modalVisible: true });
+    }
+
+    _showErrorModal() {
+        this.setState({ errorModalVisible: true }, () => {
+            setTimeout(() => {
+                this.setState({ errorModalVisible: false });
+            }, 2000);
+        });
     }
 
     render() {
         return (
             <>
+                <Modal
+                    visible={this.state.errorModalVisible}
+                    animationType='fade'
+                    onRequestClose={() => this._hideErrorModal()}
+                    transparent={true}
+                >
+                    <TouchableWithoutFeedback
+                        onPress={() => this._hideErrorModal()}
+                    >
+                        <View style={styles.modal_screen}>
+                            <View style={[styles.modal_content, { backgroundColor: 'red' }]}>
+                                <JOText style={{ textAlign: 'center', fontSize: 20 }}>Une erreur est survenue lors de la lecture de la vidéo.</JOText>
+                            </View>
+                        </View>
+                    </TouchableWithoutFeedback>
+                </Modal>
                 <Modal
                     visible={this.state.modalVisible}
                     animationType='fade'
