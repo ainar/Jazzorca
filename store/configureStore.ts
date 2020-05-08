@@ -10,7 +10,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 const rootPersistConfig = {
     key: 'root',
     storage: AsyncStorage,
-    whitelist: ['history'] // only navigation will be persisted
+    whitelist: ['history', 'playlists'] // only navigation will be persisted
 }
 const loggerMiddleware = createLogger()
 
