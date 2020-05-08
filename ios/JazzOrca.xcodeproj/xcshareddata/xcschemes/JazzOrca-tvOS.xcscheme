@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-               BuildableName = "JazzOrca-tvOS.app"
-               BlueprintName = "JazzOrca-tvOS"
-               ReferencedContainer = "container:JazzOrca.xcodeproj">
+               BuildableName = "Jazzorca-tvOS.app"
+               BlueprintName = "Jazzorca-tvOS"
+               ReferencedContainer = "container:Jazzorca.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2D02E48F1E0B4A5D006451C7"
-               BuildableName = "JazzOrca-tvOSTests.xctest"
-               BlueprintName = "JazzOrca-tvOSTests"
-               ReferencedContainer = "container:JazzOrca.xcodeproj">
+               BuildableName = "Jazzorca-tvOSTests.xctest"
+               BlueprintName = "Jazzorca-tvOSTests"
+               ReferencedContainer = "container:Jazzorca.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-            BuildableName = "JazzOrca-tvOS.app"
-            BlueprintName = "JazzOrca-tvOS"
-            ReferencedContainer = "container:JazzOrca.xcodeproj">
+            BuildableName = "Jazzorca-tvOS.app"
+            BlueprintName = "Jazzorca-tvOS"
+            ReferencedContainer = "container:Jazzorca.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-            BuildableName = "JazzOrca-tvOS.app"
-            BlueprintName = "JazzOrca-tvOS"
-            ReferencedContainer = "container:JazzOrca.xcodeproj">
+            BuildableName = "Jazzorca-tvOS.app"
+            BlueprintName = "Jazzorca-tvOS"
+            ReferencedContainer = "container:Jazzorca.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

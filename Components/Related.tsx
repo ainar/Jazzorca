@@ -1,6 +1,6 @@
 import React, { ComponentProps } from 'react'
 import { connect } from 'react-redux'
-import { playNow } from '../helpers/playerControls'
+import { playNow } from '../store/actions'
 import { ytRelatedNextPage } from '../API/YouTubeAPI'
 import JOTitle from './Elements/JOTitle'
 import JOScreen from './JOScreen'

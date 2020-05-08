@@ -44,8 +44,8 @@ def flipper_post_install(installer)
   end
 end
 
-target 'JazzOrca' do
-  # Pods for JazzOrca
+target 'Jazzorca' do
+  # Pods for Jazzorca
   pod 'FBLazyVector', :path => "../node_modules/react-native/Libraries/FBLazyVector"
   pod 'FBReactNativeSpec', :path => "../node_modules/react-native/Libraries/FBReactNativeSpec"
   pod 'RCTRequired', :path => "../node_modules/react-native/Libraries/RCTRequired"
@@ -94,10 +94,10 @@ target 'JazzOrca' do
   end
 end
 
-target 'JazzOrca-tvOS' do
-  # Pods for JazzOrca-tvOS
+target 'Jazzorca-tvOS' do
+  # Pods for Jazzorca-tvOS
 
-  target 'JazzOrca-tvOSTests' do
+  target 'Jazzorca-tvOSTests' do
     inherit! :search_paths
     # Pods for testing
   end

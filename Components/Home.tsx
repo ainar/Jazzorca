@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import JOTrackList from './JOTrackList'
 import JOScreen from './JOScreen'
 import JOTitle from './Elements/JOTitle'
-import { playNow } from '../helpers/playerControls'
+import { playNow } from '../store/actions'
 import { Track } from 'react-native-track-player'
 
 export class Home extends Component<ComponentProps<any>> {

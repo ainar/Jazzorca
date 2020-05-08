@@ -3,7 +3,6 @@ import 'react-native-get-random-values';
 import { v4 as uuid } from 'uuid'
 
 import { getTrackFromYT } from '../API/YouTubeAPI';
-import { ActionCreator, Action } from 'redux';
 import { ThunkAction } from 'redux-thunk';
 
 
@@ -135,22 +134,4 @@ export function skip(trackId: string) {
 export function reset() {
     TrackPlayer.reset()
     return resetQueue()
-}
-
-export async function skipToNext() {
-    return TrackPlayer.skipToNext()
-}
-
-export async function skipToPrevious() {
-    return TrackPlayer.getPosition()
-        .then(position => {
-            if (position > 1)
-                return TrackPlayer.seekTo(0)
-            else
-                return TrackPlayer.skipToPrevious()
-        })
-}
-
-export async function seekTo(seconds: number) {
-    return TrackPlayer.seekTo(seconds)
 }

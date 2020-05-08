@@ -1,6 +1,6 @@
 const API_ROOT_URL = "https://musicbrainz.org/ws/2/"
 
-const IDENTIFIATION_HEADER = { "User-Agent": "JazzOrca/0.1 ( aina.rasoldier@hotmail.fr )" }
+const IDENTIFIATION_HEADER = { "User-Agent": "Jazzorca/0.1 ( aina.rasoldier@hotmail.fr )" }
 
 export class MusicBrainzAPI {
 

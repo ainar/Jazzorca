@@ -1,7 +1,7 @@
 import React, { Component, ComponentProps, LegacyRef, Ref } from 'react'
 import { FlatList, LayoutChangeEvent } from 'react-native'
 import { connect } from 'react-redux'
-import { skip } from '../helpers/playerControls'
+import { skip } from '../store/actions'
 import JOTitle from './Elements/JOTitle'
 import JOTrackList from './JOTrackList'
 import JOScreen from './JOScreen'

@@ -1,4 +1,4 @@
-// Application name 	JazzOrca
+// Application name 	Jazzorca
 // API key 	68acaaae76fc204770281c3f2de97377
 // Shared secret 	0c77dea40b6b80233ef75098d237ca15
 // Registered to 	ainarasoldier

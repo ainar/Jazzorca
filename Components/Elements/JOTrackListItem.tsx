@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { Track } from 'react-native-track-player'
 import Icon from 'react-native-vector-icons/AntDesign'
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
-import { manualAddToQueue } from '../../helpers/playerControls'
+import { manualAddToQueue } from '../../store/actions'
 import JOText from './JOText'
 import JOButton from './JOButton'
 

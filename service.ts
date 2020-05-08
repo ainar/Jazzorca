@@ -1,5 +1,4 @@
-import './helpers/playerControls'
-import { skipToPrevious } from './helpers/playerControls';
+import { skipToPrevious } from './helpers/trackPlayerWrapper';
 import { addEventListener, play, pause, stop, skipToNext, seekTo } from 'react-native-track-player'
 
 export default async function () {

@@ -3,7 +3,7 @@ import { StyleSheet, View, TouchableOpacity } from 'react-native'
 import Icon from 'react-native-vector-icons/AntDesign'
 import { Animated, Easing } from 'react-native'
 import { connect } from 'react-redux';
-import { skipToPrevious } from '../../helpers/playerControls';
+import { skipToPrevious } from '../../helpers/trackPlayerWrapper';
 import { play, pause, STATE_PLAYING, State, skipToNext } from 'react-native-track-player';
 
 interface JOPlayerControlsProps {

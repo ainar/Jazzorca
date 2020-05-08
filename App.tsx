@@ -7,7 +7,7 @@ import { persistStore } from 'redux-persist';
 import RNBootSplash from 'react-native-bootsplash';
 import Navigation from './Navigation/Navigation';
 import TrackPlayer, { Track, State, addEventListener } from 'react-native-track-player';
-import { autoSetCurrentTrack, autoAddToQueue, resetQueue } from './helpers/playerControls';
+import { autoSetCurrentTrack, autoAddToQueue, resetQueue } from './store/actions';
 import { Action } from 'redux';
 import setupPlayer from './helpers/setupPlayer';
 

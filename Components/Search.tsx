@@ -6,7 +6,7 @@ import JOSearchInput from './Elements/JOSearchInput'
 import { ytSearch, ytSearchNextPage, ContinuationInfos } from '../API/YouTubeAPI'
 import { appendTracksWithoutDuplicate } from '../helpers/utils'
 import { connect } from 'react-redux'
-import { playNow } from '../helpers/playerControls'
+import { playNow } from '../store/actions'
 import { Track } from 'react-native-track-player'
 
 interface SearchProps {

@@ -8,8 +8,7 @@ interface JOHorizontalItemProps {
     imagePromise: Function
 }
 
-class JOHorizontalItem extends React.Component {
-    props: JOHorizontalItemProps
+class JOHorizontalItem extends React.Component<JOHorizontalItemProps> {
     state: {
         image: ImageSourcePropType
     }
@@ -17,7 +16,7 @@ class JOHorizontalItem extends React.Component {
     constructor(props: JOHorizontalItemProps) {
         super(props)
         this.state = {
-            image: undefined
+            image: {uri: undefined}
         }
     }
 
