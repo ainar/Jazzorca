@@ -1,17 +1,17 @@
 import * as React from 'react';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
-import Player from '../Components/Screens/Player';
-import Search from '../Components/Screens/Search';
+import Player from '../Components/Player';
+import Search from '../Components/Search';
 import Icon from 'react-native-vector-icons/AntDesign'
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { createStackNavigator } from '@react-navigation/stack';
 import CompactPlayer from '../Components/Elements/CompactPlayer';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import Related from '../Components/Screens/Related';
-import Queue from '../Components/Screens/Queue';
+import Related from '../Components/Related';
+import Queue from '../Components/Queue';
 import { Dimensions } from 'react-native';
-import Home from '../Components/Screens/Home';
-import Library from '../Components/Screens/Library';
+import Home from '../Components/Home';
+import Library from '../Components/Library';
 
 const Tab = createMaterialBottomTabNavigator();
 

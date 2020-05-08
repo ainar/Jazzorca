@@ -1,12 +1,12 @@
 import React, { Component, ComponentProps } from 'react'
 import { connect } from 'react-redux'
 import Screen from './Screen'
-import JOTitle from '../Elements/JOTitle'
-import PlaylistList from '../Elements/PlaylistList'
-import { Playlist } from '../../helpers/types'
-import JOButton from '../Elements/JOButton'
-import CreatePlaylistModal from '../Elements/CreatePlaylistModal'
-import JOModal from '../Elements/JOModal'
+import JOTitle from './Elements/JOTitle'
+import PlaylistList from './Elements/PlaylistList'
+import { Playlist } from '../helpers/types'
+import JOButton from './Elements/JOButton'
+import CreatePlaylistModal from './Elements/CreatePlaylistModal'
+import JOModal from './Elements/JOModal'
 
 interface LibraryProps {
     playlists: Playlist[]

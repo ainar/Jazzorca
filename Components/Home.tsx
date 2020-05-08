@@ -1,9 +1,9 @@
 import React, { Component, ComponentProps } from 'react'
 import { connect } from 'react-redux'
-import TrackList from '../Elements/TrackList'
+import TrackList from './Elements/TrackList'
 import Screen from './Screen'
-import JOTitle from '../Elements/JOTitle'
-import { playNow } from '../../store/actions'
+import JOTitle from './Elements/JOTitle'
+import { playNow } from '../store/actions'
 import { Track } from 'react-native-track-player'
 
 export class Home extends Component<ComponentProps<any>> {

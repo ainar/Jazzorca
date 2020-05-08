@@ -1,12 +1,12 @@
 import React, { ComponentProps } from 'react'
 import { connect } from 'react-redux'
-import { playNow } from '../../store/actions'
-import { ytRelatedNextPage } from '../../API/YouTubeAPI'
-import JOTitle from '../Elements/JOTitle'
+import { playNow } from '../store/actions'
+import { ytRelatedNextPage } from '../API/YouTubeAPI'
+import JOTitle from './Elements/JOTitle'
 import Screen from './Screen'
-import TrackList from '../Elements/TrackList'
+import TrackList from './Elements/TrackList'
 import { Track } from 'react-native-track-player'
-import { ContinuationInfos } from '../../helpers/types'
+import { ContinuationInfos } from '../helpers/types'
 
 interface RelatedProps extends ComponentProps<any> {
 

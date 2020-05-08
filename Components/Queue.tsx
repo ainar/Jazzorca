@@ -1,9 +1,9 @@
 import React, { Component, ComponentProps, LegacyRef, Ref } from 'react'
 import { FlatList, LayoutChangeEvent } from 'react-native'
 import { connect } from 'react-redux'
-import { skip } from '../../store/actions'
-import JOTitle from '../Elements/JOTitle'
-import TrackList from '../Elements/TrackList'
+import { skip } from '../store/actions'
+import JOTitle from './Elements/JOTitle'
+import TrackList from './Elements/TrackList'
 import Screen from './Screen'
 import { Track } from 'react-native-track-player'
 

@@ -2,12 +2,12 @@ import React, { Component, ComponentProps } from 'react'
 import { StyleSheet, View, TouchableHighlight } from 'react-native'
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
-import JOProgressBar from '../Elements/ProgressBar'
-import JOPlayerControls from '../Elements/PlayerControls';
-import CurrentArtist from '../Elements/CurrentArtist';
-import CurrentArtwork from '../Elements/CurrentArtwork';
-import CurrentTitle from '../Elements/CurrentTitle';
-import JOText from '../Elements/JOText';
+import JOProgressBar from './Elements/ProgressBar'
+import JOPlayerControls from './Elements/PlayerControls';
+import CurrentArtist from './Elements/CurrentArtist';
+import CurrentArtwork from './Elements/CurrentArtwork';
+import CurrentTitle from './Elements/CurrentTitle';
+import JOText from './Elements/JOText';
 import Screen from './Screen';
 
 class Player extends Component<ComponentProps<any>> {

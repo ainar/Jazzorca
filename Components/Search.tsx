@@ -1,12 +1,12 @@
 import React from 'react'
 import { View, StyleSheet, ActivityIndicator, StyleProp, TextInputSubmitEditingEventData } from 'react-native'
 import Screen from './Screen'
-import TrackList from '../Elements/TrackList'
-import JOSearchInput from '../Elements/SearchInput'
-import { ytSearch, ytSearchNextPage, ContinuationInfos } from '../../API/YouTubeAPI'
-import { appendTracksWithoutDuplicate } from '../../helpers/utils'
+import TrackList from './Elements/TrackList'
+import JOSearchInput from './Elements/SearchInput'
+import { ytSearch, ytSearchNextPage, ContinuationInfos } from '../API/YouTubeAPI'
+import { appendTracksWithoutDuplicate } from '../helpers/utils'
 import { connect } from 'react-redux'
-import { playNow } from '../../store/actions'
+import { playNow } from '../store/actions'
 import { Track } from 'react-native-track-player'
 
 interface SearchProps {
