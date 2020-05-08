@@ -85,6 +85,13 @@ class JOTrackListItem extends React.Component<JOTrackListItemProps> {
         });
     }
 
+    _addToQueue() {
+        const { track, dispatch } = this.props
+        this._hideModal()
+        dispatch(manualAddToQueue(track))
+            .catch(() => this._showErrorModal())
+    }
+
     render() {
         return (
             <>
@@ -99,7 +106,7 @@ class JOTrackListItem extends React.Component<JOTrackListItemProps> {
                     >
                         <View style={styles.modal_screen}>
                             <View style={[styles.modal_content, { backgroundColor: 'red' }]}>
-                                <JOText style={{ textAlign: 'center', fontSize: 20 }}>Une erreur est survenue lors de la lecture de la vidéo.</JOText>
+                                <JOText style={{ textAlign: 'center', fontSize: 20 }}>Une erreur est survenue lors de la récupération de la vidéo sur YouTube.</JOText>
                             </View>
                         </View>
                     </TouchableWithoutFeedback>
@@ -118,11 +125,7 @@ class JOTrackListItem extends React.Component<JOTrackListItemProps> {
                                 <JOButton
                                     icon={<MaterialCommunityIcon name='playlist-plus' size={30} />}
                                     title={"Ajouter à la file d'attente"}
-                                    onPress={async () => {
-                                        const { track, dispatch } = this.props
-                                        this._hideModal()
-                                        dispatch(manualAddToQueue(track))
-                                    }}
+                                    onPress={() => this._addToQueue()}
                                 />
                             </View>
                         </View>
