@@ -46,6 +46,12 @@ export function playerState(state = initState, action: Action) {
                 }
             return newState || state
 
+        case 'RESET_CURRENT_TRACK':
+            newState = {
+                ...state,
+                currentTrack: undefined
+            }
+            return newState || state
 
         case 'ADD_TRACK':
             newCache = { ...state.cache }

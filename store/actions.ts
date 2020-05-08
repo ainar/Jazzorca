@@ -103,10 +103,16 @@ export function removeFromQueue(track: Track) {
     }
 }
 
-export function setCurrentTrack(track: Track | undefined) {
+export function setCurrentTrack(track: Track) {
     return {
             type: 'SKIP_TO_TRACK',
             value: track
+    }
+}
+
+export function resetCurrentTrack() {
+    return {
+            type: 'RESET_CURRENT_TRACK'
     }
 }
 

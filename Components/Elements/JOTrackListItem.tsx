@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { Track } from 'react-native-track-player'
 import Icon from 'react-native-vector-icons/AntDesign'
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
-import { manualAddToQueue, setCurrentTrack } from '../../store/actions'
+import { manualAddToQueue, resetCurrentTrack } from '../../store/actions'
 import JOText from './JOText'
 import JOButton from './JOButton'
 
@@ -60,7 +60,7 @@ class JOTrackListItem extends React.Component<JOTrackListItemProps> {
         this.props.onPress(this.props.track)
             .catch(() => {
                 this._showErrorModal();
-                this.props.dispatch(setCurrentTrack(undefined));
+                this.props.dispatch(resetCurrentTrack());
             })
             .finally(() => this.setState({ loading: false }));
     }
