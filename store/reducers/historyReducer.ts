@@ -1,8 +1,16 @@
-const initState = {
+import { Track } from 'react-native-track-player'
+import { Action } from '../../helpers/types'
+
+export interface HistoryState {
+    history: Track[]
+}
+
+const initState: HistoryState = {
     history: []
 }
 
-export function history(state = initState, action) {
+
+export function history(state = initState, action: Action) {
     let newState
 
     switch (action.type) {

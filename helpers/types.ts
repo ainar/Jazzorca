@@ -1,4 +1,5 @@
 import { Track } from "react-native-track-player";
+import { Action as ReduxAction } from "redux";
 
 export interface ContinuationInfos {
 
@@ -12,4 +13,8 @@ export interface Playlist {
     tracks: Track[],
     id: string,
     name: string
+}
+
+export interface Action extends ReduxAction {
+    value?: any
 }

@@ -1,14 +1,16 @@
 import TrackPlayer, { Track, State } from 'react-native-track-player'
 import { appendTracksWithoutDuplicate } from '../../helpers/utils'
-import { Action as ReduxAction } from 'redux'
+import { Action } from '../../helpers/types'
 
-const initState: {
+export interface PlayerState {
     playerState: State,
     loading: boolean,
     currentTrack: Track | undefined,
     cache: { [k: string]: Track },
     queue: Track[]
-} = {
+}
+
+const initState: PlayerState = {
     playerState: TrackPlayer.STATE_NONE,
     loading: false,
     currentTrack: undefined,
@@ -16,11 +18,7 @@ const initState: {
     queue: []
 }
 
-interface Action extends ReduxAction {
-    value: any
-}
-
-export function playerState(state = initState, action: Action) {
+export function playerState(state = initState, action: Action): PlayerState {
     let newState, newCache, newQueue
     switch (action.type) {
         case 'SET_STATE':
@@ -105,7 +103,7 @@ export function playerState(state = initState, action: Action) {
                 ...state,
                 queue: [],
                 currentTrack: undefined,
-                cache: []
+                cache: {}
             }
             return newState || state
 

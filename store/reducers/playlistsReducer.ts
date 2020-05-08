@@ -1,5 +1,4 @@
-import { Playlist } from "../../helpers/types";
-import { Action as ReduxAction } from "redux";
+import { Playlist, Action } from "../../helpers/types";
 
 export interface PlaylistsState {
     playlists: Playlist[],
@@ -9,11 +8,7 @@ const initState: PlaylistsState = {
     playlists: []
 }
 
-interface Action extends ReduxAction {
-    value: any
-}
-
-export function playlistsReducer(state: PlaylistsState = initState, action: Action): PlaylistsState {
+export function playlists(state: PlaylistsState = initState, action: Action): PlaylistsState {
     let newState: PlaylistsState;
 
     switch (action.type) {

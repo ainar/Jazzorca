@@ -2,8 +2,7 @@
  * @format
  */
 
-import { Playlist } from '../helpers/types'
-import { PlaylistsState, playlistsReducer } from '../store/reducers/playlistsReducer';
+import { PlaylistsState, playlists } from '../store/reducers/playlistsReducer';
 
 it('add track to playlist', () => {
     const initState: PlaylistsState = {
@@ -35,7 +34,7 @@ it('add track to playlist', () => {
         }
     }
 
-    const newState = playlistsReducer(initState, action);
+    const newState = playlists(initState, action);
 
     expect(newState)
         .toEqual({
@@ -95,7 +94,7 @@ it('remove track from playlist', () => {
         }
     }
 
-    const newState = playlistsReducer(initState, action);
+    const newState = playlists(initState, action);
 
     expect(newState)
         .toEqual({
@@ -164,7 +163,7 @@ it('add playlist', () => {
         value: playlist
     }
 
-    const newState = playlistsReducer(initState, action);
+    const newState = playlists(initState, action);
 
     expect(newState)
         .toEqual({
@@ -257,7 +256,7 @@ it('remove playlist', () => {
         value: playlist.id
     }
 
-    const newState = playlistsReducer(initState, action);
+    const newState = playlists(initState, action);
 
     expect(newState)
         .toEqual({ playlists: [] });
