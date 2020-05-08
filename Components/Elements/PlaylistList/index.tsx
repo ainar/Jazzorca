@@ -3,6 +3,7 @@ import { Text, StyleSheet, View, ListRenderItem, GestureResponderEvent } from 'r
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler'
 import JOText from '../JOText'
 import { Playlist } from '../../../helpers/types'
+import PlaylistListItem from './PlaylistListItem'
 
 export interface PlaylistListProps {
     data: Playlist[],
@@ -12,20 +13,30 @@ export interface PlaylistListProps {
 export default class PlaylistList extends Component<PlaylistListProps> {
     render() {
         return (
+            <>
+            <View style={styles.meta} >
+                <JOText style={styles.duration}>durée totale</JOText>
+            </View>
             <FlatList
                 data={this.props.data}
                 renderItem={({ item }) => (
-                    <TouchableOpacity
+                    <PlaylistListItem
+                        playlist={item}
                         onPress={() => this.props.onItemPress(item)}
-                    >
-                        <JOText>{item.name}</JOText>
-                    </TouchableOpacity>
+                    />
                 )}
             />
+            </>
         )
     }
 }
 
 const styles = StyleSheet.create({
-
+    meta: {
+        flexDirection: 'row-reverse'
+    },
+    duration: {
+        fontSize: 15,
+        marginRight: 10,
+    }
 })
