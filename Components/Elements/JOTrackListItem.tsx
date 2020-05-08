@@ -1,5 +1,5 @@
-import React, { Ref, RefCallback } from 'react'
-import { View, StyleSheet, TouchableOpacity, Image, ActivityIndicator, Modal, Button, TouchableWithoutFeedback } from 'react-native'
+import React from 'react'
+import { View, StyleSheet, TouchableOpacity, Image, ActivityIndicator, Linking } from 'react-native'
 import { connect } from 'react-redux'
 import { Track } from 'react-native-track-player'
 import Icon from 'react-native-vector-icons/AntDesign'
@@ -72,9 +72,14 @@ class JOTrackListItem extends React.Component<JOTrackListItemProps> {
 
     _addToQueue() {
         const { track, dispatch } = this.props
-        this.modal!._hideModal()
+        this.modal!._hideModal();
         dispatch(manualAddToQueue(track))
-            .catch(() => this.errorModal!._showModal())
+            .catch(() => this.errorModal!._showModal());
+    }
+
+    _watchOnYouTube() {
+        Linking.openURL('https://youtu.be/' + this.props.track.videoId)
+        this.modal!._hideModal();
     }
 
     render() {
@@ -93,6 +98,11 @@ class JOTrackListItem extends React.Component<JOTrackListItemProps> {
                         icon={<MaterialCommunityIcon name='playlist-plus' size={30} />}
                         title={"Ajouter à la file d'attente"}
                         onPress={() => this._addToQueue()}
+                    />
+                    <JOButton
+                        icon={<MaterialCommunityIcon name='youtube' size={30} />}
+                        title={"Voir sur YouTube"}
+                        onPress={() => this._watchOnYouTube()}
                     />
                 </TrackModal>
                 <TouchableOpacity
