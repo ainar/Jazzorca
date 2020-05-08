@@ -18,7 +18,7 @@ export default class TrackModal extends Component<TrackModalProps> {
             modalVisible: false
         }
     }
-    
+
     _showModal() {
         this.setState({ modalVisible: true }, () => {
             if (this.props.autoHide) {
@@ -62,4 +62,5 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'stretch',
         justifyContent: 'center'
-    },})
+    },
+})
