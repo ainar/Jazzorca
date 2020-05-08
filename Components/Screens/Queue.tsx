@@ -1,10 +1,10 @@
 import React, { Component, ComponentProps, LegacyRef, Ref } from 'react'
 import { FlatList, LayoutChangeEvent } from 'react-native'
 import { connect } from 'react-redux'
-import { skip } from '../store/actions'
-import JOTitle from './Elements/JOTitle'
-import JOTrackList from './JOTrackList'
-import JOScreen from './JOScreen'
+import { skip } from '../../store/actions'
+import JOTitle from '../Elements/JOTitle'
+import TrackList from '../Elements/TrackList'
+import Screen from './Screen'
 import { Track } from 'react-native-track-player'
 
 interface QueueProps extends ComponentProps<any> {
@@ -47,9 +47,9 @@ class Queue extends Component<QueueProps> {
 
     render() {
         return (
-            <JOScreen>
+            <Screen>
                 <JOTitle>File d'attente</JOTitle>
-                <JOTrackList
+                <TrackList
                     forwardRef={(ref: FlatList<Track>) => { this.scrollView = ref }}
                     data={this.props.queue}
                     onPress={(track: Track) => skip(track.id)}
@@ -57,7 +57,7 @@ class Queue extends Component<QueueProps> {
                     ListFooterComponentStyle={{ height: this._getBottomPadding() }}
                     onLayout={({ nativeEvent }: LayoutChangeEvent) => this.setState({ tracklistHeight: nativeEvent.layout.height })}
                 />
-            </JOScreen>
+            </Screen>
         )
     }
 }

@@ -2,12 +2,12 @@ import React from 'react'
 import { FlatList, ListRenderItem } from 'react-native'
 import { Track } from 'react-native-track-player'
 
-interface JOHorizontalListProps {
+interface HorizontalListProps {
     data: Track[],
     renderItem: ListRenderItem<Track>
 }
 
-const JOHorizontalList = (props: JOHorizontalListProps) => {
+const JOHorizontalList = (props: HorizontalListProps) => {
     return (
         <FlatList
             horizontal={true}

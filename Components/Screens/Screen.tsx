@@ -1,11 +1,11 @@
 import React, { ReactNode } from 'react'
 import { View, StyleSheet, ViewProperties } from 'react-native'
 
-interface JOScreenProps extends ViewProperties {
+interface ScreenProps extends ViewProperties {
     children: ReactNode
 }
 
-const JOScreen = (props: JOScreenProps) => {
+const Screen = (props: ScreenProps) => {
     return (
         <View {...props} style={[styles.main_component, props.style]}>
             {props.children}
@@ -19,4 +19,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default JOScreen
+export default Screen

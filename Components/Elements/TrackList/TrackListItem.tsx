@@ -4,10 +4,10 @@ import { connect } from 'react-redux'
 import { Track } from 'react-native-track-player'
 import Icon from 'react-native-vector-icons/AntDesign'
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
-import { manualAddToQueue, resetCurrentTrack } from '../../store/actions'
-import JOText from './JOText'
-import JOButton from './JOButton'
-import TrackModal from './TrackModal'
+import { manualAddToQueue, resetCurrentTrack } from '../../../store/actions'
+import JOText from '../JOText'
+import JOButton from '../JOButton'
+import TrackModal from '../TrackModal'
 
 interface JOTrackListItemProps {
     nowPlaying: Track,

@@ -2,10 +2,10 @@ import React from 'react'
 import { StyleSheet, View, TouchableHighlight } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { NavigationProp } from '@react-navigation/native'
-import JOPlayerControls from './Elements/JOPlayerControls'
-import JOProgressBar from './Elements/JOProgressBar'
-import CurrentTitle from './Elements/CurrentTitle'
-import CurrentArtist from './Elements/CurrentArtist'
+import JOPlayerControls from './PlayerControls'
+import JOProgressBar from './ProgressBar'
+import CurrentTitle from './CurrentTitle'
+import CurrentArtist from './CurrentArtist'
 
 interface CompactPlayerProps {
     navigation: NavigationProp<any>
@@ -16,7 +16,7 @@ const CompactPlayer = (props: CompactPlayerProps) => {
         <View style={styles.main_component} >
             <JOProgressBar
                 style={styles.progress_bar}
-                thumbImage={require('../assets/transparentThumbImage.png')}
+                thumbImage={require('../../assets/transparentThumbImage.png')}
                 showTiming={false}
             />
             <TouchableHighlight onPress={() => props.navigation.navigate('Player')}>

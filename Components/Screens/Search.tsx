@@ -1,16 +1,16 @@
 import React from 'react'
 import { View, StyleSheet, ActivityIndicator, StyleProp, TextInputSubmitEditingEventData } from 'react-native'
-import JOScreen from './JOScreen'
-import JOTrackList from './JOTrackList'
-import JOSearchInput from './Elements/JOSearchInput'
-import { ytSearch, ytSearchNextPage, ContinuationInfos } from '../API/YouTubeAPI'
-import { appendTracksWithoutDuplicate } from '../helpers/utils'
+import Screen from './Screen'
+import TrackList from '../Elements/TrackList'
+import JOSearchInput from '../Elements/SearchInput'
+import { ytSearch, ytSearchNextPage, ContinuationInfos } from '../../API/YouTubeAPI'
+import { appendTracksWithoutDuplicate } from '../../helpers/utils'
 import { connect } from 'react-redux'
-import { playNow } from '../store/actions'
+import { playNow } from '../../store/actions'
 import { Track } from 'react-native-track-player'
 
 interface SearchProps {
-    style: StyleProp<typeof JOScreen>,
+    style: StyleProp<typeof Screen>,
     dispatch: Function
 }
 
@@ -82,8 +82,8 @@ class Search extends React.Component<SearchProps> {
 
     render() {
         return (
-            <JOScreen style={[styles.main_component, this.props.style]}>
-                <JOTrackList
+            <Screen style={[styles.main_component, this.props.style]}>
+                <TrackList
                     data={this.state.results}
                     onEndReached={() => { this._loadNextPage() }}
                     loadingNextPage={this.state.loadingNextPage}
@@ -97,7 +97,7 @@ class Search extends React.Component<SearchProps> {
                     />
                 </View>
                 {this._displayLoading()}
-            </JOScreen>
+            </Screen>
         )
     }
 }

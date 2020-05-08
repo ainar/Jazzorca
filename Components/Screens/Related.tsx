@@ -1,12 +1,12 @@
 import React, { ComponentProps } from 'react'
 import { connect } from 'react-redux'
-import { playNow } from '../store/actions'
-import { ytRelatedNextPage } from '../API/YouTubeAPI'
-import JOTitle from './Elements/JOTitle'
-import JOScreen from './JOScreen'
-import JOTrackList from './JOTrackList'
+import { playNow } from '../../store/actions'
+import { ytRelatedNextPage } from '../../API/YouTubeAPI'
+import JOTitle from '../Elements/JOTitle'
+import Screen from './Screen'
+import TrackList from '../Elements/TrackList'
 import { Track } from 'react-native-track-player'
-import { ContinuationInfos } from '../helpers/types'
+import { ContinuationInfos } from '../../helpers/types'
 
 interface RelatedProps extends ComponentProps<any> {
 
@@ -51,7 +51,7 @@ class Related extends React.Component<RelatedProps> {
         const { track, cache } = this.props
         if (track !== undefined && cache[track.videoId] !== undefined)
             return (
-                <JOTrackList
+                <TrackList
                     data={cache[track.videoId].related.results}
                     onEndReached={() => { this._loadNextPage() }}
                     loadingNextPage={this.state.loadingNextPage}
@@ -64,10 +64,10 @@ class Related extends React.Component<RelatedProps> {
 
     render() {
         return (
-            <JOScreen>
+            <Screen>
                 <JOTitle>Recommandations</JOTitle>
                 {this._showRelated()}
-            </JOScreen>
+            </Screen>
         )
     }
 }

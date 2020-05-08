@@ -2,18 +2,18 @@ import React, { Component, ComponentProps } from 'react'
 import { StyleSheet, View, TouchableHighlight } from 'react-native'
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
-import JOProgressBar from './Elements/JOProgressBar'
-import JOPlayerControls from './Elements/JOPlayerControls';
-import CurrentArtist from './Elements/CurrentArtist';
-import CurrentArtwork from './Elements/CurrentArtwork';
-import CurrentTitle from './Elements/CurrentTitle';
-import JOText from './Elements/JOText';
-import JOScreen from './JOScreen';
+import JOProgressBar from '../Elements/ProgressBar'
+import JOPlayerControls from '../Elements/PlayerControls';
+import CurrentArtist from '../Elements/CurrentArtist';
+import CurrentArtwork from '../Elements/CurrentArtwork';
+import CurrentTitle from '../Elements/CurrentTitle';
+import JOText from '../Elements/JOText';
+import Screen from './Screen';
 
-class JOPlayer extends Component<ComponentProps<any>> {
+class Player extends Component<ComponentProps<any>> {
     render() {
         return (
-            <JOScreen style={styles.main_component}>
+            <Screen style={styles.main_component}>
                 <View style={styles.header}>
                     <TouchableHighlight onPress={() => this.props.navigation.goBack()}>
                         <View style={styles.back_button}>
@@ -39,7 +39,7 @@ class JOPlayer extends Component<ComponentProps<any>> {
                 </View>
                 <JOProgressBar />
                 <JOPlayerControls />
-            </JOScreen>
+            </Screen>
         )
     }
 }
@@ -106,4 +106,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default JOPlayer
+export default Player

@@ -1,12 +1,12 @@
 import React, { Component, ComponentProps } from 'react'
 import { connect } from 'react-redux'
-import JOScreen from './JOScreen'
-import JOTitle from './Elements/JOTitle'
-import PlaylistList from './Elements/PlaylistList'
-import { Playlist } from '../helpers/types'
-import JOButton from './Elements/JOButton'
-import CreatePlaylistModal from './Elements/CreatePlaylistModal'
-import JOModal from './Elements/JOModal'
+import Screen from './Screen'
+import JOTitle from '../Elements/JOTitle'
+import PlaylistList from '../Elements/PlaylistList'
+import { Playlist } from '../../helpers/types'
+import JOButton from '../Elements/JOButton'
+import CreatePlaylistModal from '../Elements/CreatePlaylistModal'
+import JOModal from '../Elements/JOModal'
 
 interface LibraryProps {
     playlists: Playlist[]
@@ -39,7 +39,7 @@ export class Library extends Component<LibraryProps> {
 
     render() {
         return (
-            <JOScreen>
+            <Screen>
                 <JOTitle>Listes de lecture</JOTitle>
                 <CreatePlaylistModal
                     forwardRef={ref => this.createPlaylistJOModal = ref}
@@ -53,7 +53,7 @@ export class Library extends Component<LibraryProps> {
                     data={this.props.playlists}
                     onItemPress={(playlist: Playlist) => this._showPlaylist(playlist)}
                 />
-            </JOScreen>
+            </Screen>
         )
     }
 }

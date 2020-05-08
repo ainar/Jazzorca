@@ -1,19 +1,19 @@
 import React from 'react'
 import { View, StyleSheet, Image, ImageSourcePropType } from 'react-native'
-import JOText from './JOText'
+import JOText from '../JOText'
 
-interface JOHorizontalItemProps {
+interface HorizontalItemProps {
     image: string,
     title: string,
     imagePromise: Function
 }
 
-class JOHorizontalItem extends React.Component<JOHorizontalItemProps> {
+class HorizontalItem extends React.Component<HorizontalItemProps> {
     state: {
         image: ImageSourcePropType
     }
 
-    constructor(props: JOHorizontalItemProps) {
+    constructor(props: HorizontalItemProps) {
         super(props)
         this.state = {
             image: {uri: undefined}
@@ -54,4 +54,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default JOHorizontalItem
+export default HorizontalItem

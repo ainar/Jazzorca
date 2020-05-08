@@ -1,17 +1,17 @@
 import * as React from 'react';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
-import JOPlayer from '../Components/JOPlayer';
-import Search from '../Components/Search';
+import Player from '../Components/Screens/Player';
+import Search from '../Components/Screens/Search';
 import Icon from 'react-native-vector-icons/AntDesign'
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { createStackNavigator } from '@react-navigation/stack';
-import CompactPlayer from '../Components/CompactPlayer';
+import CompactPlayer from '../Components/Elements/CompactPlayer';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import Related from '../Components/Related';
-import Queue from '../Components/Queue';
+import Related from '../Components/Screens/Related';
+import Queue from '../Components/Screens/Queue';
 import { Dimensions } from 'react-native';
-import Home from '../Components/Home';
-import Library from '../Components/Library';
+import Home from '../Components/Screens/Home';
+import Library from '../Components/Screens/Library';
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -71,7 +71,7 @@ class PlayerTabContainer extends React.Component {
             }}
         >
             <PlayerTab.Screen name="Queue" component={Queue} />
-            <PlayerTab.Screen name="Player" component={JOPlayer} />
+            <PlayerTab.Screen name="Player" component={Player} />
             <PlayerTab.Screen name="Related" component={Related} />
         </PlayerTab.Navigator>
     }

@@ -1,9 +1,9 @@
 import React, { Component, ComponentProps } from 'react'
 import { connect } from 'react-redux'
-import JOTrackList from './JOTrackList'
-import JOScreen from './JOScreen'
-import JOTitle from './Elements/JOTitle'
-import { playNow } from '../store/actions'
+import TrackList from '../Elements/TrackList'
+import Screen from './Screen'
+import JOTitle from '../Elements/JOTitle'
+import { playNow } from '../../store/actions'
 import { Track } from 'react-native-track-player'
 
 export class Home extends Component<ComponentProps<any>> {
@@ -13,13 +13,13 @@ export class Home extends Component<ComponentProps<any>> {
 
     render() {
         return (
-            <JOScreen>
+            <Screen>
                 <JOTitle>Dernières écoutes</JOTitle>
-                <JOTrackList
+                <TrackList
                     data={this.props.lastListened}
                     onPress={(track: Track) => this._onPress(track)}
                 />
-            </JOScreen>
+            </Screen>
         )
     }
 }
