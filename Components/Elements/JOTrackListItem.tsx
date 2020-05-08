@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Ref, RefCallback } from 'react'
 import { View, StyleSheet, TouchableOpacity, Image, ActivityIndicator, Modal, Button, TouchableWithoutFeedback } from 'react-native'
 import { connect } from 'react-redux'
 import { Track } from 'react-native-track-player'
@@ -7,6 +7,7 @@ import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIc
 import { manualAddToQueue, resetCurrentTrack } from '../../store/actions'
 import JOText from './JOText'
 import JOButton from './JOButton'
+import TrackModal from './TrackModal'
 
 interface JOTrackListItemProps {
     nowPlaying: Track,
@@ -24,7 +25,9 @@ class JOTrackListItem extends React.Component<JOTrackListItemProps> {
         errorModalVisible: boolean
     }
 
-    playerLoading: boolean
+    playerLoading: boolean;
+    modal: TrackModal | null;
+    errorModal: TrackModal | null;
 
     constructor(props: JOTrackListItemProps) {
         super(props);
@@ -36,6 +39,8 @@ class JOTrackListItem extends React.Component<JOTrackListItemProps> {
         };
 
         this.playerLoading = false;
+        this.modal = null;
+        this.errorModal = null;
     }
 
     _nowPlaying() {
@@ -59,80 +64,39 @@ class JOTrackListItem extends React.Component<JOTrackListItemProps> {
         this.setState({ loading: true });
         this.props.onPress(this.props.track)
             .catch(() => {
-                this._showErrorModal();
+                this.errorModal!._showModal();
                 this.props.dispatch(resetCurrentTrack());
             })
             .finally(() => this.setState({ loading: false }));
     }
 
-    _hideModal() {
-        this.setState({ modalVisible: false });
-    }
-
-    _hideErrorModal() {
-        this.setState({ errorModalVisible: false });
-    }
-
-    _showModal() {
-        this.setState({ modalVisible: true });
-    }
-
-    _showErrorModal() {
-        this.setState({ errorModalVisible: true }, () => {
-            setTimeout(() => {
-                this.setState({ errorModalVisible: false });
-            }, 2000);
-        });
-    }
-
     _addToQueue() {
         const { track, dispatch } = this.props
-        this._hideModal()
+        this.modal!._hideModal()
         dispatch(manualAddToQueue(track))
-            .catch(() => this._showErrorModal())
+            .catch(() => this.errorModal!._showModal())
     }
 
     render() {
         return (
             <>
-                <Modal
-                    visible={this.state.errorModalVisible}
-                    animationType='fade'
-                    onRequestClose={() => this._hideErrorModal()}
-                    transparent={true}
+                <TrackModal
+                    modalStyle={{ backgroundColor: 'red' }} autoHide={2000}
+                    ref={ref => { this.errorModal = ref }}
                 >
-                    <TouchableWithoutFeedback
-                        onPress={() => this._hideErrorModal()}
-                    >
-                        <View style={styles.modal_screen}>
-                            <View style={[styles.modal_content, { backgroundColor: 'red' }]}>
-                                <JOText style={{ textAlign: 'center', fontSize: 20 }}>Une erreur est survenue lors de la récupération de la vidéo sur YouTube.</JOText>
-                            </View>
-                        </View>
-                    </TouchableWithoutFeedback>
-                </Modal>
-                <Modal
-                    visible={this.state.modalVisible}
-                    animationType='fade'
-                    onRequestClose={() => this._hideModal()}
-                    transparent={true}
+                    <JOText style={{ textAlign: 'center', fontSize: 20 }}>Une erreur est survenue lors de la récupération de la vidéo sur YouTube.</JOText>
+                </TrackModal>
+                <TrackModal
+                    ref={ref => { this.modal = ref }}
                 >
-                    <TouchableWithoutFeedback
-                        onPress={() => this._hideModal()}
-                    >
-                        <View style={styles.modal_screen}>
-                            <View style={styles.modal_content}>
-                                <JOButton
-                                    icon={<MaterialCommunityIcon name='playlist-plus' size={30} />}
-                                    title={"Ajouter à la file d'attente"}
-                                    onPress={() => this._addToQueue()}
-                                />
-                            </View>
-                        </View>
-                    </TouchableWithoutFeedback>
-                </Modal>
+                    <JOButton
+                        icon={<MaterialCommunityIcon name='playlist-plus' size={30} />}
+                        title={"Ajouter à la file d'attente"}
+                        onPress={() => this._addToQueue()}
+                    />
+                </TrackModal>
                 <TouchableOpacity
-                    onLongPress={() => this._showModal()}
+                    onLongPress={() => this.modal!._showModal()}
                     onPress={() => this._onPress()}
                     disabled={this.state.loading}
                 >
