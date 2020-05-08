@@ -4,6 +4,7 @@ import { v4 as uuid } from 'uuid'
 
 import { getTrackFromYT } from '../API/YouTubeAPI';
 import { ThunkAction } from 'redux-thunk';
+import { Playlist } from '../helpers/types';
 
 
 type ThunkResult<R> = ThunkAction<R, any, undefined, any>;
@@ -138,4 +139,17 @@ export function skip(trackId: string) {
 export function reset() {
     TrackPlayer.reset()
     return resetQueue()
+}
+
+export function addPlaylist(playlistName: string) {
+    const playlist: Playlist = {
+        tracks: [],
+        name: playlistName,
+        id: uuid()
+    }
+
+    return {
+        type: 'ADD_PLAYLIST',
+        value: playlist
+    }
 }

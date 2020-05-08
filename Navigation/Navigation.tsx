@@ -3,6 +3,7 @@ import { createMaterialBottomTabNavigator } from '@react-navigation/material-bot
 import JOPlayer from '../Components/JOPlayer';
 import Search from '../Components/Search';
 import Icon from 'react-native-vector-icons/AntDesign'
+import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { createStackNavigator } from '@react-navigation/stack';
 import CompactPlayer from '../Components/CompactPlayer';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
@@ -10,6 +11,7 @@ import Related from '../Components/Related';
 import Queue from '../Components/Queue';
 import { Dimensions } from 'react-native';
 import Home from '../Components/Home';
+import Library from '../Components/Library';
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -21,6 +23,7 @@ class TabContainer extends React.Component {
                     backgroundColor: 'black',
                     marginTop: 60
                 }}
+                keyboardHidesNavigationBar={false}
             >
                 <Tab.Screen name="Home" component={Home} options={{
                     tabBarIcon: () => (<Icon name='home' size={20} />),
@@ -29,6 +32,10 @@ class TabContainer extends React.Component {
                 <Tab.Screen name="Search" component={Search} options={{
                     tabBarIcon: () => (<Icon name='search1' size={20} />),
                     title: 'Rechercher'
+                }} />
+                <Tab.Screen name="Library" component={Library} options={{
+                    tabBarIcon: () => (<MaterialIcons name='library-music' size={20} />),
+                    title: 'Bibliothèque'
                 }} />
             </Tab.Navigator>
             <CompactPlayer />
