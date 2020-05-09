@@ -46,23 +46,17 @@ export function playNow(track: Track) {
 }
 
 export async function getTrack(track: Track, cache: { [k: string]: Track }) {
-    let ytTrack, id;
+    let ytTrack;
     if (cache[track.videoId] === undefined || cache[track.videoId].url === undefined) {
         ytTrack = await getTrackFromYT(track.videoId);
     } else {
         ytTrack = cache[track.videoId];
     }
 
-    if (track.id !== undefined) {
-        id = track.id;
-    } else {
-        id = uuid();
-    }
-
     return {
         ...track,
         ...ytTrack,
-        id: id,
+        id: uuid(),
     }
 }
 
@@ -188,12 +182,21 @@ export function removeFromPlaylist(playlistId: string, trackId: string) {
 }
 
 export function playPlaylist(playlist: Playlist, trackId: string) {
-    return async (dispatch: (a: any) => Promise<any>) => {
+    return async (dispatch: (a: any) => Promise<any>, getState: Function) => {
         await dispatch(reset());
+        let newTrackId: string = '';
+
         for (let track of playlist.tracks) {
             await dispatch(manualAddToQueue(track))
                 .catch(e => console.error('cannot add track ' + track.videoId + ' to queue'));
+            if (track.id === trackId) {
+                const { queue } = getState().playerState;
+                newTrackId = queue[queue.length - 1].id;
+            }
         };
-        await skip(trackId);
+
+        if (newTrackId.length > 0) {
+            await skip(newTrackId);
+        }
     }
 }
