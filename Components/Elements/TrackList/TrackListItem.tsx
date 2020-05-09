@@ -4,11 +4,13 @@ import { connect } from 'react-redux'
 import { Track } from 'react-native-track-player'
 import Icon from 'react-native-vector-icons/AntDesign'
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
-import { manualAddToQueue, resetCurrentTrack } from '../../../store/actions'
+import { manualAddToQueue, resetCurrentTrack, addToPlaylist } from '../../../store/actions'
 import JOText from '../JOText'
 import JOButton from '../JOButton'
 import TrackModal from '../TrackModal'
 import JOModal from '../JOModal'
+import { Picker } from '@react-native-community/picker'
+import { Playlist } from '../../../helpers/types'
 
 interface JOTrackListItemProps {
     nowPlaying: Track,
@@ -16,7 +18,8 @@ interface JOTrackListItemProps {
     onPress: Function,
     onPlay: Function,
     dispatch: Function,
-    loading: boolean
+    loading: boolean,
+    playlists: Playlist[]
 }
 
 class JOTrackListItem extends React.Component<JOTrackListItemProps> {
@@ -79,7 +82,32 @@ class JOTrackListItem extends React.Component<JOTrackListItemProps> {
     }
 
     _watchOnYouTube() {
-        Linking.openURL('https://youtu.be/' + this.props.track.videoId)
+        Linking.openURL('https://youtu.be/' + this.props.track.videoId);
+        this.modal!.hide();
+    }
+
+    _displayPlaylists() {
+        const { playlists } = this.props;
+        const pickerItems: any = [];
+
+        playlists.forEach(playlist => {
+            pickerItems.push(
+                <Picker.Item label={playlist.name} value={playlist.id} />
+            )
+        });
+
+        return pickerItems;
+    }
+
+    private _addToPlaylist(itemValue: React.ReactText): void {
+        const { dispatch, track } = this.props;
+        const playlistId = itemValue.toString()
+
+        dispatch(addToPlaylist(
+            playlistId,
+            track
+        ));
+
         this.modal!.hide();
     }
 
@@ -106,6 +134,17 @@ class JOTrackListItem extends React.Component<JOTrackListItemProps> {
                         title={"Voir sur YouTube"}
                         onPress={() => this._watchOnYouTube()}
                     />
+                    <View style={styles.add_playlist_button}>
+                        <MaterialCommunityIcon name='playlist-music-outline' size={30} color='black' />
+                        <Picker
+                            style={styles.playlist_picker}
+                            itemStyle={styles.playlist_picker_item}
+                            onValueChange={(itemValue) => this._addToPlaylist(itemValue)}
+                        >
+                            <Picker.Item label="Ajouter à une liste de lecture" value="" />
+                            {this._displayPlaylists()}
+                        </Picker>
+                    </View>
                 </TrackModal>
                 <TouchableOpacity
                     onLongPress={() => this.modal!.show()}
@@ -189,11 +228,25 @@ const styles: any = StyleSheet.create({
         backgroundColor: 'rgba(0,0,0,0.2)',
         margin: 20
     },
+    add_playlist_button: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingLeft: 10,
+        backgroundColor: '#e6e6e6',
+    },
+    playlist_picker: {
+        color: 'black',
+        flex: 1,
+    },
+    playlist_picker_item: {
+        fontSize: 30
+    },
 })
 
 const mapStateToProps = (state: any) => ({
     cache: state.playerState.cache,
-    queue: state.playerState.queue
+    queue: state.playerState.queue,
+    playlists: state.playlists.playlists
 })
 
 

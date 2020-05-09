@@ -12,7 +12,7 @@ export function playlists(state: PlaylistsState = initState, action: Action): Pl
     let newState: PlaylistsState;
 
     switch (action.type) {
-        case 'ADD_TRACK': {
+        case 'ADD_TRACK_TO_PLAYLIST': {
             const playlistIndex = state.playlists.findIndex(p => p.id === action.value.playlistId);
             const playlist = state.playlists[playlistIndex];
             if (playlist !== undefined) {

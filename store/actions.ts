@@ -153,3 +153,13 @@ export function addPlaylist(playlistName: string) {
         value: playlist
     }
 }
+
+export function addToPlaylist(playlistId: string, track: Track) {
+    return {
+        type: 'ADD_TRACK_TO_PLAYLIST',
+        value: {
+            playlistId: playlistId,
+            track: track
+        }
+    }
+}

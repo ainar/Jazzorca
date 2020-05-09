@@ -27,7 +27,7 @@ it('add track to playlist', () => {
     }
 
     const action = {
-        type: 'ADD_TRACK',
+        type: 'ADD_TRACK_TO_PLAYLIST',
         value: {
             playlistId: 'playlist-1',
             track: track
