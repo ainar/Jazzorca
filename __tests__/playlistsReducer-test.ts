@@ -87,7 +87,7 @@ it('remove track from playlist', () => {
     }
 
     const action = {
-        type: 'REMOVE_TRACK',
+        type: 'REMOVE_TRACK_FROM_PLAYLIST',
         value: {
             playlistId: 'playlist-1',
             trackId: track.id

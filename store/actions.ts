@@ -163,3 +163,13 @@ export function addToPlaylist(playlistId: string, track: Track) {
         }
     }
 }
+
+export function removeFromPlaylist(playlistId: string, trackId: string) {
+    return {
+        type: 'REMOVE_TRACK_FROM_PLAYLIST',
+        value: {
+            playlistId: playlistId,
+            trackId: trackId
+        }
+    }
+}

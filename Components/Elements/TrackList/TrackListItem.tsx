@@ -19,7 +19,9 @@ interface JOTrackListItemProps {
     onPlay: Function,
     dispatch: Function,
     loading: boolean,
-    playlists: Playlist[]
+    playlists: Playlist[],
+    modalExtra?: (t: Track) => React.ReactNode,
+    modalRef: (t: TrackModal | null) => void
 }
 
 class JOTrackListItem extends React.Component<JOTrackListItemProps> {
@@ -121,12 +123,12 @@ class JOTrackListItem extends React.Component<JOTrackListItemProps> {
                 <TrackModal
                     modalStyle={{ backgroundColor: 'red' }}
                     autoHide={2000}
-                    forwardRef={ref => { this.errorModal = ref }}
+                    ref={ref => { this.errorModal = ref }}
                 >
                     <JOText style={{ textAlign: 'center', fontSize: 20 }}>Une erreur est survenue lors de la récupération de la vidéo sur YouTube.</JOText>
                 </TrackModal>
                 <TrackModal
-                    forwardRef={ref => { this.modal = ref }}
+                    ref={ref => { this.modal = ref; if (this.props.modalRef) this.props.modalRef(ref); }}
                 >
                     <JOButton
                         icon={<MaterialCommunityIcon name='playlist-plus' size={30} color='black' />}
@@ -149,6 +151,7 @@ class JOTrackListItem extends React.Component<JOTrackListItemProps> {
                             {this._displayPlaylists()}
                         </Picker>
                     </View>
+                    {this.props.modalExtra ? this.props.modalExtra!(this.props.track) : undefined}
                 </TrackModal>
                 <TouchableOpacity
                     onLongPress={() => this.modal!.show()}

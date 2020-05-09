@@ -5,7 +5,6 @@ import JOModal from './JOModal';
 interface TrackModalProps {
     autoHide?: number,
     modalStyle?: StyleProp<ViewStyle>,
-    forwardRef: ((instance: JOModal | null) => void),
 }
 
 export default class TrackModal extends Component<TrackModalProps> {
@@ -13,18 +12,32 @@ export default class TrackModal extends Component<TrackModalProps> {
         modalVisible: boolean,
     }
 
+    modal: JOModal | null
+
     constructor(props: TrackModalProps) {
         super(props);
 
         this.state = {
             modalVisible: false
         }
+
+        this.modal = null
+    }
+
+    public show() {
+        this.modal?.show();
+    }
+
+    public hide() {
+        this.modal?.hide();
     }
 
     render() {
         return (
             <JOModal
-                ref={(ref) => this.props.forwardRef(ref)}
+                ref={(ref) => {
+                    this.modal = ref;
+                }}
             >
                 {this.props.children}
             </JOModal>

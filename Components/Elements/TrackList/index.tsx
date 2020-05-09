@@ -3,6 +3,7 @@ import { View, FlatList, ActivityIndicator } from 'react-native'
 import JOTrackListItem from './TrackListItem'
 import { connect } from 'react-redux'
 import { Track } from 'react-native-track-player'
+import TrackModal from '../TrackModal'
 
 interface TrackListProps extends ComponentProps<any> {
     onPress: Function,
@@ -11,7 +12,9 @@ interface TrackListProps extends ComponentProps<any> {
     loading: boolean,
     currentTrack: Track,
     forwardRef?: React.LegacyRef<FlatList<any>>,
-    data: Track[]
+    data: Track[],
+    modalExtra: (t: Track) => React.ReactNode,
+    modalRef: (m: TrackModal | null) => void
 }
 
 class TrackList extends React.Component<TrackListProps> {
@@ -39,6 +42,8 @@ class TrackList extends React.Component<TrackListProps> {
                         onPlay={this.props.onPlay}
                         onPress={this.props.onPress}
                         loading={this.props.loading}
+                        modalExtra={this.props.modalExtra}
+                        modalRef={this.props.modalRef}
                     />}
                 keyExtractor={data => data.videoId}
                 onEndReachedThreshold={0.01}
