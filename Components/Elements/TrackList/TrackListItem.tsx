@@ -92,7 +92,11 @@ class JOTrackListItem extends React.Component<JOTrackListItemProps> {
 
         playlists.forEach(playlist => {
             pickerItems.push(
-                <Picker.Item label={playlist.name} value={playlist.id} />
+                <Picker.Item
+                    label={playlist.name}
+                    value={playlist.id}
+                    key={playlist.id}
+                />
             )
         });
 
