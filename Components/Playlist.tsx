@@ -1,20 +1,22 @@
 import React, { Component } from 'react'
-import { removeFromPlaylist } from '../store/actions'
+import { removeFromPlaylist, reset, playPlaylist } from '../store/actions'
 import TrackList from './Elements/TrackList'
 import Screen from './Screen'
 import { Track } from 'react-native-track-player'
 import JOSubTitle from './Elements/JOSubTitle'
-import { Playlist } from '../helpers/types'
+import { Playlist, Action } from '../helpers/types'
 import JOButton from './Elements/JOButton'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { connect } from 'react-redux'
 import TrackModal from './Elements/TrackModal'
+import { ThunkDispatch, ThunkAction } from 'redux-thunk'
+import { AnyAction } from 'redux'
 
 interface PlaylistScreenProps {
     playlist: Playlist,
     playlists: Playlist[],
     route: any,
-    dispatch: Function
+    dispatch: (a: any) => Promise<any>
 }
 
 class PlaylistScreen extends Component<PlaylistScreenProps> {
@@ -25,8 +27,11 @@ class PlaylistScreen extends Component<PlaylistScreenProps> {
         this.trackModal = null;
     }
 
-    _onPress(track: Track) {
-        /*todo*/
+    async _onPress(track: Track) {
+        const { dispatch, playlists, route } = this.props;
+        const playlist: Playlist = playlists.find(({ id }) => id === route.params.playlist.id)!;
+        dispatch(playPlaylist(playlist, track.id))
+            .catch((e: string) => console.error(e));
     }
 
     private _removeFromPlaylist(track: Track) {

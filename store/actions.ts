@@ -3,8 +3,10 @@ import 'react-native-get-random-values';
 import { v4 as uuid } from 'uuid'
 
 import { getTrackFromYT } from '../API/YouTubeAPI';
-import { ThunkAction } from 'redux-thunk';
-import { Playlist } from '../helpers/types';
+import { ThunkAction, ThunkDispatch } from 'redux-thunk';
+import { Playlist, Action } from '../helpers/types';
+import { Dispatch } from 'react';
+import { AnyAction } from 'redux';
 
 
 type ThunkResult<R> = ThunkAction<R, any, undefined, any>;
@@ -44,17 +46,23 @@ export function playNow(track: Track) {
 }
 
 export async function getTrack(track: Track, cache: { [k: string]: Track }) {
-    let ytTrack
+    let ytTrack, id;
     if (cache[track.videoId] === undefined || cache[track.videoId].url === undefined) {
         ytTrack = await getTrackFromYT(track.videoId);
     } else {
         ytTrack = cache[track.videoId];
     }
 
+    if (track.id !== undefined) {
+        id = track.id;
+    } else {
+        id = uuid();
+    }
+
     return {
         ...track,
         ...ytTrack,
-        id: uuid()
+        id: id,
     }
 }
 
@@ -86,10 +94,17 @@ export function manualAddToQueue(track: Track) {
         if (lastInQueue !== undefined && lastInQueue.autoPlay !== undefined && lastInQueue.autoPlay === true) {
             await dispatch(removeFromQueue(lastInQueue))
         }
+        const ytTrack = await getTrack(track, cache)
+            .catch(e => console.error('cannot get track ' + track.videoId));
+
+        if (ytTrack === undefined)
+            return
+
         const newTrack = {
-            ...await getTrack(track, cache),
+            ...ytTrack,
             autoPlay: false
-        }
+        };
+
         return dispatch(addToQueue(newTrack))
     }
 }
@@ -106,14 +121,14 @@ export function removeFromQueue(track: Track) {
 
 export function setCurrentTrack(track: Track) {
     return {
-            type: 'SKIP_TO_TRACK',
-            value: track
+        type: 'SKIP_TO_TRACK',
+        value: track
     }
 }
 
 export function resetCurrentTrack() {
     return {
-            type: 'RESET_CURRENT_TRACK'
+        type: 'RESET_CURRENT_TRACK'
     }
 }
 
@@ -131,8 +146,8 @@ export function autoSetCurrentTrack(track: Track): ThunkResult<void> {
     }
 }
 
-export function skip(trackId: string) {
-    TrackPlayer.skip(trackId)
+export async function skip(trackId: string) {
+    await TrackPlayer.skip(trackId)
     return TrackPlayer.play()
 }
 
@@ -171,5 +186,16 @@ export function removeFromPlaylist(playlistId: string, trackId: string) {
             playlistId: playlistId,
             trackId: trackId
         }
+    }
+}
+
+export function playPlaylist(playlist: Playlist, trackId: string) {
+    return async (dispatch: (a: any) => Promise<any>) => {
+        await dispatch(reset());
+        for (let track of playlist.tracks) {
+            await dispatch(manualAddToQueue(track))
+                .catch(e => console.error('cannot add track ' + track.videoId + ' to queue'));
+        };
+        await skip(trackId);
     }
 }

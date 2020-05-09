@@ -178,6 +178,10 @@ interface Cipher {
 }
 
 export async function getTrackFromYT(videoId: string) {
+    if (!videoId || !videoId.length) {
+        console.error('videoId cannot be empty')
+    }
+
     const videoPage = await getVideoPage(videoId);
     const playerConfig = parsePlayerConfig(videoPage);
     const playerResponse = JSON.parse(playerConfig.args.player_response);
