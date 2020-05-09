@@ -27,14 +27,14 @@ export default JOButton
 const styles = StyleSheet.create({
     main_content: {
         padding: 10,
-        backgroundColor: 'rgba(0,0,0,0.8)',
+        backgroundColor: '#e6e6e6',
         flexDirection: 'row',
         justifyContent: 'flex-start',
         alignItems: 'center'
     },
     label: {
-        fontWeight: 'bold',
         fontSize: 20,
-        marginLeft: 10
+        marginLeft: 10,
+        color: 'rgba(0,0,0,0.8)'
     }
 })

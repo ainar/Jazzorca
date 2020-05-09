@@ -9,7 +9,8 @@ import CreatePlaylistModal from './Elements/CreatePlaylistModal'
 import JOModal from './Elements/JOModal'
 
 interface LibraryProps {
-    playlists: Playlist[]
+    playlists: Playlist[],
+    navigation: any
 }
 
 export class Library extends Component<LibraryProps> {
@@ -34,13 +35,15 @@ export class Library extends Component<LibraryProps> {
     }
 
     _showPlaylist(playlist: Playlist) {
-        /* Todo */  
+        const { navigation } = this.props;
+        navigation.navigate('Playlist', {
+            playlist: playlist
+        });
     }
 
     render() {
         return (
             <Screen>
-                <JOTitle>Listes de lecture</JOTitle>
                 <CreatePlaylistModal
                     forwardRef={ref => this.createPlaylistJOModal = ref}
                     visible={this.state.createPlaylistModalVisible}

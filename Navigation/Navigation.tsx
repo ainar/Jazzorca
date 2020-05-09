@@ -12,6 +12,31 @@ import Queue from '../Components/Queue';
 import { Dimensions } from 'react-native';
 import Home from '../Components/Home';
 import Library from '../Components/Library';
+import PlaylistScreen from '../Components/Playlist';
+
+
+const PlaylistStack = createStackNavigator();
+
+class PlaylistStackContainer extends React.Component {
+    render() {
+        return (
+            <PlaylistStack.Navigator>
+                <PlaylistStack.Screen
+                    name="PlaylistList"
+                    component={Library}
+                    options={{
+                        title: "Listes de lecture"
+                    }}
+                />
+                <PlaylistStack.Screen
+                    name="Playlist"
+                    component={PlaylistScreen}
+                />
+            </PlaylistStack.Navigator>
+        )
+    }
+}
+
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -33,7 +58,7 @@ class TabContainer extends React.Component {
                     tabBarIcon: () => (<Icon name='search1' size={20} />),
                     title: 'Rechercher'
                 }} />
-                <Tab.Screen name="Library" component={Library} options={{
+                <Tab.Screen name="Library" component={PlaylistStackContainer} options={{
                     tabBarIcon: () => (<MaterialIcons name='library-music' size={20} />),
                     title: 'Bibliothèque'
                 }} />

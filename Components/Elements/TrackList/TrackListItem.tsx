@@ -8,6 +8,7 @@ import { manualAddToQueue, resetCurrentTrack } from '../../../store/actions'
 import JOText from '../JOText'
 import JOButton from '../JOButton'
 import TrackModal from '../TrackModal'
+import JOModal from '../JOModal'
 
 interface JOTrackListItemProps {
     nowPlaying: Track,
@@ -26,8 +27,8 @@ class JOTrackListItem extends React.Component<JOTrackListItemProps> {
     }
 
     playerLoading: boolean;
-    modal: TrackModal | null;
-    errorModal: TrackModal | null;
+    modal: JOModal | null;
+    errorModal: JOModal | null;
 
     constructor(props: JOTrackListItemProps) {
         super(props);
@@ -64,7 +65,7 @@ class JOTrackListItem extends React.Component<JOTrackListItemProps> {
         this.setState({ loading: true });
         this.props.onPress(this.props.track)
             .catch(() => {
-                this.errorModal!._showModal();
+                this.errorModal!.show();
                 this.props.dispatch(resetCurrentTrack());
             })
             .finally(() => this.setState({ loading: false }));
@@ -72,41 +73,42 @@ class JOTrackListItem extends React.Component<JOTrackListItemProps> {
 
     _addToQueue() {
         const { track, dispatch } = this.props
-        this.modal!._hideModal();
+        this.modal!.hide();
         dispatch(manualAddToQueue(track))
-            .catch(() => this.errorModal!._showModal());
+            .catch(() => this.errorModal!.show());
     }
 
     _watchOnYouTube() {
         Linking.openURL('https://youtu.be/' + this.props.track.videoId)
-        this.modal!._hideModal();
+        this.modal!.hide();
     }
 
     render() {
         return (
             <>
                 <TrackModal
-                    modalStyle={{ backgroundColor: 'red' }} autoHide={2000}
-                    ref={ref => { this.errorModal = ref }}
+                    modalStyle={{ backgroundColor: 'red' }}
+                    autoHide={2000}
+                    forwardRef={ref => { this.errorModal = ref }}
                 >
                     <JOText style={{ textAlign: 'center', fontSize: 20 }}>Une erreur est survenue lors de la récupération de la vidéo sur YouTube.</JOText>
                 </TrackModal>
                 <TrackModal
-                    ref={ref => { this.modal = ref }}
+                    forwardRef={ref => { this.modal = ref }}
                 >
                     <JOButton
-                        icon={<MaterialCommunityIcon name='playlist-plus' size={30} />}
+                        icon={<MaterialCommunityIcon name='playlist-plus' size={30} color='black' />}
                         title={"Ajouter à la file d'attente"}
                         onPress={() => this._addToQueue()}
                     />
                     <JOButton
-                        icon={<MaterialCommunityIcon name='youtube' size={30} />}
+                        icon={<MaterialCommunityIcon name='youtube' size={30} color='black' />}
                         title={"Voir sur YouTube"}
                         onPress={() => this._watchOnYouTube()}
                     />
                 </TrackModal>
                 <TouchableOpacity
-                    onLongPress={() => this.modal!._showModal()}
+                    onLongPress={() => this.modal!.show()}
                     onPress={() => this._onPress()}
                     disabled={this.state.loading}
                 >

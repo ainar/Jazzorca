@@ -9,25 +9,22 @@ import JOSubTitle from './Elements/JOSubTitle'
 import { Playlist } from '../helpers/types'
 
 interface PlaylistScreenProps {
-    playlist: Playlist
+    playlist: Playlist,
+    route: any
 }
 
 class PlaylistScreen extends Component<PlaylistScreenProps> {
-    constructor(props: PlaylistScreenProps) {
-        super(props)
-    }
-
     _onPress(track: Track) {
         /*todo*/
     }
 
     render() {
+        const { route } = this.props;
         return (
             <Screen>
-                <JOTitle>Playlist</JOTitle>
-                <JOSubTitle>{this.props.playlist.name}</JOSubTitle>
+                <JOSubTitle>{route.params.playlist.name}</JOSubTitle>
                 <TrackList
-                    data={this.props.playlist.tracks}
+                    data={route.params.playlist.tracks}
                     onPress={(track: Track) => this._onPress(track)}
                     keyExtractor={(track: Track) => track.id}
                 />

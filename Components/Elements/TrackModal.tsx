@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
 import { Modal, StyleSheet, View, TouchableWithoutFeedback, ViewStyle, StyleProp } from 'react-native'
+import JOModal from './JOModal';
 
 interface TrackModalProps {
     autoHide?: number,
-    modalStyle?: StyleProp<ViewStyle>
+    modalStyle?: StyleProp<ViewStyle>,
+    forwardRef: ((instance: JOModal | null) => void),
 }
 
 export default class TrackModal extends Component<TrackModalProps> {
@@ -19,36 +21,13 @@ export default class TrackModal extends Component<TrackModalProps> {
         }
     }
 
-    _showModal() {
-        this.setState({ modalVisible: true }, () => {
-            if (this.props.autoHide) {
-                setTimeout(() => this.setState({ modalVisible: false }), this.props.autoHide);
-            }
-        });
-    }
-
-    _hideModal() {
-        this.setState({ modalVisible: false });
-    }
-
     render() {
         return (
-            <Modal
-                visible={this.state.modalVisible}
-                animationType='fade'
-                onRequestClose={() => this._hideModal()}
-                transparent={true}
+            <JOModal
+                ref={(ref) => this.props.forwardRef(ref)}
             >
-                <TouchableWithoutFeedback
-                    onPress={() => this._hideModal()}
-                >
-                    <View style={styles.modal_screen}>
-                        <View style={[styles.modal_content, this.props.modalStyle]}>
-                            {this.props.children}
-                        </View>
-                    </View>
-                </TouchableWithoutFeedback>
-            </Modal>
+                {this.props.children}
+            </JOModal>
         )
     }
 }

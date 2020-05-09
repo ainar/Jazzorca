@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { StyleSheet, TextInput, Alert } from 'react-native'
+import { StyleSheet, TextInput, Alert, Text } from 'react-native'
 
 import JOModal from './JOModal'
 import JOSubTitle from './JOSubTitle';
@@ -58,7 +58,7 @@ class CreatePlaylistModal extends Component<CreatePlaylistModalProps> {
                 }}
                 onShow={() => this._onShow()}
             >
-                <JOSubTitle>Créer une nouvelle liste de lecture</JOSubTitle>
+                <Text style={styles.modal_title}>Créer une nouvelle liste de lecture</Text>
                 <TextInput
                     style={styles.textInput}
                     placeholder={'Nom de la nouvelle liste'}
@@ -76,10 +76,19 @@ class CreatePlaylistModal extends Component<CreatePlaylistModalProps> {
 }
 
 const styles = StyleSheet.create({
+    modal_title: {
+        color: 'black',
+        marginHorizontal: 10,
+        marginTop: 10,
+        fontSize: 18,
+        fontWeight: 'bold',
+        textAlign: 'center'
+    },
     textInput: {
-        marginHorizontal: 20,
+        marginHorizontal: 10,
         fontSize: 20,
-        backgroundColor: "rgba(255,255,255,.2)"
+        backgroundColor: "rgba(255,255,255,.2)",
+        color: 'black'
     }
 })
 
