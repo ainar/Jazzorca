@@ -21,7 +21,8 @@ interface JOTrackListItemProps {
     loading: boolean,
     playlists: Playlist[],
     modalExtra?: (t: Track) => React.ReactNode,
-    modalRef: (t: TrackModal | null) => void
+    modalRef: (t: TrackModal | null) => void,
+    currentTrackChecker?: (t1: Track, t2: Track) => boolean
 }
 
 class JOTrackListItem extends React.Component<JOTrackListItemProps> {
@@ -51,7 +52,9 @@ class JOTrackListItem extends React.Component<JOTrackListItemProps> {
 
     _nowPlaying() {
         const { nowPlaying, track } = this.props;
-        return nowPlaying !== undefined && nowPlaying.videoId === track.videoId;
+        const defaultNowPlaying = () => nowPlaying !== undefined && nowPlaying.videoId === track.videoId;
+        const nowPlayingChecker = this.props.currentTrackChecker || defaultNowPlaying;
+        return nowPlayingChecker(nowPlaying, track);
     }
 
     _displayNowPlaying() {

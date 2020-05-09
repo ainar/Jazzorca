@@ -44,6 +44,7 @@ class TrackList extends React.Component<TrackListProps> {
                         loading={this.props.loading}
                         modalExtra={this.props.modalExtra}
                         modalRef={this.props.modalRef}
+                        currentTrackChecker={this.props.currentTrackChecker}
                     />}
                 keyExtractor={data => data.videoId}
                 onEndReachedThreshold={0.01}

@@ -61,6 +61,7 @@ class Queue extends Component<QueueProps> {
                     keyExtractor={(track: Track) => track.id}
                     ListFooterComponentStyle={{ height: this._getBottomPadding() }}
                     onLayout={({ nativeEvent }: LayoutChangeEvent) => this.setState({ tracklistHeight: nativeEvent.layout.height })}
+                    currentTrackChecker={(track: Track, currentTrack: Track) => track.id === currentTrack.id}
                 />
             </Screen>
         )
