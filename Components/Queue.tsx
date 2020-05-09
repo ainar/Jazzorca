@@ -8,7 +8,7 @@ import Screen from './Screen'
 import { Track } from 'react-native-track-player'
 
 interface QueueProps extends ComponentProps<any> {
-    
+
 }
 
 class Queue extends Component<QueueProps> {
@@ -26,10 +26,12 @@ class Queue extends Component<QueueProps> {
     }
     _getBottomPadding() {
         if (this.state.tracklistHeight !== undefined) {
-            const { queue, currentTrack } = this.props
-            const currentIndex = queue.findIndex((t: Track) => t.id === currentTrack.id)
-            const tracksRemainingCount = queue.length - currentIndex
-            return this.state.tracklistHeight - tracksRemainingCount * 80
+            const { queue, currentTrack } = this.props;
+            if (currentTrack !== undefined) {
+                const currentIndex = queue.findIndex((t: Track) => t.id === currentTrack.id)
+                const tracksRemainingCount = queue.length - currentIndex
+                return this.state.tracklistHeight - tracksRemainingCount * 80
+            }
         }
     }
 
@@ -39,10 +41,13 @@ class Queue extends Component<QueueProps> {
     }
 
     componentDidUpdate() {
-        const { queue, currentTrack } = this.props
-        const currentIndex = queue.findIndex((t: Track) => t.id === currentTrack.id)
-        if (currentIndex >= queue.length - 2 && this.scrollView !== undefined)
-            this.scrollView.scrollToEnd({ animated: true })
+        const { queue, currentTrack } = this.props;
+        if (currentTrack !== undefined) {
+            const currentIndex = queue.findIndex((t: Track) => t.id === currentTrack.id)
+            if (currentIndex >= queue.length - 2 && this.scrollView !== undefined) {
+                this.scrollView.scrollToEnd({ animated: true });
+            }
+        }
     }
 
     render() {

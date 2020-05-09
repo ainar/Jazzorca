@@ -95,7 +95,6 @@ export function manualAddToQueue(track: Track) {
             await dispatch(removeFromQueue(lastInQueue))
         }
         const ytTrack = await getTrack(track, cache)
-            .catch(e => console.error('cannot get track ' + track.videoId));
 
         if (ytTrack === undefined)
             return
@@ -137,7 +136,6 @@ export function autoSetCurrentTrack(track: Track): ThunkResult<void> {
         console.error('track is undefined')
     }
     return (dispatch: Function) => {
-        TrackPlayer.seekTo(0)
         dispatch(setCurrentTrack(track))
         dispatch({
             type: 'ADD_TO_HISTORY',

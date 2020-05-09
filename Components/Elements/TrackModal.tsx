@@ -35,6 +35,7 @@ export default class TrackModal extends Component<TrackModalProps> {
     render() {
         return (
             <JOModal
+                modalStyle={this.props.modalStyle}
                 ref={(ref) => {
                     this.modal = ref;
                 }}

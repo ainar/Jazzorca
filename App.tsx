@@ -10,6 +10,7 @@ import TrackPlayer, { Track, State, addEventListener } from 'react-native-track-
 import { autoSetCurrentTrack, autoAddToQueue, resetQueue } from './store/actions';
 import { Action } from 'redux';
 import setupPlayer from './helpers/setupPlayer';
+import { PlayerState } from './store/reducers/playerStateReducer';
 
 const DarkTheme = {
     ...DefaultTheme,
@@ -20,6 +21,8 @@ const DarkTheme = {
 };
 
 class App extends React.Component {
+    loadingRelatedTrack: boolean
+
     constructor(props: ComponentProps<any>) {
         super(props)
         RNBootSplash.show();
@@ -35,60 +38,76 @@ class App extends React.Component {
             'playback-track-changed',
             ({ nextTrack }: { nextTrack: string }) => this._setCurrentTrack(nextTrack)
         );
+
+        this.loadingRelatedTrack = false;
     }
 
     _setPlayerState(state: State) {
         const { dispatch } = Store
+        const { queue, currentTrack }: PlayerState = Store.getState().playerState;
 
         dispatch({
             type: 'SET_STATE',
             value: state
-        })
-    }
+        });
 
-    _setCurrentTrack(queueId: string) {
-        const { dispatch } = Store
-        const { queue } = Store.getState().playerState
-
-        if (queueId !== undefined) {
-            if (queue === undefined) {
-                console.error('queue should be defined here')
-                return
-            }
-
-            const track = queue.find((t: Track) => t.id === queueId)
-            if (track !== undefined) {
-                dispatch(autoSetCurrentTrack(track) as unknown as Action)
-
-                // if it's the last track, add a related track
-                if (queue.length > 0 && queue[queue.length - 1].id === queueId) {
-                    this._addRelatedTrackToQueue(track)
-                }
-            }
+        // if it's the last track, add a related track
+        if (queue.length > 0
+            && currentTrack !== undefined
+            && queue[queue.length - 1].id === currentTrack.id
+            && state === TrackPlayer.STATE_PLAYING) {
+            this._addRelatedTrackToQueue(currentTrack);
         }
     }
 
+    _setCurrentTrack(queueId: string) {
+        const { dispatch } = Store;
+        const { queue, playerState }: PlayerState = Store.getState().playerState;
+
+        if (queueId === undefined) {
+            return
+        }
+
+        if (queue === undefined) {
+            console.error('queue should be defined here');
+            return
+        }
+
+        const track = queue.find((t: Track) => t.id === queueId);
+        if (track === undefined) {
+            return
+        }
+
+        dispatch(autoSetCurrentTrack(track) as unknown as Action);
+    }
+
     async _addRelatedTrackToQueue(track: Track) {
-        const { dispatch } = Store
-        const { queue } = Store.getState().playerState
-        const related = track.related.results
-        const unseenRelatedTrack = related.find(
-            (t: Track) => queue.findIndex(tq => tq.videoId === t.videoId) === -1
-        )
-        dispatch(autoAddToQueue(unseenRelatedTrack) as unknown as Action)
+        if (!this.loadingRelatedTrack) {
+            this.loadingRelatedTrack = true;
+
+            const { dispatch } = Store;
+            const { queue } = Store.getState().playerState;
+            const related = track.related.results;
+            const unseenRelatedTrack = related.find(
+                (t: Track) => queue.findIndex(tq => tq.videoId === t.videoId) === -1
+            );
+            await dispatch(autoAddToQueue(unseenRelatedTrack) as unknown as Action);
+            this.loadingRelatedTrack = false;
+        }
     }
 
     componentDidMount() {
-        const { dispatch } = Store
-        const { queue: queueState } = Store.getState().playerState
+        const { dispatch } = Store;
+        const { queue: queueState } = Store.getState().playerState;
         TrackPlayer.getQueue()
             .then((queue: Track[]) => {
+                // reset queue if queue of TrackPlayer is empty
                 if (queue !== undefined
                     && queue.length === 0
                     && queueState.length > 0) {
                     dispatch(resetQueue())
                 }
-            })
+            });
     }
 
     render() {
