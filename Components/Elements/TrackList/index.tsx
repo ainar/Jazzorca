@@ -34,7 +34,8 @@ class TrackList extends React.Component<TrackListProps> {
     render() {
         return (
             <FlatList
-                style={this.props.style}
+                style={[{
+                }, this.props.style]}
                 renderItem={({ item }) =>
                     <JOTrackListItem
                         track={item}
@@ -45,12 +46,14 @@ class TrackList extends React.Component<TrackListProps> {
                         modalExtra={this.props.modalExtra}
                         modalRef={this.props.modalRef}
                         currentTrackChecker={this.props.currentTrackChecker}
+                        horizontal={this.props.horizontal}
                     />}
                 keyExtractor={data => data.videoId}
                 onEndReachedThreshold={0.01}
                 ListHeaderComponent={<View></View>}
                 ListFooterComponent={() => this._displayLoadingNextPage()}
                 ref={this.props.forwardRef}
+                horizontal={this.props.horizontal}
                 {...this.props}
             />
         )

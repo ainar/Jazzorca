@@ -18,6 +18,12 @@ export class Home extends Component<ComponentProps<any>> {
                 <TrackList
                     data={this.props.lastListened}
                     onPress={(track: Track) => this._onPress(track)}
+                    horizontal={true}
+                />
+                <JOTitle>Recommandations</JOTitle>
+                <TrackList
+                    data={this.props.lastListened}
+                    onPress={(track: Track) => this._onPress(track)}
                 />
             </Screen>
         )

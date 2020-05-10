@@ -22,7 +22,8 @@ interface JOTrackListItemProps {
     playlists: Playlist[],
     modalExtra?: (t: Track) => React.ReactNode,
     modalRef: (t: TrackModal | null) => void,
-    currentTrackChecker?: (t1: Track, t2: Track) => boolean
+    currentTrackChecker?: (t1: Track, t2: Track) => boolean,
+    horizontal: boolean
 }
 
 class JOTrackListItem extends React.Component<JOTrackListItemProps> {
@@ -161,7 +162,12 @@ class JOTrackListItem extends React.Component<JOTrackListItemProps> {
                     onPress={() => this._onPress()}
                     disabled={this.state.loading}
                 >
-                    <View style={styles.main_component}>
+                    <View style={[styles.main_component, {
+                        flexDirection: this.props.horizontal ? 'column' : 'row',
+                        width: this.props.horizontal ? 100 : undefined,
+                        marginHorizontal: this.props.horizontal ? 10 : undefined,
+                        height: this.props.horizontal ? 200 : 70
+                    }]}>
                         <View style={styles.imageBox}>
                             <Image
                                 source={this.props.track.artwork}
@@ -173,7 +179,9 @@ class JOTrackListItem extends React.Component<JOTrackListItemProps> {
                             {this._displayNowPlaying()}
                             {this._displayLoading()}
                         </View>
-                        <View style={styles.meta_block}>
+                        <View
+                            style={styles.meta_block}
+                        >
                             <JOText style={[styles.title, styles.meta, this._nowPlaying() ? styles.title_current : undefined]} numberOfLines={2} >{this.props.track.title}</JOText>
                             <JOText style={[styles.artist, styles.meta]} numberOfLines={1} >{this.props.track.artist}</JOText>
                         </View>
@@ -182,19 +190,22 @@ class JOTrackListItem extends React.Component<JOTrackListItemProps> {
             </>
         )
     }
+
+    static defaultProps = {
+        horizontal: false
+    }
 }
+
 
 const styles: any = StyleSheet.create({
     main_component: {
         paddingHorizontal: 10,
-        alignItems: 'center',
+        alignItems: 'flex-start',
         justifyContent: 'center',
-        height: 80,
-        flexDirection: 'row',
-
     },
     meta_block: {
-        flex: 1
+        flex: 1,
+        alignItems: 'flex-start'
     },
     meta: {
         fontSize: 15,
