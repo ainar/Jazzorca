@@ -4,7 +4,7 @@ import Screen from './Screen'
 import TrackList from './Elements/TrackList'
 import JOSearchInput from './Elements/SearchInput'
 import { ytSearch, ytSearchNextPage, ContinuationInfos } from '../API/YouTubeAPI'
-import { appendTracksWithoutDuplicate } from '../helpers/utils'
+import { appendTracksWithoutDuplicate, filterResults } from '../helpers/utils'
 import { connect } from 'react-redux'
 import { playNow } from '../store/actions'
 import { Track } from 'react-native-track-player'
@@ -45,7 +45,7 @@ class Search extends React.Component<SearchProps> {
             .then((results: { results: Track[], continuationInfos: ContinuationInfos }) => {
                 this.continuationInfos = results.continuationInfos
                 this.setState({
-                    results: results.results,
+                    results: filterResults(results.results),
                     loading: false
                 })
             })
@@ -69,7 +69,7 @@ class Search extends React.Component<SearchProps> {
                     this.results = results
                     this.continuationInfos = continuationInfos
                     this.setState({
-                        results: appendTracksWithoutDuplicate(this.state.results, results),
+                        results: appendTracksWithoutDuplicate(this.state.results, filterResults(results)),
                         loadingNextPage: false
                     })
                 })

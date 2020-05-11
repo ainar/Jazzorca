@@ -52,3 +52,8 @@ export default (state: State) => {
             break;
     }
 }
+
+
+export function filterResults(results: Track[]) {
+    return results.filter(({ duration }) => duration !== undefined && duration > 0)
+}

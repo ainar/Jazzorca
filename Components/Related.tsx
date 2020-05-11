@@ -7,6 +7,7 @@ import Screen from './Screen'
 import TrackList from './Elements/TrackList'
 import { Track } from 'react-native-track-player'
 import { ContinuationInfos } from '../helpers/types'
+import { filterResults } from '../helpers/utils'
 
 interface RelatedProps extends ComponentProps<any> {
 
@@ -52,7 +53,7 @@ class Related extends React.Component<RelatedProps> {
         if (track !== undefined && cache[track.videoId] !== undefined)
             return (
                 <TrackList
-                    data={cache[track.videoId].related.results}
+                    data={filterResults(cache[track.videoId].related.results)}
                     onEndReached={() => { this._loadNextPage() }}
                     loadingNextPage={this.state.loadingNextPage}
                     ListFooterComponentStyle={{ height: 40 }}

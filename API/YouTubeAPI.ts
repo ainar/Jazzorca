@@ -193,21 +193,36 @@ export async function getTrackFromYT(videoId: string) {
 
     let url;
     if (bestAudioTrack['url'] !== undefined) {
+        console.log('got an url')
         url = bestAudioTrack['url'];
     } else if (bestAudioTrack['cipher'] !== undefined) {
+        console.log('got a cipher')
         const playerCode = await getPlayerCode(playerConfig);
         const decrypt = loadDecryptionCode(playerCode);
         const streamCipher = bestAudioTrack['cipher'];
         const cipher = compatParseMap(streamCipher);
         url = cipher['url'] + "&" + cipher['sp'] + "=" + decrypt(cipher['s']);
     } else {
-        console.error('no track found!');
+        console.log('no track found')
+        throw "no track found!";
     }
 
-    return {
+    let track: {
+        url: { uri: string },
+        contentType: string,
+        artwork: { uri: string },
+        related: {
+            results: Track[],
+            continuationInfos: {
+                continuation: string,
+                itct: string,
+                session_token: string,
+            }
+        },
+        duration?: number
+    } = {
         url: { uri: url },
         contentType: bestAudioTrack.mimeType,
-        duration: bestAudioTrack.approxDurationMs / 1000,
         artwork: artwork,
         related: {
             results: items,
@@ -218,6 +233,12 @@ export async function getTrackFromYT(videoId: string) {
             }
         }
     };
+
+    if (!isNaN(bestAudioTrack.approxDurationMs)) {
+        track.duration = bestAudioTrack.approxDurationMs / 1000;
+    }
+
+    return track;
 }
 
 /* YOUTUBE SEARCH */
@@ -289,8 +310,25 @@ interface VideoRenderer {
 
 function parseVideoRenderer(videoRenderer: VideoRenderer) {
     const thumbnails = videoRenderer.thumbnail.thumbnails;
-    const length = durationTextToSeconds(videoRenderer.lengthText.simpleText);
-    const title = videoRenderer.title.simpleText || videoRenderer.title.runs[0].text;
+    let length = 0, title = '', lengthText = '';
+    try {
+        lengthText = videoRenderer.lengthText.simpleText;
+    } catch (err) {
+        console.log('Cannot get length text');
+        console.log(videoRenderer);
+    }
+    try {
+        length = durationTextToSeconds(videoRenderer.lengthText.simpleText);
+    } catch (err) {
+        console.log('Cannot get length');
+        console.log(videoRenderer);
+    }
+    try {
+        title = videoRenderer.title.simpleText || videoRenderer.title.runs[0].text;
+    } catch (err) {
+        console.log('Cannot get title');
+        console.log(videoRenderer);
+    }
     const owner = videoRenderer.ownerText
         ? videoRenderer.ownerText.runs[0].text
         : videoRenderer.shortBylineText.runs[0].text;
@@ -301,7 +339,7 @@ function parseVideoRenderer(videoRenderer: VideoRenderer) {
         title: title,
         artist: owner,
         duration: length,
-        lengthText: videoRenderer.lengthText.simpleText
+        lengthText: lengthText
     })
 }
 

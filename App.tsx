@@ -62,7 +62,7 @@ class App extends React.Component {
 
     _setCurrentTrack(queueId: string) {
         const { dispatch } = Store;
-        const { queue, playerState }: PlayerState = Store.getState().playerState;
+        const { queue }: PlayerState = Store.getState().playerState;
 
         if (queueId === undefined) {
             return

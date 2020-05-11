@@ -7,6 +7,7 @@ import { playNow } from '../store/actions'
 import { ThunkDispatch } from 'redux-thunk'
 import { Action, JOTrack, HistoryJOTrack } from '../helpers/types'
 import { State } from '../store/configureStore'
+import { filterResults } from '../helpers/utils'
 
 interface HomeProps {
     dispatch: ThunkDispatch<any, null, Action>,
@@ -91,7 +92,7 @@ export class Home extends Component<HomeProps> {
             }
         }
 
-        let recommendations = Object.values(recommendationsMap);
+        let recommendations = filterResults(Object.values(recommendationsMap));
 
         recommendations = recommendations.sort((a, b) => {
             return b.relations - a.relations

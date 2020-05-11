@@ -25,21 +25,21 @@ export const resetQueue = () => ({
 
 export function playNow(track: Track) {
     return async (dispatch: ThunkDispatch<any, null, Action>, getState: Function) => {
-        const currentTrack = getState().playerState.currentTrack
+        const currentTrack = getState().playerState.currentTrack;
         if (currentTrack !== undefined && currentTrack.videoId === track.videoId) {
-            return TrackPlayer.seekTo(0)
+            return TrackPlayer.seekTo(0); // seek to 0 if already playing
         }
-        dispatch(fetchStart())
-        dispatch(setCurrentTrack(track))
-        await TrackPlayer.pause()
-        await dispatch(manualAddToQueue(track))
+        dispatch(fetchStart());
+        dispatch(setCurrentTrack(track));
+        await TrackPlayer.pause();
+        await dispatch(manualAddToQueue(track));
         await TrackPlayer.getQueue().then(queue => {
-            if (queue.length > 1) TrackPlayer.skip(queue[queue.length - 1].id)
+            if (queue.length > 1) TrackPlayer.skip(queue[queue.length - 1].id);
         })
         await TrackPlayer.getState().then(state => {
-            if (state !== STATE_PLAYING) TrackPlayer.play()
+            if (state !== STATE_PLAYING) TrackPlayer.play();
         })
-        return dispatch(fetchStop())
+        return dispatch(fetchStop());
     }
 }
 
@@ -64,7 +64,7 @@ function addToQueue(track: Track) {
         return dispatch({
             type: 'ADD_TRACK',
             value: track
-        })
+        });
     }
 }
 
@@ -81,22 +81,25 @@ export function autoAddToQueue(track: Track) {
 
 export function manualAddToQueue(track: Track) {
     return async (dispatch: ThunkDispatch<any, null, Action>, getState: Function) => {
-        const { queue, cache } = getState().playerState
+        const { queue, cache } = getState().playerState;
         const lastInQueue = queue[queue.length - 1]
         if (lastInQueue !== undefined && lastInQueue.autoPlay !== undefined && lastInQueue.autoPlay === true) {
             await dispatch(removeFromQueue(lastInQueue))
         }
-        const ytTrack = await getTrack(track, cache)
 
-        if (ytTrack === undefined)
-            return
+        try {
+            const ytTrack = await getTrack(track, cache)
+            const newTrack = {
+                ...ytTrack,
+                autoPlay: false 
+            };
+            console.log(ytTrack)
+            dispatch(addToQueue(newTrack));
+        } catch (e) {
+            throw "cannot get track";
+        }
 
-        const newTrack = {
-            ...ytTrack,
-            autoPlay: false
-        };
-
-        return dispatch(addToQueue(newTrack))
+        return
     }
 }
 
