@@ -33,7 +33,6 @@ export class Home extends Component<HomeProps> {
     }
 
     async _onPress(track: JOTrack) {
-        console.log(this.props.dispatch)
         return this.props.dispatch(playNow(track))
     }
 
