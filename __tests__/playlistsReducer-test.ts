@@ -115,6 +115,63 @@ it('remove track from playlist', () => {
         });
 });
 
+it('remove first track from playlist', () => {
+    const initState: PlaylistsState = {
+        playlists: [
+            {
+                id: 'playlist-1',
+                name: 'Playlist 1',
+                tracks: [
+                    {
+                        id: 'track-1',
+                        url: undefined,
+                        title: 'title-1',
+                        artist: 'artist-1'
+                    },
+                    {
+                        id: 'track-2',
+                        url: undefined,
+                        title: 'title-2',
+                        artist: 'artist-2'
+                    },
+                ]
+            }
+        ]
+    }
+
+    const track = {
+        id: 'track-1'
+    }
+
+    const action = {
+        type: 'REMOVE_TRACK_FROM_PLAYLIST',
+        value: {
+            playlistId: 'playlist-1',
+            trackId: track.id
+        }
+    }
+
+    const newState = playlists(initState, action);
+
+    expect(newState)
+        .toEqual({
+            playlists: [
+                {
+                    id: 'playlist-1',
+                    name: 'Playlist 1',
+                    tracks: [
+                        {
+                            id: 'track-2',
+                            url: undefined,
+                            title: 'title-2',
+                            artist: 'artist-2'
+                        },
+                    ]
+                }
+            ]
+        });
+});
+
 it('add playlist', () => {
     const initState: PlaylistsState = {
         playlists: [
