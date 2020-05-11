@@ -2,26 +2,27 @@ import React, { Component } from 'react'
 import { StyleSheet, TextInput, Alert, Text } from 'react-native'
 
 import JOModal from './JOModal'
-import JOSubTitle from './JOSubTitle';
 import JOButton from './JOButton';
 import { connect } from 'react-redux';
 import { addPlaylist } from '../../store/actions';
+import { ThunkDispatch } from 'redux-thunk';
+import { Action } from 'redux';
 
 
-interface CreatePlaylistModalProps {
+interface AddPlaylistModalProps {
     visible: boolean,
     forwardRef: ((instance: JOModal | null) => void),
-    dispatch: Function,
+    dispatch: ThunkDispatch<any, null, Action>,
 }
 
-class CreatePlaylistModal extends Component<CreatePlaylistModalProps> {
+class AddPlaylistModal extends Component<AddPlaylistModalProps> {
     textInput: TextInput | null
     _jomodal: JOModal | null
     state: {
         name: string
     }
 
-    constructor(props: CreatePlaylistModalProps) {
+    constructor(props: AddPlaylistModalProps) {
         super(props);
 
         this.state = {
@@ -92,4 +93,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default connect()(CreatePlaylistModal)
+export default connect()(AddPlaylistModal)

@@ -8,24 +8,27 @@ import PlaylistListItem from './PlaylistListItem'
 export interface PlaylistListProps {
     data: Playlist[],
     onItemPress: ((playlist: Playlist) => void)
+    onItemLongPress?: ((playlist: Playlist) => void)
 }
 
 export default class PlaylistList extends Component<PlaylistListProps> {
     render() {
         return (
             <>
-            <View style={styles.meta} >
-                <JOText style={styles.duration}>durée totale</JOText>
-            </View>
-            <FlatList
-                data={this.props.data}
-                renderItem={({ item }) => (
-                    <PlaylistListItem
-                        playlist={item}
-                        onPress={() => this.props.onItemPress(item)}
-                    />
-                )}
-            />
+                <View style={styles.meta} >
+                    <JOText style={styles.duration}>durée totale</JOText>
+                </View>
+                <FlatList
+                    data={this.props.data}
+                    keyExtractor={({ id }) => id}
+                    renderItem={({ item: track }) => (
+                        <PlaylistListItem
+                            playlist={track}
+                            onPress={() => this.props.onItemPress(track)}
+                            onLongPress={() => { if (this.props.onItemLongPress !== undefined) this.props.onItemLongPress(track) }}
+                        />
+                    )}
+                />
             </>
         )
     }

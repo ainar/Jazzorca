@@ -1,20 +1,25 @@
 import React, { Component, ComponentProps } from 'react'
 import { connect } from 'react-redux'
 import Screen from './Screen'
-import JOTitle from './Elements/JOTitle'
 import PlaylistList from './Elements/PlaylistList'
 import { Playlist } from '../helpers/types'
 import JOButton from './Elements/JOButton'
-import CreatePlaylistModal from './Elements/CreatePlaylistModal'
+import AddPlaylistModal from './Elements/AddPlaylistModal'
 import JOModal from './Elements/JOModal'
+import { ThunkDispatch } from 'redux-thunk'
+import { Action } from 'redux'
+import { removePlaylist } from '../store/actions'
 
 interface LibraryProps {
     playlists: Playlist[],
-    navigation: any
+    navigation: any,
+    dispatch: ThunkDispatch<any, null, Action>
 }
 
 export class Library extends Component<LibraryProps> {
-    createPlaylistJOModal: JOModal | null
+    addPlaylistJOModal: JOModal | null
+    removePlaylistJOModal: JOModal | null
+    selectedPlaylist: Playlist | null
 
     state: {
         createPlaylistModalVisible: boolean
@@ -27,11 +32,13 @@ export class Library extends Component<LibraryProps> {
             createPlaylistModalVisible: false,
         }
 
-        this.createPlaylistJOModal = null;
+        this.addPlaylistJOModal = null;
+        this.removePlaylistJOModal = null;
+        this.selectedPlaylist = null;
     }
 
     _showCreatePlaylistModal() {
-        this.createPlaylistJOModal?.show();
+        this.addPlaylistJOModal?.show();
     }
 
     _showPlaylist(playlist: Playlist) {
@@ -41,13 +48,35 @@ export class Library extends Component<LibraryProps> {
         });
     }
 
+    _showRemovePlaylistModal(playlist: Playlist) {
+        this.selectedPlaylist = playlist;
+        if (this.removePlaylistJOModal !== null) {
+            this.removePlaylistJOModal.show();
+        }
+    }
+
+    _removePlaylist() {
+        if (this.selectedPlaylist !== null) {
+            this.props.dispatch(removePlaylist(this.selectedPlaylist));
+        };
+        this.removePlaylistJOModal!.hide();
+    }
+
     render() {
         return (
             <Screen>
-                <CreatePlaylistModal
-                    forwardRef={ref => this.createPlaylistJOModal = ref}
+                <AddPlaylistModal
+                    forwardRef={ref => this.addPlaylistJOModal = ref}
                     visible={this.state.createPlaylistModalVisible}
                 />
+                <JOModal
+                    ref={ref => this.removePlaylistJOModal = ref}
+                >
+                    <JOButton
+                        onPress={() => this._removePlaylist()}
+                        title="Supprimer la liste de lecture"
+                    />
+                </JOModal>
                 <JOButton
                     title={"Créer une nouvelle liste"}
                     onPress={() => this._showCreatePlaylistModal()}
@@ -55,6 +84,7 @@ export class Library extends Component<LibraryProps> {
                 <PlaylistList
                     data={this.props.playlists}
                     onItemPress={(playlist: Playlist) => this._showPlaylist(playlist)}
+                    onItemLongPress={(playlist: Playlist) => this._showRemovePlaylistModal(playlist)}
                 />
             </Screen>
         )

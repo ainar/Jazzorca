@@ -5,8 +5,6 @@ import { v4 as uuid } from 'uuid'
 import { getTrackFromYT } from '../API/YouTubeAPI';
 import { ThunkAction, ThunkDispatch } from 'redux-thunk';
 import { Playlist, Action } from '../helpers/types';
-import { Dispatch } from 'react';
-import { AnyAction } from 'redux';
 
 
 type ThunkResult<R> = ThunkAction<R, any, undefined, any>;
@@ -26,7 +24,7 @@ export const resetQueue = () => ({
 })
 
 export function playNow(track: Track) {
-    return async (dispatch: Function, getState: Function) => {
+    return async (dispatch: ThunkDispatch<any, null, Action>, getState: Function) => {
         const currentTrack = getState().playerState.currentTrack
         if (currentTrack !== undefined && currentTrack.videoId === track.videoId) {
             return TrackPlayer.seekTo(0)
@@ -61,7 +59,7 @@ export async function getTrack(track: Track, cache: { [k: string]: Track }) {
 }
 
 function addToQueue(track: Track) {
-    return async (dispatch: Function) => {
+    return async (dispatch: ThunkDispatch<any, null, Action>) => {
         await TrackPlayer.add(track)
         return dispatch({
             type: 'ADD_TRACK',
@@ -71,7 +69,7 @@ function addToQueue(track: Track) {
 }
 
 export function autoAddToQueue(track: Track) {
-    return async (dispatch: Function, getState: Function) => {
+    return async (dispatch: ThunkDispatch<any, null, Action>, getState: Function) => {
         const { cache } = getState().playerState
         const newTrack = {
             ...await getTrack(track, cache),
@@ -82,7 +80,7 @@ export function autoAddToQueue(track: Track) {
 }
 
 export function manualAddToQueue(track: Track) {
-    return async (dispatch: Function, getState: Function) => {
+    return async (dispatch: ThunkDispatch<any, null, Action>, getState: Function) => {
         const { queue, cache } = getState().playerState
         const lastInQueue = queue[queue.length - 1]
         if (lastInQueue !== undefined && lastInQueue.autoPlay !== undefined && lastInQueue.autoPlay === true) {
@@ -103,7 +101,7 @@ export function manualAddToQueue(track: Track) {
 }
 
 export function removeFromQueue(track: Track) {
-    return async (dispatch: Function) => {
+    return async (dispatch: ThunkDispatch<any, null, Action>) => {
         await TrackPlayer.remove(track.id)
         dispatch({
             type: 'REMOVE_FROM_QUEUE',
@@ -182,7 +180,7 @@ export function removeFromPlaylist(playlistId: string, trackId: string) {
 }
 
 export function playPlaylist(playlist: Playlist, trackId: string) {
-    return async (dispatch: (a: any) => Promise<any>, getState: Function) => {
+    return async (dispatch: ThunkDispatch<any, null, Action>, getState: Function) => {
         await dispatch(reset());
         let newTrackId: string = '';
 
@@ -198,5 +196,12 @@ export function playPlaylist(playlist: Playlist, trackId: string) {
         if (newTrackId.length > 0) {
             await skip(newTrackId);
         }
+    }
+}
+
+export function removePlaylist(playlist: Playlist) {
+    return {
+        type: 'REMOVE_PLAYLIST',
+        value: playlist.id
     }
 }

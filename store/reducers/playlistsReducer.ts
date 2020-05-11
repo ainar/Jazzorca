@@ -74,7 +74,8 @@ export function playlists(state: PlaylistsState = initState, action: Action): Pl
 
         case 'REMOVE_PLAYLIST': {
             const newPlaylists = [...state.playlists];
-            newPlaylists.splice(action.value, 1);
+            const playlistIndex = state.playlists.findIndex(({ id }) => id === action.value);
+            newPlaylists.splice(playlistIndex, 1);
 
             newState = {
                 playlists: newPlaylists

@@ -6,6 +6,7 @@ import { formatSeconds } from '../../../helpers/utils';
 
 interface PlaylistListItemProps {
     onPress: ((event: GestureResponderEvent) => void) | undefined,
+    onLongPress?: ((event: GestureResponderEvent) => void) | undefined,
     playlist: Playlist
 }
 
@@ -16,6 +17,7 @@ export default class PlaylistListItem extends Component<PlaylistListItemProps> {
         return (
             <TouchableOpacity
                 onPress={this.props.onPress}
+                onLongPress={this.props.onLongPress}
                 style={styles.main_container}
             >
                 <JOText style={styles.playlist_name}>{this.props.playlist.name}</JOText>
