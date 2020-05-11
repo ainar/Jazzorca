@@ -1,8 +1,7 @@
-import { Track } from 'react-native-track-player'
-import { Action } from '../../helpers/types'
+import { Action, HistoryJOTrack } from '../../helpers/types'
 
 export interface HistoryState {
-    history: Track[]
+    history: HistoryJOTrack[]
 }
 
 const initState: HistoryState = {

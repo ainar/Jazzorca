@@ -1,13 +1,13 @@
 import TrackPlayer, { Track, State } from 'react-native-track-player'
 import { appendTracksWithoutDuplicate } from '../../helpers/utils'
-import { Action } from '../../helpers/types'
+import { Action, JOTrack } from '../../helpers/types'
 
 export interface PlayerState {
     playerState: State,
     loading: boolean,
-    currentTrack: Track | undefined,
-    cache: { [k: string]: Track },
-    queue: Track[]
+    currentTrack: JOTrack | undefined,
+    cache: { [k: string]: JOTrack },
+    queue: JOTrack[]
 }
 
 const initState: PlayerState = {

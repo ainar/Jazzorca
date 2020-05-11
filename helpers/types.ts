@@ -5,8 +5,18 @@ export interface ContinuationInfos {
 
 }
 
-export interface YtTrack extends Track {
+export interface JOTrack extends Track {
     videoId: string,
+    autoPlay?: boolean
+}
+
+export interface HistoryJOTrack extends JOTrack {
+    videoId: string,
+    timestamp: number,
+    related: {
+        results: Track[],
+        continuationInfos: ContinuationInfos
+    }
 }
 
 export interface Playlist {
