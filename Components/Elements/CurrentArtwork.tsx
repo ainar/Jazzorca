@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { Image, StyleProp } from 'react-native'
 import { connect } from 'react-redux'
 import Icon from 'react-native-vector-icons/Feather'

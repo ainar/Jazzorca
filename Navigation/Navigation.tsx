@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
+import { createMaterialBottomTabNavigator, MaterialBottomTabNavigationProp } from '@react-navigation/material-bottom-tabs';
 import Player from '../Components/Player';
 import Search from '../Components/Search';
 import Icon from 'react-native-vector-icons/AntDesign'
@@ -52,6 +52,16 @@ class PlaylistStackContainer extends React.Component {
 
 const Tab = createMaterialBottomTabNavigator();
 
+type TabParamList = {
+    Home: undefined;
+    Search: undefined;
+    Library: undefined;
+};
+
+export type HomeTabNavigationProp =  MaterialBottomTabNavigationProp<TabParamList, "Home">;
+export type SearchTabNavigationProp =  MaterialBottomTabNavigationProp<TabParamList, "Search">;
+export type LibraryTabNavigationProp =  MaterialBottomTabNavigationProp<TabParamList, "Library">;
+
 class TabContainer extends React.Component {
     render() {
         return <>
@@ -83,6 +93,7 @@ class TabContainer extends React.Component {
 
 const PlayerStack = createStackNavigator()
 
+
 class PlayerStackContainer extends React.Component {
     render() {
         return <PlayerStack.Navigator
@@ -95,6 +106,16 @@ class PlayerStackContainer extends React.Component {
 }
 
 const PlayerTab = createMaterialTopTabNavigator()
+
+type PlayerTabParamList = {
+    Queue: undefined;
+    Player: undefined;
+    Related: undefined;
+};
+
+export type QueueTabNavigationProp =  MaterialBottomTabNavigationProp<PlayerTabParamList, "Queue">;
+export type PlayerTabNavigationProp =  MaterialBottomTabNavigationProp<PlayerTabParamList, "Player">;
+export type RelatedTabNavigationProp =  MaterialBottomTabNavigationProp<PlayerTabParamList, "Related">;
 
 class PlayerTabContainer extends React.Component {
     render() {

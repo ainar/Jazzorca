@@ -35,7 +35,7 @@ class Player extends Component<ComponentProps<any>> {
                 </View>
                 <View style={styles.meta_container}>
                     <CurrentTitle style={styles.track_title} numberOfLines={2} />
-                    <CurrentArtist style={styles.track_artist} numberOfLines={1} />
+                    <CurrentArtist numberOfLines={1} />
                 </View>
                 <JOProgressBar />
                 <JOPlayerControls />
@@ -93,9 +93,6 @@ const styles = StyleSheet.create({
         fontSize: 20,
         textAlign: 'center',
         marginHorizontal: 10
-    },
-    track_artist: {
-
     },
     controls: {
         flexDirection: 'row'

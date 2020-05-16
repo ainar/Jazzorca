@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Modal, StyleSheet, View, TouchableWithoutFeedback, ViewStyle, StyleProp } from 'react-native'
+import { StyleSheet, ViewStyle, StyleProp } from 'react-native'
 import JOModal from './JOModal';
 
 interface TrackModalProps {

@@ -8,10 +8,11 @@ import { appendTracksWithoutDuplicate, filterResults } from '../helpers/utils'
 import { connect } from 'react-redux'
 import { playNow } from '../store/actions'
 import { Track } from 'react-native-track-player'
+import { JOThunkDispatch, JOTrack } from '../helpers/types'
 
 interface SearchProps {
     style: StyleProp<typeof Screen>,
-    dispatch: Function
+    dispatch: JOThunkDispatch
 }
 
 class Search extends React.Component<SearchProps> {
@@ -75,7 +76,7 @@ class Search extends React.Component<SearchProps> {
                 })
     }
 
-    async _onPress(track: Track) {
+    async _onPress(track: JOTrack) {
         const { dispatch } = this.props
         return dispatch(playNow(track))
     }
@@ -89,7 +90,7 @@ class Search extends React.Component<SearchProps> {
                     loadingNextPage={this.state.loadingNextPage}
                     ListHeaderComponentStyle={{ height: 85 }}
                     ListFooterComponentStyle={{ height: 40 }}
-                    onPress={(track: Track) => this._onPress(track)}
+                    onPress={(track: JOTrack) => this._onPress(track)}
                 />
                 <View style={styles.search_box}>
                     <JOSearchInput

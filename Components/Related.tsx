@@ -1,16 +1,21 @@
-import React, { ComponentProps } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import { playNow } from '../store/actions'
 import { ytRelatedNextPage } from '../API/YouTubeAPI'
 import JOTitle from './Elements/JOTitle'
 import Screen from './Screen'
 import TrackList from './Elements/TrackList'
-import { Track } from 'react-native-track-player'
-import { ContinuationInfos } from '../helpers/types'
+import { ContinuationInfos, JOTrack, JOThunkDispatch } from '../helpers/types'
 import { filterResults } from '../helpers/utils'
+import { RelatedTabNavigationProp } from '../Navigation/Navigation'
 
-interface RelatedProps extends ComponentProps<any> {
-
+interface RelatedProps {
+    navigation: RelatedTabNavigationProp,
+    dispatch: JOThunkDispatch,
+    cache: {
+        [videoId: string]: JOTrack
+    },
+    track: JOTrack
 }
 
 class Related extends React.Component<RelatedProps> {
@@ -26,7 +31,7 @@ class Related extends React.Component<RelatedProps> {
         }
     }
 
-    _onPress(track: Track) {
+    _onPress(track: JOTrack) {
         const { navigation, dispatch } = this.props
         navigation.navigate('Player')
         return dispatch(playNow(track))
@@ -36,7 +41,7 @@ class Related extends React.Component<RelatedProps> {
         const { track, cache, dispatch } = this.props
         this.setState({ loadingNextPage: true })
         ytRelatedNextPage(cache[track.videoId].related.continuationInfos)
-            .then(({ results, continuationInfos }: { results: Track[], continuationInfos: ContinuationInfos }) => {
+            .then(({ results, continuationInfos }: { results: JOTrack[], continuationInfos: ContinuationInfos }) => {
                 dispatch({
                     type: 'ADD_RELATED',
                     value: { results, continuationInfos }
@@ -57,7 +62,7 @@ class Related extends React.Component<RelatedProps> {
                     onEndReached={() => { this._loadNextPage() }}
                     loadingNextPage={this.state.loadingNextPage}
                     ListFooterComponentStyle={{ height: 40 }}
-                    onPress={(track: Track) => this._onPress(track)}
+                    onPress={(track: JOTrack) => this._onPress(track)}
                 />
 
             )
