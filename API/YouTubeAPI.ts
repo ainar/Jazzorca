@@ -1,5 +1,8 @@
-import { durationTextToSeconds } from '../helpers/utils'
-import { Track } from 'react-native-track-player'
+import { v4 as uuid } from 'uuid';
+
+import { durationTextToSeconds } from '../helpers/utils';
+import { Track } from 'react-native-track-player';
+import { JOTrack } from '../helpers/types';
 
 /* GET YOUTUBE TRACK */
 
@@ -577,8 +580,21 @@ export async function ytSearchNextPage(
 
 /* RELATED VIDEOS */
 
-export async function ytRelatedNextPage(
-    continuationInfos: ContinuationInfos
-) {
-    return ytNextPage(continuationInfos, 'RELATED')
+export async function ytRelatedNextPage(continuationInfos: ContinuationInfos) {
+    return ytNextPage(continuationInfos, 'RELATED');
+}
+
+export async function getTrack(track: JOTrack, cache: { [k: string]: JOTrack }) {
+    let ytTrack;
+    if (cache[track.videoId] === undefined || cache[track.videoId].url === undefined) {
+        ytTrack = await getTrackFromYT(track.videoId);
+    } else {
+        ytTrack = cache[track.videoId];
+    }
+
+    return {
+        ...track,
+        ...ytTrack,
+        id: uuid(),
+    }
 }

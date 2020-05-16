@@ -4,19 +4,18 @@ import TrackList from './Elements/TrackList'
 import Screen from './Screen'
 import { Track } from 'react-native-track-player'
 import JOSubTitle from './Elements/JOSubTitle'
-import { Playlist, Action } from '../helpers/types'
+import { Playlist, JOThunkDispatch } from '../helpers/types'
 import JOButton from './Elements/JOButton'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { connect } from 'react-redux'
 import TrackModal from './Elements/TrackModal'
-import { ThunkDispatch, ThunkAction } from 'redux-thunk'
-import { AnyAction } from 'redux'
+import { PlaylistScreenRouteProp } from '../Navigation/Navigation'
 
 interface PlaylistScreenProps {
     playlist: Playlist,
     playlists: Playlist[],
-    route: any,
-    dispatch: (a: any) => Promise<any>
+    route: PlaylistScreenRouteProp,
+    dispatch: JOThunkDispatch
 }
 
 class PlaylistScreen extends Component<PlaylistScreenProps> {

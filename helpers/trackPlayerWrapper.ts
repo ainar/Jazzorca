@@ -1,11 +1,23 @@
 import TrackPlayer from 'react-native-track-player'
 
+
 export async function skipToPrevious() {
-    return TrackPlayer.getPosition()
-        .then(position => {
-            if (position > 1)
-                return TrackPlayer.seekTo(0)
-            else
-                return TrackPlayer.skipToPrevious()
-        })
+    const position = await TrackPlayer.getPosition();
+    if (position > 1)
+        return TrackPlayer.seekTo(0);
+    else
+        return TrackPlayer.skipToPrevious();
 }
+
+export async function skip(trackId: string) {
+    await TrackPlayer.skip(trackId)
+    return TrackPlayer.play()
+}
+
+const JOTrackPlayer: typeof TrackPlayer = {
+    ...TrackPlayer,
+    skipToPrevious,
+    skip
+}
+
+export default JOTrackPlayer

@@ -4,7 +4,7 @@ import Player from '../Components/Player';
 import Search from '../Components/Search';
 import Icon from 'react-native-vector-icons/AntDesign'
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import { createStackNavigator } from '@react-navigation/stack';
+import { createStackNavigator, StackNavigationProp } from '@react-navigation/stack';
 import CompactPlayer from '../Components/Elements/CompactPlayer';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import Related from '../Components/Related';
@@ -13,23 +13,35 @@ import { Dimensions } from 'react-native';
 import Home from '../Components/Home';
 import Library from '../Components/Library';
 import PlaylistScreen from '../Components/Playlist';
+import { Playlist } from '../helpers/types';
+import { RouteProp } from '@react-navigation/core';
 
 
 const PlaylistStack = createStackNavigator();
+
+type PlaylistStackParamList = {
+    Library: undefined;
+    PlaylistScreen: { playlist: Playlist };
+};
+
+export type LibraryNavigationProp =  StackNavigationProp<PlaylistStackParamList, "Library">;
+export type LibraryRouteProp =  RouteProp<PlaylistStackParamList, "Library">;
+export type PlaylistScreenNavigationProp =  StackNavigationProp<PlaylistStackParamList, "PlaylistScreen">;
+export type PlaylistScreenRouteProp =  RouteProp<PlaylistStackParamList, "PlaylistScreen">;
 
 class PlaylistStackContainer extends React.Component {
     render() {
         return (
             <PlaylistStack.Navigator>
                 <PlaylistStack.Screen
-                    name="PlaylistList"
+                    name="Library"
                     component={Library}
                     options={{
                         title: "Listes de lecture"
                     }}
                 />
                 <PlaylistStack.Screen
-                    name="Playlist"
+                    name="PlaylistScreen"
                     component={PlaylistScreen}
                 />
             </PlaylistStack.Navigator>

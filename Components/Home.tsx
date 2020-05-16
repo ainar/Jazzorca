@@ -5,12 +5,12 @@ import Screen from './Screen'
 import JOTitle from './Elements/JOTitle'
 import { playNow } from '../store/actions'
 import { ThunkDispatch } from 'redux-thunk'
-import { Action, JOTrack, HistoryJOTrack } from '../helpers/types'
+import { JOThunkDispatch, JOTrack, HistoryJOTrack } from '../helpers/types'
 import { State } from '../store/configureStore'
 import { filterResults } from '../helpers/utils'
 
 interface HomeProps {
-    dispatch: ThunkDispatch<any, null, Action>,
+    dispatch: JOThunkDispatch,
     history: HistoryJOTrack[]
 }
 

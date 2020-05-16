@@ -2,18 +2,17 @@ import React, { Component, ComponentProps } from 'react'
 import { connect } from 'react-redux'
 import Screen from './Screen'
 import PlaylistList from './Elements/PlaylistList'
-import { Playlist } from '../helpers/types'
+import { Playlist, JOThunkDispatch } from '../helpers/types'
 import JOButton from './Elements/JOButton'
 import AddPlaylistModal from './Elements/AddPlaylistModal'
 import JOModal from './Elements/JOModal'
-import { ThunkDispatch } from 'redux-thunk'
-import { Action } from 'redux'
 import { removePlaylist } from '../store/actions'
+import { LibraryNavigationProp } from '../Navigation/Navigation'
 
 interface LibraryProps {
     playlists: Playlist[],
-    navigation: any,
-    dispatch: ThunkDispatch<any, null, Action>
+    navigation: LibraryNavigationProp,
+    dispatch: JOThunkDispatch
 }
 
 export class Library extends Component<LibraryProps> {
@@ -43,7 +42,7 @@ export class Library extends Component<LibraryProps> {
 
     _showPlaylist(playlist: Playlist) {
         const { navigation } = this.props;
-        navigation.navigate('Playlist', {
+        navigation.navigate('PlaylistScreen', {
             playlist: playlist
         });
     }
