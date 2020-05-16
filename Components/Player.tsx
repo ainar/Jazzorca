@@ -1,5 +1,5 @@
 import React, { Component, ComponentProps } from 'react'
-import { StyleSheet, View, TouchableHighlight } from 'react-native'
+import { StyleSheet, View, TouchableHighlight, ActivityIndicator } from 'react-native'
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import JOProgressBar from './Elements/ProgressBar'
@@ -9,17 +9,110 @@ import CurrentArtwork from './Elements/CurrentArtwork';
 import CurrentTitle from './Elements/CurrentTitle';
 import JOText from './Elements/JOText';
 import Screen from './Screen';
+import { PlayerTabNavigationProp } from '../Navigation/Navigation'
 
-class Player extends Component<ComponentProps<any>> {
+import { search } from 'react-native-sonos'
+import JOModal from './Elements/JOModal'
+import { relativeTimeRounding } from 'moment'
+import JOButton from './Elements/JOButton'
+
+interface PlayerProps {
+    navigation: PlayerTabNavigationProp
+}
+
+type SonosSpeaker = {
+    sonos: any,
+    name: string,
+    serialNum: string,
+}
+
+class Player extends Component<PlayerProps> {
+
+    _sonosSpeakerModal: JOModal | null
+
+    state: {
+        sonosSpeakers: SonosSpeaker[],
+        searchingSonosSpeakers: boolean
+    }
+
+    constructor(props: PlayerProps) {
+        super(props);
+
+        this.state = {
+            sonosSpeakers: [],
+            searchingSonosSpeakers: false
+        }
+
+        this._sonosSpeakerModal = null;
+    }
+
+    _searchSonos() {
+        this.setState({
+            searchingSonosSpeakers: true
+        })
+        setTimeout(() => {
+            this.setState({
+                searchingSonosSpeakers: false
+            })
+        }, 10000);
+
+        this._sonosSpeakerModal?.show();
+        return search(null, (sonos: any, model: string) => this._processDevice(sonos, model))
+    }
+
+
+    _processDevice(sonos: any, model: string) {
+        console.log(model);
+        if (model.split(' ')[2].startsWith("Sonos")) {
+            sonos.deviceDescription((_: null, deviceDescription: any) => this._addDevice(sonos, deviceDescription))
+        }
+    }
+
+    _addDevice(sonos: any, deviceDescription: any) {
+        console.log(deviceDescription);
+        const name = deviceDescription.roomName;
+        const serialNum = deviceDescription.serialNum;
+        const sonosSpeakers = [...this.state.sonosSpeakers];
+        if (sonosSpeakers.findIndex(s => s.sonos.host === sonos.host) === -1) {
+            sonosSpeakers.push({ sonos, name, serialNum });
+            this.setState({
+                sonosSpeakers,
+                searchingSonosSpeakers: false
+            });
+        }
+    }
+
+    _displaySonosButton() {
+        if (this.state.searchingSonosSpeakers) {
+            return <ActivityIndicator size={40} />
+        } else {
+            return <MaterialCommunityIcon name='speaker' size={40} />
+        }
+    }
+
+    _displaySonosSpeakers() {
+        return this.state.sonosSpeakers.map(({ name, serialNum }) => (
+            <JOButton title={name} key={serialNum} />
+        ));
+    }
+
     render() {
         return (
             <Screen style={styles.main_component}>
+                <JOModal
+                    ref={ref => this._sonosSpeakerModal = ref}
+                >
+                    {this._displaySonosSpeakers()}
+                </JOModal>
                 <View style={styles.header}>
                     <TouchableHighlight onPress={() => this.props.navigation.goBack()}>
                         <View style={styles.back_button}>
                             <MaterialIcon name='arrow-back' size={30} color={'rgba(255,255,255,0.8)'} />
                             <JOText style={styles.back_text}>Retour</JOText>
                         </View>
+                    </TouchableHighlight>
+                    <TouchableHighlight onPress={() => this._searchSonos()}>
+                        {this._displaySonosButton()}
                     </TouchableHighlight>
                 </View>
                 <View style={styles.footer}>
@@ -53,7 +146,10 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 40,
         left: 20,
+        right: 20,
         height: 20,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
     },
     back_text: {
         fontWeight: 'bold',
