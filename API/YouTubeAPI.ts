@@ -599,7 +599,7 @@ export async function ytRelatedNextPage(continuationInfos: ContinuationInfos) {
     return ytNextPage(continuationInfos, 'RELATED');
 }
 
-export async function getTrack(track: JOTrack, cache: { [k: string]: JOTrack }) {
+export async function getTrack(track: JOTrack, cache: { [k: string]: JOTrack }, keepId = false) {
     let ytTrack;
     if (cache[track.videoId] === undefined || cache[track.videoId].url === undefined) {
         ytTrack = await getTrackFromYT(track.videoId);
@@ -610,6 +610,6 @@ export async function getTrack(track: JOTrack, cache: { [k: string]: JOTrack }) 
     return {
         ...track,
         ...ytTrack,
-        id: uuid(),
+        id: keepId ? track.id : uuid(),
     }
 }

@@ -29,7 +29,7 @@ export const addToPlaylist = (playlistId: string, track: JOTrack): JOAction => (
     type: 'ADD_TRACK_TO_PLAYLIST',
     value: {
         playlistId: playlistId,
-        track: track
+        track: { ...track, id: uuid() }
     }
 });
 
@@ -114,7 +114,7 @@ export function autoAddToQueue(track: JOTrack): JOThunkAction {
     }
 }
 
-export function manualAddToQueue(track: JOTrack): JOThunkAction {
+export function manualAddToQueue(track: JOTrack, keepId = false): JOThunkAction {
     return async (dispatch, getState) => {
         const { queue, cache } = getState().playerState;
         const lastInQueue = queue[queue.length - 1]
@@ -123,13 +123,13 @@ export function manualAddToQueue(track: JOTrack): JOThunkAction {
         }
 
         try {
-            const ytTrack = await getTrack(track, cache)
+            const ytTrack = await getTrack(track, cache, keepId)
             const newTrack = {
                 ...ytTrack,
                 autoPlay: false
             };
             console.log(ytTrack)
-            dispatch(addToQueue(newTrack));
+            return dispatch(addToQueue(newTrack));
         } catch (e) {
             throw "cannot get track";
         }
@@ -161,21 +161,18 @@ export function autoSetCurrentTrack(track: JOTrack): JOThunkAction {
 }
 
 export function playPlaylist(playlist: Playlist, trackId: string): JOThunkAction {
-    return async (dispatch, getState) => {
+    return async (dispatch) => {
         dispatch(reset());
-        let newTrackId: string = '';
 
         for (let track of playlist.tracks) {
-            dispatch(manualAddToQueue(track))
-                .catch(() => console.error('cannot add track ' + track.videoId + ' to queue'));
-            if (track.id === trackId) {
-                const { queue } = getState().playerState;
-                newTrackId = queue[queue.length - 1].id;
+            try {
+                await dispatch(manualAddToQueue(track, true));
+                if (track.id === trackId) {
+                    JOTrackPlayer.skip(trackId);
+                }
+            } catch (error) {
+                console.error('cannot add track ' + track.videoId + ' to queue: ' + error);
             }
         };
-
-        if (newTrackId.length > 0) {
-            JOTrackPlayer.skip(newTrackId);
-        }
     }
 }
