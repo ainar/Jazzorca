@@ -1,13 +1,14 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { playNow } from '../store/actions'
-import { ytRelatedNextPage } from '../API/YouTubeAPI'
+import { ytRelatedNextPage, ContinuationInfos } from '../API/YouTubeAPI'
 import JOTitle from './Elements/JOTitle'
 import Screen from './Screen'
 import TrackList from './Elements/TrackList'
-import { ContinuationInfos, JOTrack, JOThunkDispatch } from '../helpers/types'
+import { JOTrack, JOThunkDispatch } from '../helpers/types'
 import { filterResults } from '../helpers/utils'
 import { RelatedTabNavigationProp } from '../Navigation/Navigation'
+import { State } from '../store/configureStore'
 
 interface RelatedProps {
     navigation: RelatedTabNavigationProp,
@@ -15,7 +16,7 @@ interface RelatedProps {
     cache: {
         [videoId: string]: JOTrack
     },
-    track: JOTrack
+    track: JOTrack | undefined
 }
 
 class Related extends React.Component<RelatedProps> {
@@ -32,25 +33,27 @@ class Related extends React.Component<RelatedProps> {
     }
 
     _onPress(track: JOTrack) {
-        const { navigation, dispatch } = this.props
-        navigation.navigate('Player')
-        return dispatch(playNow(track))
+        const { navigation, dispatch } = this.props;
+        navigation.navigate('Player');
+        return dispatch(playNow(track));
     }
 
     _loadNextPage() {
-        const { track, cache, dispatch } = this.props
-        this.setState({ loadingNextPage: true })
-        ytRelatedNextPage(cache[track.videoId].related.continuationInfos)
-            .then(({ results, continuationInfos }: { results: JOTrack[], continuationInfos: ContinuationInfos }) => {
-                dispatch({
-                    type: 'ADD_RELATED',
-                    value: { results, continuationInfos }
-                })
+        const { track, cache, dispatch } = this.props;
+        if (track !== undefined) {
+            this.setState({ loadingNextPage: true });
+            ytRelatedNextPage(cache[track.videoId].related.continuationInfos)
+                .then(({ results, continuationInfos }) => {
+                    dispatch({
+                        type: 'ADD_RELATED',
+                        value: { results, continuationInfos }
+                    })
 
-                this.setState({
-                    loadingNextPage: false
-                })
-            })
+                    this.setState({
+                        loadingNextPage: false
+                    })
+                });
+        }
     }
 
     _showRelated() {
@@ -78,12 +81,10 @@ class Related extends React.Component<RelatedProps> {
     }
 }
 
-const mapStateToProps = (state: any) => {
-    return {
-        track: state.playerState.currentTrack,
-        cache: state.playerState.cache
-    }
-}
+const mapStateToProps = (state: State) => ({
+    track: state.playerState.currentTrack,
+    cache: state.playerState.cache
+});
 
 
 export default connect(mapStateToProps)(Related)

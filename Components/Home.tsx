@@ -4,7 +4,7 @@ import TrackList from './Elements/TrackList'
 import Screen from './Screen'
 import JOTitle from './Elements/JOTitle'
 import { playNow } from '../store/actions'
-import { JOThunkDispatch, JOTrack, HistoryJOTrack } from '../helpers/types'
+import { JOThunkDispatch, JOTrack, HistoryJOTrack, ResultJOTrack } from '../helpers/types'
 import { State } from '../store/configureStore'
 import { filterResults } from '../helpers/utils'
 
@@ -54,32 +54,25 @@ export class Home extends Component<HomeProps> {
 
         const recommendationsMap = history.reduce(
             (
-                previousValue: { [videoId: string]: JOTrack },
-                currentValue: JOTrack,
-                currentIndex: number,
-                array: JOTrack[]
+                previousRecommendations: { [videoId: string]: ResultJOTrack },
+                track: JOTrack,
             ) => {
-                previousValue;
-                currentValue;
-                currentIndex;
-                array;
-
                 let recommendations = {
-                    ...previousValue
+                    ...previousRecommendations
                 }
 
-                for (const relatedTrack of currentValue.related.results) {
+                for (const relatedTrack of track.related.results) {
                     if (!(relatedTrack.videoId in recommendations)) {
                         recommendations[relatedTrack.videoId] = {
                             ...relatedTrack,
                             relations: 1
                         };
                     } else {
-                        recommendations[relatedTrack.videoId].relations++;
+                        recommendations[relatedTrack.videoId].relations!++;
                     }
                 }
 
-                historyVideoIds.add(currentValue.videoId);
+                historyVideoIds.add(track.videoId);
 
                 return recommendations
             },
@@ -94,7 +87,7 @@ export class Home extends Component<HomeProps> {
         let recommendations = filterResults(Object.values(recommendationsMap));
 
         recommendations = recommendations.sort((a, b) => {
-            return b.relations - a.relations
+            return b.relations! - a.relations!
         }).slice(0, 100);
 
         this.setState({ recommendations });

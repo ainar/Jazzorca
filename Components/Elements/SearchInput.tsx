@@ -17,8 +17,6 @@ const JOSearchInput = (props: JOSearchInputProps) => {
     )
 }
 
-export default JOSearchInput
-
 const styles = StyleSheet.create({
     input: {
         paddingHorizontal: 15,
@@ -30,3 +28,5 @@ const styles = StyleSheet.create({
         backgroundColor: 'white'
     },
 })
+
+export default JOSearchInput

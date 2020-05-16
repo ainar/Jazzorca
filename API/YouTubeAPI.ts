@@ -1,8 +1,7 @@
 import { v4 as uuid } from 'uuid';
 
 import { durationTextToSeconds } from '../helpers/utils';
-import { Track } from 'react-native-track-player';
-import { JOTrack } from '../helpers/types';
+import { JOTrack, ResultJOTrack } from '../helpers/types';
 
 /* GET YOUTUBE TRACK */
 
@@ -215,7 +214,7 @@ export async function getTrackFromYT(videoId: string) {
         contentType: string,
         artwork: { uri: string },
         related: {
-            results: Track[],
+            results: ResultJOTrack[],
             continuationInfos: {
                 continuation: string,
                 itct: string,
@@ -311,7 +310,7 @@ interface VideoRenderer {
     videoId: string
 }
 
-function parseVideoRenderer(videoRenderer: VideoRenderer) {
+function parseVideoRenderer(videoRenderer: VideoRenderer): ResultJOTrack {
     const thumbnails = videoRenderer.thumbnail.thumbnails;
     let length = 0, title = '', lengthText = '';
     try {
@@ -349,7 +348,7 @@ function parseVideoRenderer(videoRenderer: VideoRenderer) {
 function itemSectionRendererToTrackList(
     itemSectionRendererContent: any,
     videoRendererObjectName: string = 'videoRenderer'
-) {
+): ResultJOTrack[] {
     return itemSectionRendererContent
         .filter((d: any) => d[videoRendererObjectName] !== undefined)
         .map((item: any) => {
@@ -433,7 +432,7 @@ function parseSearch(initialData: InitialDataSearch) {
 }
 
 export async function relatedVideos(videoId: string): Promise<{
-    results: Track[],
+    results: ResultJOTrack[],
     continuationInfos: ContinuationInfos
 }> {
     const data = await fetch(DESKTOP_BASE_URL + 'watch?v=' + videoId, {
@@ -473,7 +472,7 @@ interface InitialDataRelated {
 }
 
 function parseRelated(initialData: InitialDataRelated): {
-    items: Track[],
+    items: ResultJOTrack[],
     continuation: string,
     clickTrackingParams: string
 } {
@@ -499,12 +498,15 @@ function parseRelated(initialData: InitialDataRelated): {
     return { items, continuation, clickTrackingParams }
 }
 
-export async function ytNextPage(
+export function ytNextPage(
     continuationInfos: ContinuationInfos,
     type: string
-) {
+): Promise<{
+    results: ResultJOTrack[],
+    continuationInfos: ContinuationInfos
+}> {
 
-    let ressourceName, sectionName, videoRendererObjectName;
+    let ressourceName, sectionName: string[], videoRendererObjectName: string;
     switch (type) {
         case 'SEARCH':
             ressourceName = 'results?search_query='
@@ -535,39 +537,52 @@ export async function ytNextPage(
     const body = 'session_token='
         + encodeURIComponent(continuationInfos.session_token);
 
-    const dataJson = await fetch(url, {
+    return fetch(url, {
         method: "POST",
         headers: DESKTOP_UA,
         body: body
     })
         .then(data => data.json())
-        .catch(console.error);
+        .then(dataJson => {
 
-    const xsrfToken = dataJson[1]['xsrf_token'];
+            const xsrfToken = dataJson[1]['xsrf_token'];
 
-    const sectionContinuation = dataJson[1]
-        .response
-        .continuationContents[sectionName[0]];
+            const sectionContinuation = dataJson[1]
+                .response
+                .continuationContents[sectionName[0]];
 
-    const items = itemSectionRendererToTrackList(
-        sectionContinuation[sectionName[1]],
-        videoRendererObjectName
-    );
+            const items = itemSectionRendererToTrackList(
+                sectionContinuation[sectionName[1]],
+                videoRendererObjectName
+            );
 
-    const nextContinuationData = sectionContinuation
-        .continuations[0]
-        .nextContinuationData;
+            const nextContinuationData = sectionContinuation
+                .continuations[0]
+                .nextContinuationData;
 
-    const { continuation, clickTrackingParams } = nextContinuationData;
+            const { continuation, clickTrackingParams } = nextContinuationData;
 
-    return {
-        results: items,
-        continuationInfos: {
-            continuation: continuation,
-            itct: clickTrackingParams,
-            session_token: xsrfToken
-        }
-    }
+            return {
+                results: items,
+                continuationInfos: {
+                    continuation: continuation,
+                    itct: clickTrackingParams,
+                    session_token: xsrfToken
+                }
+            }
+        })
+        .catch(error => {
+            console.error(error);
+            return {
+                results: [],
+                continuationInfos: {
+                    continuation: '',
+                    itct: '',
+                    session_token: ''
+                }
+            }
+        });
+
 }
 
 export async function ytSearchNextPage(

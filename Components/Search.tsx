@@ -7,8 +7,7 @@ import { ytSearch, ytSearchNextPage, ContinuationInfos } from '../API/YouTubeAPI
 import { appendTracksWithoutDuplicate, filterResults } from '../helpers/utils'
 import { connect } from 'react-redux'
 import { playNow } from '../store/actions'
-import { Track } from 'react-native-track-player'
-import { JOThunkDispatch, JOTrack } from '../helpers/types'
+import { JOThunkDispatch, JOTrack, ResultJOTrack } from '../helpers/types'
 
 interface SearchProps {
     style: StyleProp<typeof Screen>,
@@ -18,10 +17,10 @@ interface SearchProps {
 class Search extends React.Component<SearchProps> {
     query: string
     continuationInfos: ContinuationInfos | undefined
-    results: Track[]
+    results: ResultJOTrack[]
 
     state: {
-        results: Track[],
+        results: ResultJOTrack[],
         loading: boolean,
         loadingNextPage: boolean,
     }
@@ -43,7 +42,7 @@ class Search extends React.Component<SearchProps> {
         this.setState({ loading: true, results: [] })
 
         await ytSearch(nativeEvent.text)
-            .then((results: { results: Track[], continuationInfos: ContinuationInfos }) => {
+            .then((results) => {
                 this.continuationInfos = results.continuationInfos
                 this.setState({
                     results: filterResults(results.results),
@@ -66,7 +65,7 @@ class Search extends React.Component<SearchProps> {
         this.setState({ loadingNextPage: true })
         if (this.continuationInfos)
             ytSearchNextPage(this.query, this.continuationInfos)
-                .then(({ results, continuationInfos }: { results: Track[], continuationInfos: ContinuationInfos }) => {
+                .then(({ results, continuationInfos }) => {
                     this.results = results
                     this.continuationInfos = continuationInfos
                     this.setState({

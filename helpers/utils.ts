@@ -1,5 +1,6 @@
 import moment from 'moment'
 import TrackPlayer, { Track, State } from 'react-native-track-player'
+import { ResultJOTrack } from './types'
 
 export function formatSeconds(seconds: number) {
     return Math.floor(seconds / 60) + ':' + ('0' + Math.floor(seconds % 60)).slice(-2)
@@ -17,10 +18,10 @@ export function durationTextToSeconds(txt: string) {
     return moment.duration(durationObject).asSeconds()
 }
 
-export function appendTracksWithoutDuplicate(old: Track[], append: Track[]) {
+export function appendTracksWithoutDuplicate(old: ResultJOTrack[], append: ResultJOTrack[]) {
     const newAppend = append.filter(
         new_item => old
-            .map((old_item: Track) => old_item.videoId)
+            .map((old_item: ResultJOTrack) => old_item.videoId)
             .indexOf(new_item.videoId) === -1
     )
     return [...old, ...newAppend]
@@ -54,6 +55,6 @@ export default (state: State) => {
 }
 
 
-export function filterResults(results: Track[]) {
+export function filterResults(results: ResultJOTrack[]) {
     return results.filter(({ duration }) => duration !== undefined && duration > 0)
 }

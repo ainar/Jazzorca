@@ -1,4 +1,4 @@
-import { Action, HistoryJOTrack } from '../../helpers/types'
+import { JOAction, HistoryJOTrack } from '../../helpers/types'
 
 export interface HistoryState {
     history: HistoryJOTrack[]
@@ -9,7 +9,7 @@ const initState: HistoryState = {
 }
 
 
-export function history(state = initState, action: Action) {
+export function history(state = initState, action: JOAction) {
     let newState
 
     switch (action.type) {

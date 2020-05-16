@@ -45,15 +45,3 @@ export default class TrackModal extends Component<TrackModalProps> {
         )
     }
 }
-
-const styles = StyleSheet.create({
-    modal_content: {
-        backgroundColor: 'rgba(0,0,0,0.2)',
-        margin: 20
-    },
-    modal_screen: {
-        flex: 1,
-        alignItems: 'stretch',
-        justifyContent: 'center'
-    },
-})

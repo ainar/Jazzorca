@@ -1,12 +1,12 @@
 import React from 'react'
-import { Image, StyleProp } from 'react-native'
+import { Image, StyleProp, ImageStyle } from 'react-native'
 import { connect } from 'react-redux'
 import Icon from 'react-native-vector-icons/Feather'
-import { Track } from 'react-native-track-player'
+import { JOTrack } from '../../helpers/types'
 
 interface CurrentArtworkProps {
-    track: Track,
-    style: StyleProp<any>,
+    track: JOTrack | undefined,
+    style: StyleProp<ImageStyle>,
     size: number
 }
 

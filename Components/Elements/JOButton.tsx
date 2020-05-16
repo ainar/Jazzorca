@@ -1,10 +1,11 @@
 import React from 'react'
 import { StyleSheet, TouchableOpacity, View, TouchableOpacityProperties } from 'react-native'
 import JOText from './JOText'
+import { Icon } from 'react-native-vector-icons/Icon'
 
 interface JOButtonProps extends TouchableOpacityProperties {
     title: string,
-    icon?: React.ReactNode
+    icon?: Icon
 }
 
 const JOButton = (props: JOButtonProps) => {
