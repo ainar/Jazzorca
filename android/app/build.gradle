@@ -187,17 +187,9 @@ android {
 
         }
     }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
 }
 
-apply from: '../../node_modules/react-native-unimodules/gradle.groovy'
-
 dependencies {
-    addUnimodulesDependencies([exclude: ['expo-face-detector', 'expo-image-loader', 'expo-permissions', 'expo-constants', 'unimodules-app-loader', 'unimodules-barcode-scanner-interface', 'unimodules-camera-interface', 'unimodules-constants-interface', 'unimodules-font-interface', 'unimodules-image-loader-interface', 'unimodules-permissions-interface', 'unimodules-sensors-interface', 'unimodules-task-manager-interface', 'unimodules-face-detector-interface']])
     implementation fileTree(dir: "libs", include: ["*.jar"])
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
