@@ -8,7 +8,7 @@ import AddPlaylistModal from './Elements/AddPlaylistModal'
 import JOModal from './Elements/JOModal'
 import { removePlaylist } from '../store/actions'
 import { LibraryNavigationProp } from '../Navigation/Navigation'
-import { State } from '../store/configureStore'
+import { JOState } from '../store/configureStore'
 
 interface LibraryProps {
     playlists: Playlist[],
@@ -91,7 +91,7 @@ export class Library extends Component<LibraryProps> {
     }
 }
 
-const mapStateToProps = (state: State) => {
+const mapStateToProps = (state: JOState) => {
     return {
         playlists: state.playlists.playlists
     }

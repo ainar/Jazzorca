@@ -1,21 +1,23 @@
-import React, { Component, ComponentProps, LegacyRef, Ref } from 'react'
+import React from 'react'
 import { FlatList, LayoutChangeEvent } from 'react-native'
 import { connect } from 'react-redux'
 import JOTitle from './Elements/JOTitle'
 import TrackList from './Elements/TrackList'
 import Screen from './Screen'
-import { Track } from 'react-native-track-player'
 import JOTrackPlayer from '../helpers/trackPlayerWrapper'
+import { JOTrack } from '../helpers/types'
+import { JOState } from '../store/configureStore'
 
-interface QueueProps extends ComponentProps<any> {
-
+interface QueueProps {
+    queue: JOTrack[],
+    currentTrack: JOTrack | undefined
 }
 
-class Queue extends Component<QueueProps> {
+class Queue extends React.Component<QueueProps> {
     state: {
         tracklistHeight: number
     }
-    scrollView: FlatList<Track> | undefined
+    scrollView: FlatList<JOTrack> | undefined
 
     constructor(props: QueueProps) {
         super(props)
@@ -28,7 +30,7 @@ class Queue extends Component<QueueProps> {
         if (this.state.tracklistHeight !== undefined) {
             const { queue, currentTrack } = this.props;
             if (currentTrack !== undefined) {
-                const currentIndex = queue.findIndex((t: Track) => t.id === currentTrack.id)
+                const currentIndex = queue.findIndex(t => t.id === currentTrack.id)
                 const tracksRemainingCount = queue.length - currentIndex
                 return this.state.tracklistHeight - tracksRemainingCount * 80
             }
@@ -43,7 +45,7 @@ class Queue extends Component<QueueProps> {
     componentDidUpdate() {
         const { queue, currentTrack } = this.props;
         if (currentTrack !== undefined) {
-            const currentIndex = queue.findIndex((t: Track) => t.id === currentTrack.id)
+            const currentIndex = queue.findIndex(t => t.id === currentTrack.id)
             if (currentIndex >= queue.length - 2 && this.scrollView !== undefined) {
                 this.scrollView.scrollToEnd({ animated: true });
             }
@@ -55,24 +57,22 @@ class Queue extends Component<QueueProps> {
             <Screen>
                 <JOTitle>File d'attente</JOTitle>
                 <TrackList
-                    forwardRef={(ref: FlatList<Track>) => { this.scrollView = ref }}
+                    forwardRef={(ref: FlatList<JOTrack>) => { this.scrollView = ref }}
                     data={this.props.queue}
-                    onPress={(track: Track) => JOTrackPlayer.skip(track.id)}
-                    keyExtractor={(track: Track) => track.id}
+                    onPress={(track: JOTrack) => JOTrackPlayer.skip(track.id)}
+                    keyExtractor={(track: JOTrack) => track.id}
                     ListFooterComponentStyle={{ height: this._getBottomPadding() }}
                     onLayout={({ nativeEvent }: LayoutChangeEvent) => this.setState({ tracklistHeight: nativeEvent.layout.height })}
-                    currentTrackChecker={(track: Track, currentTrack: Track) => track.id === currentTrack.id}
+                    currentTrackChecker={(track: JOTrack, currentTrack: JOTrack) => track.id === currentTrack.id}
                 />
             </Screen>
         )
     }
 }
 
-const mapStateToProps = (state: any) => {
-    return {
-        queue: state.playerState.queue,
-        currentTrack: state.playerState.currentTrack
-    }
-}
+const mapStateToProps = (state: JOState) => ({
+    queue: state.playerState.queue,
+    currentTrack: state.playerState.currentTrack
+})
 
 export default connect(mapStateToProps)(Queue)

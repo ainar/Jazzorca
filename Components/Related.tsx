@@ -8,7 +8,7 @@ import TrackList from './Elements/TrackList'
 import { JOTrack, JOThunkDispatch } from '../helpers/types'
 import { filterResults } from '../helpers/utils'
 import { RelatedTabNavigationProp } from '../Navigation/Navigation'
-import { State } from '../store/configureStore'
+import { JOState } from '../store/configureStore'
 
 interface RelatedProps {
     navigation: RelatedTabNavigationProp,
@@ -81,7 +81,7 @@ class Related extends React.Component<RelatedProps> {
     }
 }
 
-const mapStateToProps = (state: State) => ({
+const mapStateToProps = (state: JOState) => ({
     track: state.playerState.currentTrack,
     cache: state.playerState.cache
 });

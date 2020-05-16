@@ -14,7 +14,7 @@ const rootPersistConfig = {
 }
 const loggerMiddleware = createLogger()
 
-export interface State {
+export interface JOState {
     playerState: PlayerState,
     history: HistoryState,
     playlists: PlaylistsState

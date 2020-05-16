@@ -1,7 +1,6 @@
 import React from 'react'
 import { View, StyleSheet, TouchableOpacity, Image, ActivityIndicator, Linking } from 'react-native'
 import { connect } from 'react-redux'
-import { Track } from 'react-native-track-player'
 import Icon from 'react-native-vector-icons/AntDesign'
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { manualAddToQueue, resetCurrentTrack, addToPlaylist } from '../../../store/actions'
@@ -10,19 +9,19 @@ import JOButton from '../JOButton'
 import TrackModal from '../TrackModal'
 import JOModal from '../JOModal'
 import { Picker } from '@react-native-community/picker'
-import { Playlist } from '../../../helpers/types'
+import { Playlist, JOTrack } from '../../../helpers/types'
 
 interface JOTrackListItemProps {
-    nowPlaying: Track,
-    track: Track,
+    nowPlaying: JOTrack,
+    track: JOTrack,
     onPress: Function,
     onPlay: Function,
     dispatch: Function,
     loading: boolean,
     playlists: Playlist[],
-    modalExtra?: (t: Track) => React.ReactNode,
+    modalExtra?: (t: JOTrack) => React.ReactNode,
     modalRef: (t: TrackModal | null) => void,
-    currentTrackChecker?: (t1: Track, t2: Track) => boolean,
+    currentTrackChecker?: (t1: JOTrack, t2: JOTrack) => boolean,
     horizontal: boolean
 }
 

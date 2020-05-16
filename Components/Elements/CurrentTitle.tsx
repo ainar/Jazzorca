@@ -3,7 +3,7 @@ import { TextProperties } from 'react-native'
 import { connect } from 'react-redux'
 import JOText from './JOText'
 import { JOTrack } from '../../helpers/types'
-import { State } from '../../store/configureStore'
+import { JOState } from '../../store/configureStore'
 
 interface CurrentTitleProps extends TextProperties {
     track: JOTrack | undefined
@@ -17,7 +17,7 @@ const CurrentTitle = (props: CurrentTitleProps) => {
     )
 }
 
-const mapStateToProps = (state: State) => ({
+const mapStateToProps = (state: JOState) => ({
     track: state.playerState.currentTrack
 })
 

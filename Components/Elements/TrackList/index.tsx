@@ -2,18 +2,18 @@ import React, { RefObject, ComponentProps } from 'react'
 import { View, FlatList, ActivityIndicator } from 'react-native'
 import JOTrackListItem from './TrackListItem'
 import { connect } from 'react-redux'
-import { Track } from 'react-native-track-player'
 import TrackModal from '../TrackModal'
+import { JOTrack } from '../../../helpers/types'
 
 interface TrackListProps extends ComponentProps<any> {
     onPress: Function,
     loadingNextPage?: Function,
     onPlay: Function,
     loading: boolean,
-    currentTrack: Track,
+    currentTrack: JOTrack,
     forwardRef?: React.LegacyRef<FlatList<any>>,
-    data: Track[],
-    modalExtra: (t: Track) => React.ReactNode,
+    data: JOTrack[],
+    modalExtra: (t: JOTrack) => React.ReactNode,
     modalRef: (m: TrackModal | null) => void
 }
 

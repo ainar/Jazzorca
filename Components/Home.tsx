@@ -5,7 +5,7 @@ import Screen from './Screen'
 import JOTitle from './Elements/JOTitle'
 import { playNow } from '../store/actions'
 import { JOThunkDispatch, JOTrack, HistoryJOTrack, ResultJOTrack } from '../helpers/types'
-import { State } from '../store/configureStore'
+import { JOState } from '../store/configureStore'
 import { filterResults } from '../helpers/utils'
 
 interface HomeProps {
@@ -125,7 +125,7 @@ export class Home extends Component<HomeProps> {
     }
 }
 
-const mapStateToProps = (state: State) => ({
+const mapStateToProps = (state: JOState) => ({
     history: state.history.history
 })
 

@@ -1,9 +1,9 @@
 import 'react-native-get-random-values';
 import { v4 as uuid } from 'uuid'
 
-import { Playlist, JOAction, JOTrack, JOThunkAction } from '../helpers/types';
+import { Playlist, JOAction, JOTrack, JOThunkAction, RNTPSTATE_PLAYING } from '../helpers/types';
 
-import TrackPlayer from '../helpers/trackPlayerWrapper'
+import JOTrackPlayer from '../helpers/trackPlayerWrapper'
 import { getTrack } from '../API/YouTubeAPI';
 
 const fetchStart = (): JOAction => ({
@@ -51,7 +51,7 @@ export const resetCurrentTrack = (): JOAction => ({
 });
 
 export function reset(): JOAction {
-    TrackPlayer.reset()
+    JOTrackPlayer.reset()
     return resetQueue()
 }
 
@@ -73,25 +73,29 @@ export function playNow(track: JOTrack): JOThunkAction {
     return async (dispatch, getState) => {
         const currentTrack = getState().playerState.currentTrack;
         if (currentTrack !== undefined && currentTrack.videoId === track.videoId) {
-            return TrackPlayer.seekTo(0); // seek to 0 if already playing
+            return JOTrackPlayer.seekTo(0); // seek to 0 if already playing
         }
         dispatch(fetchStart());
         dispatch(setCurrentTrack(track));
-        await TrackPlayer.pause();
+        await JOTrackPlayer.pause();
         await dispatch(manualAddToQueue(track));
-        await TrackPlayer.getQueue().then(queue => {
-            if (queue.length > 1) TrackPlayer.skip(queue[queue.length - 1].id);
-        })
-        await TrackPlayer.getState().then(state => {
-            if (state !== TrackPlayer.STATE_PLAYING) TrackPlayer.play();
-        })
+        await JOTrackPlayer.getQueue().then(queue => {
+            if (queue.length > 1) {
+                JOTrackPlayer.skip(queue[queue.length - 1].id);
+            }
+        });
+        await JOTrackPlayer.getState().then(state => {
+            if (state !== RNTPSTATE_PLAYING) {
+                JOTrackPlayer.play();
+            }
+        });
         return dispatch(fetchStop());
     }
 }
 
 function addToQueue(track: JOTrack): JOThunkAction {
     return async (dispatch) => {
-        await TrackPlayer.add(track)
+        await JOTrackPlayer.add(track)
         return dispatch({
             type: 'ADD_TRACK',
             value: track
@@ -134,7 +138,7 @@ export function manualAddToQueue(track: JOTrack): JOThunkAction {
 
 export function removeFromQueue(track: JOTrack): JOThunkAction {
     return async (dispatch) => {
-        TrackPlayer.remove(track.id)
+        JOTrackPlayer.remove(track.id)
         return dispatch({
             type: 'REMOVE_FROM_QUEUE',
             value: track
@@ -171,7 +175,7 @@ export function playPlaylist(playlist: Playlist, trackId: string): JOThunkAction
         };
 
         if (newTrackId.length > 0) {
-            TrackPlayer.skip(newTrackId);
+            JOTrackPlayer.skip(newTrackId);
         }
     }
 }

@@ -5,7 +5,7 @@ import Slider from '@react-native-community/slider';
 import TrackPlayer from 'react-native-track-player'
 import { formatSeconds } from '../../helpers/utils'
 import JOText from './JOText';
-import { State } from '../../store/configureStore';
+import { JOState } from '../../store/configureStore';
 
 interface JOProgressBarProps {
     showTiming?: boolean,
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
 })
 
 
-const mapStateToProps = (state: State) => ({
+const mapStateToProps = (state: JOState) => ({
     playerState: state.playerState.playerState
 })
 

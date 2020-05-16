@@ -1,7 +1,11 @@
-import { Track } from "react-native-track-player";
+import { Track, State as RNTPState, STATE_PLAYING } from "react-native-track-player";
 import { ThunkAction, ThunkDispatch } from "redux-thunk";
-import { State } from "../store/configureStore";
+import { JOState } from "../store/configureStore";
 import { ContinuationInfos } from "../API/YouTubeAPI";
+
+export type TrackPlayerState = RNTPState
+
+export const RNTPSTATE_PLAYING = STATE_PLAYING
 
 export interface ResultJOTrack {
     videoId: string,
@@ -35,6 +39,6 @@ export interface Playlist {
 
 export type JOAction = { type: string, value?: any };
 
-export type JOThunkAction = ThunkAction<Promise<any>, State, null, JOAction>;
+export type JOThunkAction = ThunkAction<Promise<any>, JOState, null, JOAction>;
 
-export type JOThunkDispatch = ThunkDispatch<State, null, JOAction>;
+export type JOThunkDispatch = ThunkDispatch<JOState, null, JOAction>;

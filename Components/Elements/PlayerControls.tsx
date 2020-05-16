@@ -3,11 +3,12 @@ import { StyleSheet, View, TouchableOpacity } from 'react-native'
 import Icon from 'react-native-vector-icons/AntDesign'
 import { Animated, Easing } from 'react-native'
 import { connect } from 'react-redux';
-import { skipToPrevious } from '../../helpers/trackPlayerWrapper';
-import { play, pause, STATE_PLAYING, State, skipToNext } from 'react-native-track-player';
+import JOTrackPlayer from '../../helpers/trackPlayerWrapper';
+import { JOState } from '../../store/configureStore';
+import { TrackPlayerState, RNTPSTATE_PLAYING } from '../../helpers/types';
 
 interface JOPlayerControlsProps {
-    playerState: State,
+    playerState: TrackPlayerState,
     loading: boolean,
     middleButtonSize?: number,
     buttonSize?: number
@@ -56,7 +57,7 @@ class JOPlayerControls extends React.Component<JOPlayerControlsProps> {
     }
 
     _isPlaying() {
-        return this.props.playerState === STATE_PLAYING
+        return this.props.playerState === RNTPSTATE_PLAYING
     }
 
     _displayMiddleButton() {
@@ -71,7 +72,7 @@ class JOPlayerControls extends React.Component<JOPlayerControlsProps> {
         return (
             <TouchableOpacity
                 style={[styles.control_button, styles.middle_button, { width: middleButtonSize }]}
-                onPress={() => { this._isPlaying() ? pause() : play() }}
+                onPress={() => { this._isPlaying() ? JOTrackPlayer.pause() : JOTrackPlayer.play() }}
             >
                 <Animated.View style={{ opacity: this.state.opacity }}>
                     <Icon name={this._isPlaying() ? 'pause' : 'caretright'} color='#fff' size={middleButtonSize} />
@@ -83,11 +84,11 @@ class JOPlayerControls extends React.Component<JOPlayerControlsProps> {
     render() {
         return (
             <View style={styles.controls}>
-                <TouchableOpacity style={styles.control_button} onPress={() => skipToPrevious()} >
+                <TouchableOpacity style={styles.control_button} onPress={() => JOTrackPlayer.skipToPrevious()} >
                     <Icon name='stepbackward' color='#fff' size={this.props.buttonSize || 40} />
                 </TouchableOpacity>
                 {this._displayMiddleButton()}
-                <TouchableOpacity style={styles.control_button} onPress={() => skipToNext()} >
+                <TouchableOpacity style={styles.control_button} onPress={() => JOTrackPlayer.skipToNext()} >
                     <Icon name='stepforward' color='#fff' size={this.props.buttonSize || 40} />
                 </TouchableOpacity>
             </View >
@@ -122,7 +123,7 @@ const styles = StyleSheet.create({
     }
 })
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: JOState) => ({
     playerState: state.playerState.playerState,
     loading: state.playerState.loading
 })

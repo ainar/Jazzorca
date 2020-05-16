@@ -1,15 +1,15 @@
 import React, { Component } from 'react'
-import { removeFromPlaylist, reset, playPlaylist } from '../store/actions'
+import { removeFromPlaylist, playPlaylist } from '../store/actions'
 import TrackList from './Elements/TrackList'
 import Screen from './Screen'
-import { Track } from 'react-native-track-player'
 import JOSubTitle from './Elements/JOSubTitle'
-import { Playlist, JOThunkDispatch } from '../helpers/types'
+import { Playlist, JOThunkDispatch, JOTrack } from '../helpers/types'
 import JOButton from './Elements/JOButton'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { connect } from 'react-redux'
 import TrackModal from './Elements/TrackModal'
 import { PlaylistScreenRouteProp } from '../Navigation/Navigation'
+import { JOState } from '../store/configureStore'
 
 interface PlaylistScreenProps {
     playlist: Playlist,
@@ -26,14 +26,14 @@ class PlaylistScreen extends Component<PlaylistScreenProps> {
         this.trackModal = null;
     }
 
-    async _onPress(track: Track) {
+    async _onPress(track: JOTrack) {
         const { dispatch, playlists, route } = this.props;
         const playlist: Playlist = playlists.find(({ id }) => id === route.params.playlist.id)!;
         dispatch(playPlaylist(playlist, track.id))
             .catch((e: string) => console.error(e));
     }
 
-    private _removeFromPlaylist(track: Track) {
+    private _removeFromPlaylist(track: JOTrack) {
         const { dispatch, route } = this.props;
         dispatch(removeFromPlaylist(route.params.playlist.id, track.id));
     }
@@ -47,10 +47,10 @@ class PlaylistScreen extends Component<PlaylistScreenProps> {
                 <JOSubTitle>{playlist.name}</JOSubTitle>
                 <TrackList
                     data={playlist.tracks}
-                    onPress={(track: Track) => this._onPress(track)}
-                    keyExtractor={(track: Track) => track.id}
+                    onPress={(track: JOTrack) => this._onPress(track)}
+                    keyExtractor={(track: JOTrack) => track.id}
                     modalRef={(ref: TrackModal) => this.trackModal = ref}
-                    modalExtra={(track: Track) =>
+                    modalExtra={(track: JOTrack) =>
                         <JOButton
                             title="Supprimer de la liste"
                             icon={<Icon name='playlist-remove' size={30} color='black' />}
@@ -63,7 +63,7 @@ class PlaylistScreen extends Component<PlaylistScreenProps> {
     }
 }
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: JOState) => ({
     playlists: state.playlists.playlists
 })
 
