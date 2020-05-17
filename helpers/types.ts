@@ -1,3 +1,5 @@
+import StaticServer from 'react-native-static-server';
+
 import { Track, State as RNTPState, STATE_PLAYING } from "react-native-track-player";
 import { ThunkAction, ThunkDispatch } from "redux-thunk";
 import { JOState } from "../store/configureStore";
@@ -42,3 +44,11 @@ export type JOAction = { type: string, value?: any };
 export type JOThunkAction = ThunkAction<Promise<any>, JOState, null, JOAction>;
 
 export type JOThunkDispatch = ThunkDispatch<JOState, null, JOAction>;
+
+declare global {
+    namespace NodeJS {
+        interface Global {
+            server: StaticServer
+        }
+    }
+}

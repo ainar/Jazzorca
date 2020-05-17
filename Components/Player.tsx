@@ -110,7 +110,8 @@ class Player extends Component<PlayerProps> {
         const { dispatch } = this.props;
         this._sonosSpeakerModal?.hide();
         this.setState({
-            device: sonos
+            device: sonos,
+            searchingSonosSpeakers: false
         });
         dispatch(switchSonos());
     }

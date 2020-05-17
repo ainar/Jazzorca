@@ -178,6 +178,9 @@ export function playPlaylist(playlist: Playlist, trackId: string): JOThunkAction
     }
 }
 
-export const switchSonos = () => ({
-    type: JOACTION_TYPES.SWITCH_SONOS
-});
+export function switchSonos() {
+    console.log(global.server);
+    return {
+        type: JOACTION_TYPES.SWITCH_SONOS
+    }
+}

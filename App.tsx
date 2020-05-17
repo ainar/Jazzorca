@@ -10,7 +10,8 @@ import TrackPlayer, { Track, State, addEventListener } from 'react-native-track-
 import { autoSetCurrentTrack, autoAddToQueue, resetQueue } from './store/actions';
 import { Action } from 'redux';
 import setupPlayer from './helpers/setupPlayer';
-import { PlayerState } from './store/reducers/playerStateReducer';
+import { PlayerState, Device } from './store/reducers/playerStateReducer';
+
 
 const DarkTheme = {
     ...DefaultTheme,
@@ -20,8 +21,11 @@ const DarkTheme = {
     },
 };
 
+
+// create a path you want to write to
+
 class App extends React.Component {
-    loadingRelatedTrack: boolean
+    loadingRelatedTrack: boolean;
 
     constructor(props: ComponentProps<any>) {
         super(props)
@@ -40,7 +44,14 @@ class App extends React.Component {
         );
 
         this.loadingRelatedTrack = false;
+
+        global.server.isRunning().then(isRunning => {
+            if (Store.getState().playerState.device !== Device.Sonos && isRunning) {
+                global.server.stop();
+            }
+        });
     }
+
 
     _setPlayerState(state: State) {
         const { dispatch } = Store
@@ -91,7 +102,7 @@ class App extends React.Component {
             const unseenRelatedTrack = related.find(
                 (t: Track) => queue.findIndex(tq => tq.videoId === t.videoId) === -1
             );
-            await dispatch(autoAddToQueue(unseenRelatedTrack) as unknown as Action);
+            dispatch(autoAddToQueue(unseenRelatedTrack) as unknown as Action);
             this.loadingRelatedTrack = false;
         }
     }
