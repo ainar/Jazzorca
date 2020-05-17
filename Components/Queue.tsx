@@ -63,7 +63,7 @@ class Queue extends React.Component<QueueProps> {
                     keyExtractor={(track: JOTrack) => track.id}
                     ListFooterComponentStyle={{ height: this._getBottomPadding() }}
                     onLayout={({ nativeEvent }: LayoutChangeEvent) => this.setState({ tracklistHeight: nativeEvent.layout.height })}
-                    currentTrackChecker={(track: JOTrack, currentTrack: JOTrack) => track.id === currentTrack.id}
+                    currentTrackChecker={(track: JOTrack, currentTrack: JOTrack) => currentTrack !== undefined && track.id === currentTrack.id}
                 />
             </Screen>
         )

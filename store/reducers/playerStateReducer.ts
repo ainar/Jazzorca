@@ -25,7 +25,8 @@ export interface PlayerState {
     currentTrack: JOTrack | undefined,
     cache: { [k: string]: JOTrack },
     queue: JOTrack[],
-    device: Device
+    device: Device,
+    localhost: string
 }
 
 const initState: PlayerState = {
@@ -34,7 +35,8 @@ const initState: PlayerState = {
     currentTrack: undefined,
     cache: {},
     queue: [],
-    device: Device.Local
+    device: Device.Local,
+    localhost: "0.0.0.0"
 }
 
 export function playerState(state = initState, action: JOAction): PlayerState {
@@ -139,7 +141,8 @@ export function playerState(state = initState, action: JOAction): PlayerState {
         case PLAYER_STATE_ACTION_TYPES.SET_DEVICE: {
             newState = {
                 ...state,
-                device: action.value
+                device: action.value.device,
+                localhost: action.value.localhost
             };
             return newState || state;
         }

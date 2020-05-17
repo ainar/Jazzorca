@@ -1,6 +1,7 @@
 import 'react-native-get-random-values';
 import { v4 as uuid } from 'uuid'
 import RNFS from 'react-native-fs';
+import { NetworkInfo } from "react-native-network-info";
 
 import { Playlist, JOAction, JOTrack, JOThunkAction, RNTPSTATE_PLAYING } from '../helpers/types';
 
@@ -80,18 +81,40 @@ export function playNow(track: JOTrack): JOThunkAction {
         }
         dispatch(fetchStart());
         dispatch(setCurrentTrack(track));
-        await JOTrackPlayer.pause();
-        await dispatch(manualAddToQueue(track));
-        await JOTrackPlayer.getQueue().then(queue => {
-            if (queue.length > 1) {
-                JOTrackPlayer.skip(queue[queue.length - 1].id);
+
+        try {
+            await JOTrackPlayer.pause();
+        } catch (e) {
+            console.error('error while pausing')
+        }
+
+        try {
+            await dispatch(manualAddToQueue(track));
+        } catch (e) {
+            console.error('error while adding to queue');
+        }
+
+        if (global.sonos === undefined) {
+            try {
+                await JOTrackPlayer.getQueue().then((queue) => {
+                    if (queue.length > 1) {
+                        JOTrackPlayer.skip(queue[queue.length - 1].id);
+                    }
+                });
+            } catch (e) {
+                console.error('error while retrieving the queue: ' + e);
             }
-        });
-        await JOTrackPlayer.getState().then(state => {
-            if (state !== RNTPSTATE_PLAYING) {
-                JOTrackPlayer.play();
-            }
-        });
+        }
+
+        try {
+            await JOTrackPlayer.getState().then(state => {
+                if (state !== RNTPSTATE_PLAYING) {
+                    JOTrackPlayer.play();
+                }
+            });
+        } catch (e) {
+            console.error('error while playing');
+        }
         return dispatch(fetchStop());
     }
 }
@@ -113,7 +136,7 @@ function addToDeviceQueue(track: JOTrack, autoPlay: boolean, keepId: boolean): J
 
         try {
             const ytTrack = await getTrack(track, cache, keepId, quality);
-            const newTrack = {
+            let newTrack = {
                 ...ytTrack,
                 autoPlay
             };
@@ -123,6 +146,12 @@ function addToDeviceQueue(track: JOTrack, autoPlay: boolean, keepId: boolean): J
                     fromUrl: ytTrack.url.uri,
                     toFile: RNFS.DocumentDirectoryPath + '/' + ytTrack.videoId + '.mp4'
                 });
+
+                newTrack = {
+                    ...newTrack,
+                    url: { uri: "http://" + getState().playerState.localhost + ":8000/" + ytTrack.videoId + '.mp4' }
+                };
+
                 promise.then(console.log);
             }
 
@@ -192,25 +221,28 @@ export function playPlaylist(playlist: Playlist, trackId: string): JOThunkAction
     }
 }
 
-export function switchSonos(): JOThunkAction {
+export function switchSonos(sonos: any): JOThunkAction {
     console.log(global.server);
     return async (dispatch, getState) => {
         const currentDevice = getState().playerState.device;
-        let newDevice;
+        let device;
         if (currentDevice !== Device.Sonos) {
-            newDevice = Device.Sonos;
+            device = Device.Sonos;
+            global.sonos = sonos;
             if (!global.server.started) {
                 global.server.start();
             }
         } else {
-            newDevice = Device.Local;
+            device = Device.Local;
+            global.sonos = undefined;
             if (global.server.started) {
                 global.server.stop();
             }
         }
+        const localhost = await NetworkInfo.getIPAddress();
         return dispatch({
             type: JOACTION_TYPES.SET_DEVICE,
-            value: newDevice
+            value: { device, localhost }
         });
     }
 }

@@ -50,15 +50,15 @@ class JOTrackListItem extends React.Component<JOTrackListItemProps> {
         this.errorModal = null;
     }
 
-    _nowPlaying() {
+    _isCurrentTrack() {
         const { nowPlaying, track } = this.props;
-        const defaultNowPlaying = () => nowPlaying !== undefined && nowPlaying.videoId === track.videoId;
-        const nowPlayingChecker = this.props.currentTrackChecker || defaultNowPlaying;
-        return nowPlayingChecker(nowPlaying, track);
+        const defaultCurrentTrackChecker = () => nowPlaying !== undefined && nowPlaying.videoId === track.videoId;
+        const currentTrackChecker = this.props.currentTrackChecker || defaultCurrentTrackChecker;
+        return currentTrackChecker(nowPlaying, track);
     }
 
     _displayNowPlaying() {
-        if (this._nowPlaying()) {
+        if (this._isCurrentTrack()) {
             return <Icon name='caretright' size={30} style={styles.is_playing_icon} />
         }
     }
@@ -181,7 +181,7 @@ class JOTrackListItem extends React.Component<JOTrackListItemProps> {
                         <View
                             style={styles.meta_block}
                         >
-                            <JOText style={[styles.title, styles.meta, this._nowPlaying() ? styles.title_current : undefined]} numberOfLines={2} >{this.props.track.title}</JOText>
+                            <JOText style={[styles.title, styles.meta, this._isCurrentTrack() ? styles.title_current : undefined]} numberOfLines={2} >{this.props.track.title}</JOText>
                             <JOText style={[styles.artist, styles.meta]} numberOfLines={1} >{this.props.track.artist}</JOText>
                         </View>
                     </View>

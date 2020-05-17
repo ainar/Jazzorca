@@ -19,6 +19,7 @@ import { switchSonos } from '../store/actions'
 import { connect } from 'react-redux'
 import { JOState } from '../store/configureStore'
 import { Device } from '../store/reducers/playerStateReducer'
+import JOTrackPlayer from '../helpers/trackPlayerWrapper'
 
 interface PlayerProps {
     navigation: PlayerTabNavigationProp,
@@ -39,7 +40,6 @@ class Player extends Component<PlayerProps> {
     state: {
         sonosSpeakers: SonosSpeaker[],
         searchingSonosSpeakers: boolean,
-        device: any
     }
 
     constructor(props: PlayerProps) {
@@ -47,8 +47,7 @@ class Player extends Component<PlayerProps> {
 
         this.state = {
             sonosSpeakers: [],
-            searchingSonosSpeakers: false,
-            device: undefined
+            searchingSonosSpeakers: false
         }
 
         this._sonosSpeakerModal = null;
@@ -110,10 +109,13 @@ class Player extends Component<PlayerProps> {
         const { dispatch } = this.props;
         this._sonosSpeakerModal?.hide();
         this.setState({
-            device: sonos,
             searchingSonosSpeakers: false
         });
-        dispatch(switchSonos());
+        if (sonos !== undefined) {
+            sonos.flush();
+            sonos.selectQueue();
+        }
+        dispatch(switchSonos(sonos));
     }
 
     _displaySonosSpeakers() {

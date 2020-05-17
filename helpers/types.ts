@@ -1,13 +1,14 @@
 import StaticServer from 'react-native-static-server';
 
-import { Track, State as RNTPState, STATE_PLAYING } from "react-native-track-player";
+import { Track, State as RNTPState, STATE_PLAYING, STATE_NONE } from "react-native-track-player";
 import { ThunkAction, ThunkDispatch } from "redux-thunk";
 import { JOState } from "../store/configureStore";
 import { ContinuationInfos } from "../API/YouTubeAPI";
 
 export type TrackPlayerState = RNTPState
 
-export const RNTPSTATE_PLAYING = STATE_PLAYING
+export const RNTPSTATE_PLAYING = STATE_PLAYING;
+export const RNTPSTATE_NONE = STATE_NONE;
 
 export interface ResultJOTrack {
     videoId: string,
@@ -48,7 +49,8 @@ export type JOThunkDispatch = ThunkDispatch<JOState, null, JOAction>;
 declare global {
     namespace NodeJS {
         interface Global {
-            server: StaticServer
+            server: StaticServer,
+            sonos: any
         }
     }
 }
