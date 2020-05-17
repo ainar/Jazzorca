@@ -13,17 +13,23 @@ import { PlayerTabNavigationProp } from '../Navigation/Navigation'
 
 import { search } from 'react-native-sonos'
 import JOModal from './Elements/JOModal'
-import { relativeTimeRounding } from 'moment'
 import JOButton from './Elements/JOButton'
+import { JOThunkDispatch } from '../helpers/types'
+import { switchSonos } from '../store/actions'
+import { connect } from 'react-redux'
+import { JOState } from '../store/configureStore'
+import { Device } from '../store/reducers/playerStateReducer'
 
 interface PlayerProps {
-    navigation: PlayerTabNavigationProp
+    navigation: PlayerTabNavigationProp,
+    dispatch: JOThunkDispatch,
+    device: Device
 }
 
 type SonosSpeaker = {
     sonos: any,
     name: string,
-    serialNum: string,
+    serialNum: string
 }
 
 class Player extends Component<PlayerProps> {
@@ -32,7 +38,8 @@ class Player extends Component<PlayerProps> {
 
     state: {
         sonosSpeakers: SonosSpeaker[],
-        searchingSonosSpeakers: boolean
+        searchingSonosSpeakers: boolean,
+        device: any
     }
 
     constructor(props: PlayerProps) {
@@ -40,7 +47,8 @@ class Player extends Component<PlayerProps> {
 
         this.state = {
             sonosSpeakers: [],
-            searchingSonosSpeakers: false
+            searchingSonosSpeakers: false,
+            device: undefined
         }
 
         this._sonosSpeakerModal = null;
@@ -54,7 +62,7 @@ class Player extends Component<PlayerProps> {
             this.setState({
                 searchingSonosSpeakers: false
             })
-        }, 10000);
+        }, 5000);
 
         this._sonosSpeakerModal?.show();
         return search(null, (sonos: any, model: string) => this._processDevice(sonos, model))
@@ -86,13 +94,34 @@ class Player extends Component<PlayerProps> {
         if (this.state.searchingSonosSpeakers) {
             return <ActivityIndicator size={40} />
         } else {
-            return <MaterialCommunityIcon name='speaker' size={40} />
+            if (this.props.device === Device.Sonos) {
+                return <TouchableHighlight onPress={() => this._setDevice(undefined)}>
+                    <MaterialCommunityIcon name='speaker-off' size={40} />
+                </TouchableHighlight>
+            } else {
+                return <TouchableHighlight onPress={() => this._searchSonos()}>
+                    <MaterialCommunityIcon name='speaker' size={40} />
+                </TouchableHighlight>
+            }
         }
     }
 
+    _setDevice(sonos: any) {
+        const { dispatch } = this.props;
+        this._sonosSpeakerModal?.hide();
+        this.setState({
+            device: sonos
+        });
+        dispatch(switchSonos());
+    }
+
     _displaySonosSpeakers() {
-        return this.state.sonosSpeakers.map(({ name, serialNum }) => (
-            <JOButton title={name} key={serialNum} />
+        return this.state.sonosSpeakers.map(({ sonos, name, serialNum }) => (
+            <JOButton
+                title={name}
+                key={serialNum}
+                onPress={() => this._setDevice(sonos)}
+            />
         ));
     }
 
@@ -111,9 +140,7 @@ class Player extends Component<PlayerProps> {
                             <JOText style={styles.back_text}>Retour</JOText>
                         </View>
                     </TouchableHighlight>
-                    <TouchableHighlight onPress={() => this._searchSonos()}>
-                        {this._displaySonosButton()}
-                    </TouchableHighlight>
+                    {this._displaySonosButton()}
                 </View>
                 <View style={styles.footer}>
                     <TouchableHighlight onPress={() => this.props.navigation.navigate('Queue')}>
@@ -199,4 +226,8 @@ const styles = StyleSheet.create({
     }
 })
 
-export default Player
+const mapStateToProps = (state: JOState) => ({
+    device: state.playerState.device
+})
+
+export default connect(mapStateToProps)(Player)

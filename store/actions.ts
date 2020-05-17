@@ -5,6 +5,7 @@ import { Playlist, JOAction, JOTrack, JOThunkAction, RNTPSTATE_PLAYING } from '.
 
 import JOTrackPlayer from '../helpers/trackPlayerWrapper'
 import { getTrack } from '../API/YouTubeAPI';
+import { JOACTION_TYPES } from './configureStore';
 
 const fetchStart = (): JOAction => ({
     type: 'FETCHING',
@@ -176,3 +177,7 @@ export function playPlaylist(playlist: Playlist, trackId: string): JOThunkAction
         };
     }
 }
+
+export const switchSonos = () => ({
+    type: JOACTION_TYPES.SWITCH_SONOS
+});
