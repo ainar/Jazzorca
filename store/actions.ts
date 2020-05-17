@@ -106,32 +106,16 @@ function addToQueue(track: JOTrack): JOThunkAction {
     }
 }
 
-export function autoAddToQueue(track: JOTrack): JOThunkAction {
+function addToDeviceQueue(track: JOTrack, autoPlay: boolean, keepId: boolean): JOThunkAction {
     return async (dispatch, getState) => {
-        const { cache } = getState().playerState
-        const newTrack = {
-            ...await getTrack(track, cache),
-            autoPlay: true
-        }
-        return dispatch(addToQueue(newTrack))
-    }
-}
-
-export function manualAddToQueue(track: JOTrack, keepId = false): JOThunkAction {
-    return async (dispatch, getState) => {
-        const { queue, cache, device } = getState().playerState;
-        const lastInQueue = queue[queue.length - 1]
-        if (lastInQueue !== undefined && lastInQueue.autoPlay !== undefined && lastInQueue.autoPlay === true) {
-            await dispatch(removeFromQueue(lastInQueue))
-        }
-
+        const { cache, device } = getState().playerState;
         const quality = (device === Device.Sonos) ? [141, 140, 139] : undefined; // mp4 audio only
 
         try {
             const ytTrack = await getTrack(track, cache, keepId, quality);
             const newTrack = {
                 ...ytTrack,
-                autoPlay: false
+                autoPlay
             };
 
             if (device === Device.Sonos) {
@@ -146,6 +130,24 @@ export function manualAddToQueue(track: JOTrack, keepId = false): JOThunkAction 
         } catch (e) {
             throw "cannot get track";
         }
+    }
+}
+
+export function autoAddToQueue(track: JOTrack): JOThunkAction {
+    return async (dispatch) => {
+        return dispatch(addToDeviceQueue(track, true, false))
+    }
+}
+
+export function manualAddToQueue(track: JOTrack, keepId = false): JOThunkAction {
+    return async (dispatch, getState) => {
+        const { queue, device } = getState().playerState;
+        const lastInQueue = queue[queue.length - 1]
+        if (lastInQueue !== undefined && lastInQueue.autoPlay !== undefined && lastInQueue.autoPlay === true) {
+            await dispatch(removeFromQueue(lastInQueue))
+        }
+
+        return dispatch(addToDeviceQueue(track, false, true));
     }
 }
 
