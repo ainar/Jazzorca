@@ -12,6 +12,7 @@ export const RNTPSTATE_NONE = STATE_NONE;
 export const RNTPSTATE_PAUSED = STATE_PAUSED;
 
 export interface ResultJOTrack {
+    id?: string,
     videoId: string,
     artwork: { uri: string },
     title: string,
@@ -19,6 +20,11 @@ export interface ResultJOTrack {
     duration: number,
     lengthText: string,
     relations?: number
+}
+
+export interface RelatedTracks {
+    results: ResultJOTrack[],
+    continuationInfos: ContinuationInfos
 }
 
 export interface JOTrack extends Track {
@@ -30,10 +36,7 @@ export interface JOTrack extends Track {
 export interface HistoryJOTrack extends JOTrack {
     videoId: string,
     timestamp: number,
-    related: {
-        results: ResultJOTrack[],
-        continuationInfos: ContinuationInfos
-    }
+    related: RelatedTracks
 }
 
 export interface Playlist {

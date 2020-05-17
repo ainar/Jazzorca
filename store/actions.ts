@@ -3,7 +3,7 @@ import { v4 as uuid } from 'uuid'
 import RNFS from 'react-native-fs';
 import { NetworkInfo } from "react-native-network-info";
 
-import { Playlist, JOAction, JOTrack, JOThunkAction, RNTPSTATE_PLAYING } from '../helpers/types';
+import { Playlist, JOAction, JOTrack, JOThunkAction, RNTPSTATE_PLAYING, HistoryJOTrack, ResultJOTrack } from '../helpers/types';
 
 import JOTrackPlayer from '../helpers/trackPlayerWrapper'
 import { getTrack } from '../API/YouTubeAPI';
@@ -142,7 +142,7 @@ function addToQueue(track: JOTrack): JOThunkAction {
     }
 }
 
-function addToDeviceQueue(track: JOTrack, autoPlay: boolean, keepId: boolean): JOThunkAction {
+function addToDeviceQueue(track: JOTrack | ResultJOTrack , autoPlay: boolean, keepId: boolean): JOThunkAction {
     return async (dispatch, getState) => {
         const { cache, device } = getState().playerState;
         const quality = (device === Device.Sonos) ? [141, 140, 139] : undefined; // mp4 audio only
@@ -180,7 +180,7 @@ function addToDeviceQueue(track: JOTrack, autoPlay: boolean, keepId: boolean): J
     }
 }
 
-export function autoAddToQueue(track: JOTrack): JOThunkAction {
+export function autoAddToQueue(track: JOTrack | ResultJOTrack): JOThunkAction {
     return async (dispatch) => {
         return dispatch(addToDeviceQueue(track, true, false))
     }

@@ -11,6 +11,7 @@ import { autoSetCurrentTrack, autoAddToQueue, resetQueue, setPlayerState } from 
 import { Action } from 'redux';
 import setupPlayer from './helpers/setupPlayer';
 import { PlayerState, Device } from './store/reducers/playerStateReducer';
+import { JOTrack, HistoryJOTrack } from './helpers/types';
 
 
 const DarkTheme = {
@@ -20,7 +21,6 @@ const DarkTheme = {
         background: '#000'
     },
 };
-
 
 // create a path you want to write to
 
@@ -89,17 +89,19 @@ class App extends React.Component {
         dispatch(autoSetCurrentTrack(track) as unknown as Action);
     }
 
-    async _addRelatedTrackToQueue(track: Track) {
+    async _addRelatedTrackToQueue(track: JOTrack) {
         if (!this.loadingRelatedTrack) {
             this.loadingRelatedTrack = true;
 
             const { dispatch } = Store;
             const { queue } = Store.getState().playerState;
-            const related = track.related.results;
+            const related = track.related.results as HistoryJOTrack[];
             const unseenRelatedTrack = related.find(
-                (t: Track) => queue.findIndex(tq => tq.videoId === t.videoId) === -1
+                (t) => queue.findIndex(tq => tq.videoId === t.videoId) === -1
             );
-            dispatch(autoAddToQueue(unseenRelatedTrack) as unknown as Action);
+            if (unseenRelatedTrack !== undefined) {
+                dispatch(autoAddToQueue(unseenRelatedTrack) as unknown as Action);
+            }
             this.loadingRelatedTrack = false;
         }
     }
@@ -108,12 +110,12 @@ class App extends React.Component {
         const { dispatch } = Store;
         const { queue: queueState } = Store.getState().playerState;
         TrackPlayer.getQueue()
-            .then((queue: Track[]) => {
+            .then((queue) => {
                 // reset queue if queue of TrackPlayer is empty
                 if (queue !== undefined
                     && queue.length === 0
                     && queueState.length > 0) {
-                    dispatch(resetQueue())
+                    dispatch(resetQueue() as unknown as Action);
                 }
             });
     }
@@ -123,7 +125,7 @@ class App extends React.Component {
             Store,
             null,
             () => RNBootSplash.hide({ duration: 250 })
-        )
+        );
 
         return (
             <Provider store={Store}>

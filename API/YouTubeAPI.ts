@@ -608,7 +608,7 @@ export async function ytRelatedNextPage(continuationInfos: ContinuationInfos) {
     return ytNextPage(continuationInfos, 'RELATED');
 }
 
-export async function getTrack(track: JOTrack, cache: { [k: string]: JOTrack }, keepId = false, quality?: number | number[]) {
+export async function getTrack(track: JOTrack | ResultJOTrack , cache: { [k: string]: JOTrack }, keepId = false, quality?: number | number[]) {
     let ytTrack;
     if (cache[track.videoId] === undefined || cache[track.videoId].url === undefined) {
         const _quality = (typeof quality === 'number') ?  [quality] : quality;
