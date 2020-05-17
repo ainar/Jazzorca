@@ -1,5 +1,6 @@
 import 'react-native-get-random-values';
 import { v4 as uuid } from 'uuid'
+import RNFS from 'react-native-fs';
 
 import { Playlist, JOAction, JOTrack, JOThunkAction, RNTPSTATE_PLAYING } from '../helpers/types';
 
@@ -118,19 +119,29 @@ export function autoAddToQueue(track: JOTrack): JOThunkAction {
 
 export function manualAddToQueue(track: JOTrack, keepId = false): JOThunkAction {
     return async (dispatch, getState) => {
-        const { queue, cache } = getState().playerState;
+        const { queue, cache, device } = getState().playerState;
         const lastInQueue = queue[queue.length - 1]
         if (lastInQueue !== undefined && lastInQueue.autoPlay !== undefined && lastInQueue.autoPlay === true) {
             await dispatch(removeFromQueue(lastInQueue))
         }
 
+        const quality = (device === Device.Sonos) ? [141, 140, 139] : undefined; // mp4 audio only
+
         try {
-            const ytTrack = await getTrack(track, cache, keepId)
+            const ytTrack = await getTrack(track, cache, keepId, quality);
             const newTrack = {
                 ...ytTrack,
                 autoPlay: false
             };
-            console.log(ytTrack)
+
+            if (device === Device.Sonos) {
+                const { promise } = RNFS.downloadFile({
+                    fromUrl: ytTrack.url.uri,
+                    toFile: RNFS.DocumentDirectoryPath + '/' + ytTrack.videoId + '.mp4'
+                });
+                promise.then(console.log);
+            }
+
             return dispatch(addToQueue(newTrack));
         } catch (e) {
             throw "cannot get track";

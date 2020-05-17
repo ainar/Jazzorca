@@ -142,12 +142,21 @@ interface playerResponse {
     }
 }
 
-function _getBestAudioTrack(playerResponse: playerResponse): YtFormat {
-    return playerResponse
+function _getAudioTrack(playerResponse: playerResponse, itags?: number[]): YtFormat {
+    const audioFormats = playerResponse
         .streamingData.adaptiveFormats
         .filter(f => f.mimeType.startsWith('audio'))
-        .sort((a, b) => b.itag - a.itag)
-    [0]
+    if (itags !== undefined) {
+        for (const itag of itags) {
+            const audioFormat = audioFormats.find(t => t.itag === itag);
+            if (audioFormat !== undefined) {
+                return audioFormat;
+            }
+        }
+        throw 'format not found';
+    } else {
+        return audioFormats.sort((a, b) => b.itag - a.itag)[0];
+    }
 }
 
 function _getThumbnailUrl(playerResponse: playerResponse) {
@@ -179,7 +188,7 @@ interface Cipher {
     s: string
 }
 
-export async function getTrackFromYT(videoId: string) {
+export async function getTrackFromYT(videoId: string, quality?: number[]) {
     if (!videoId || !videoId.length) {
         console.error('videoId cannot be empty')
     }
@@ -188,20 +197,20 @@ export async function getTrackFromYT(videoId: string) {
     const playerConfig = parsePlayerConfig(videoPage);
     const playerResponse = JSON.parse(playerConfig.args.player_response);
     const artwork = { uri: _getThumbnailUrl(playerResponse) };
-    const bestAudioTrack = _getBestAudioTrack(playerResponse);
+    const audioTrack = _getAudioTrack(playerResponse, quality);
 
     const { initialData, xsrfToken } = parseInitialData(videoPage);
     const { items, continuation, clickTrackingParams } = parseRelated(initialData);
 
     let url;
-    if (bestAudioTrack['url'] !== undefined) {
+    if (audioTrack['url'] !== undefined) {
         console.log('got an url')
-        url = bestAudioTrack['url'];
-    } else if (bestAudioTrack['cipher'] !== undefined) {
+        url = audioTrack['url'];
+    } else if (audioTrack['cipher'] !== undefined) {
         console.log('got a cipher')
         const playerCode = await getPlayerCode(playerConfig);
         const decrypt = loadDecryptionCode(playerCode);
-        const streamCipher = bestAudioTrack['cipher'];
+        const streamCipher = audioTrack['cipher'];
         const cipher = compatParseMap(streamCipher);
         url = cipher['url'] + "&" + cipher['sp'] + "=" + decrypt(cipher['s']);
     } else {
@@ -224,7 +233,7 @@ export async function getTrackFromYT(videoId: string) {
         duration?: number
     } = {
         url: { uri: url },
-        contentType: bestAudioTrack.mimeType,
+        contentType: audioTrack.mimeType,
         artwork: artwork,
         related: {
             results: items,
@@ -236,8 +245,8 @@ export async function getTrackFromYT(videoId: string) {
         }
     };
 
-    if (!isNaN(bestAudioTrack.approxDurationMs)) {
-        track.duration = bestAudioTrack.approxDurationMs / 1000;
+    if (!isNaN(audioTrack.approxDurationMs)) {
+        track.duration = audioTrack.approxDurationMs / 1000;
     }
 
     return track;
@@ -599,10 +608,11 @@ export async function ytRelatedNextPage(continuationInfos: ContinuationInfos) {
     return ytNextPage(continuationInfos, 'RELATED');
 }
 
-export async function getTrack(track: JOTrack, cache: { [k: string]: JOTrack }, keepId = false) {
+export async function getTrack(track: JOTrack, cache: { [k: string]: JOTrack }, keepId = false, quality?: number | number[]) {
     let ytTrack;
     if (cache[track.videoId] === undefined || cache[track.videoId].url === undefined) {
-        ytTrack = await getTrackFromYT(track.videoId);
+        const _quality = (typeof quality === 'number') ?  [quality] : quality;
+        ytTrack = await getTrackFromYT(track.videoId, _quality);
     } else {
         ytTrack = cache[track.videoId];
     }
