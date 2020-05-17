@@ -620,6 +620,6 @@ export async function getTrack(track: JOTrack, cache: { [k: string]: JOTrack }, 
     return {
         ...track,
         ...ytTrack,
-        id: keepId ? track.id : uuid(),
+        id: (keepId && track.id !== undefined) ? track.id : uuid(),
     }
 }

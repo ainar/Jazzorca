@@ -7,7 +7,7 @@ import { persistStore } from 'redux-persist';
 import RNBootSplash from 'react-native-bootsplash';
 import Navigation from './Navigation/Navigation';
 import TrackPlayer, { Track, State, addEventListener } from 'react-native-track-player';
-import { autoSetCurrentTrack, autoAddToQueue, resetQueue } from './store/actions';
+import { autoSetCurrentTrack, autoAddToQueue, resetQueue, setPlayerState } from './store/actions';
 import { Action } from 'redux';
 import setupPlayer from './helpers/setupPlayer';
 import { PlayerState, Device } from './store/reducers/playerStateReducer';
@@ -31,7 +31,7 @@ class App extends React.Component {
         super(props)
         RNBootSplash.show();
 
-        setupPlayer()
+        setupPlayer();
 
         addEventListener(
             'playback-state',
@@ -57,10 +57,7 @@ class App extends React.Component {
         const { dispatch } = Store
         const { queue, currentTrack }: PlayerState = Store.getState().playerState;
 
-        dispatch({
-            type: 'SET_STATE',
-            value: state
-        });
+        dispatch(setPlayerState(state));
 
         // if it's the last track, add a related track
         if (queue.length > 0

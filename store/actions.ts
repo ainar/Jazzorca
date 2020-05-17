@@ -20,10 +20,6 @@ const fetchStop = (): JOAction => ({
     value: false
 });
 
-export const resetQueue = (): JOAction => ({
-    type: 'RESET_QUEUE'
-});
-
 export const removePlaylist = (playlist: Playlist): JOAction => ({
     type: 'REMOVE_PLAYLIST',
     value: playlist.id
@@ -54,9 +50,19 @@ export const resetCurrentTrack = (): JOAction => ({
     type: 'RESET_CURRENT_TRACK'
 });
 
-export function reset(): JOAction {
-    JOTrackPlayer.reset()
-    return resetQueue()
+export function resetQueue(): JOThunkAction {
+    JOTrackPlayer.reset();
+    return async (dispatch, getState) => {
+        getState().playerState.queue.forEach(t => {
+            if (t.downloadJobId !== undefined) {
+                RNFS.stopDownload(t.downloadJobId); // Stop downloads from queue.
+                RNFS.unlink(RNFS.DocumentDirectoryPath + '/sonos/' + t.videoId + '.mp4');
+            }
+        })
+        return dispatch({
+            type: 'RESET_QUEUE'
+        });
+    };
 }
 
 export function addPlaylist(playlistName: string): JOAction {
@@ -88,13 +94,20 @@ export function playNow(track: JOTrack): JOThunkAction {
             console.error('error while pausing')
         }
 
+        if (global.sonos === undefined) {
+            JOTrackPlayer.reset();
+        }
+
         try {
             await dispatch(manualAddToQueue(track));
         } catch (e) {
             console.error('error while adding to queue');
         }
 
-        if (global.sonos === undefined) {
+        if (global.sonos !== undefined) {
+            // buffering time
+            setTimeout(() => JOTrackPlayer.play(), 5000);
+        } else {
             try {
                 await JOTrackPlayer.getQueue().then((queue) => {
                     if (queue.length > 1) {
@@ -104,17 +117,17 @@ export function playNow(track: JOTrack): JOThunkAction {
             } catch (e) {
                 console.error('error while retrieving the queue: ' + e);
             }
+            try {
+                await JOTrackPlayer.getState().then(state => {
+                    if (state !== RNTPSTATE_PLAYING) {
+                        JOTrackPlayer.play();
+                    }
+                });
+            } catch (e) {
+                console.error('error while playing');
+            }
         }
 
-        try {
-            await JOTrackPlayer.getState().then(state => {
-                if (state !== RNTPSTATE_PLAYING) {
-                    JOTrackPlayer.play();
-                }
-            });
-        } catch (e) {
-            console.error('error while playing');
-        }
         return dispatch(fetchStop());
     }
 }
@@ -142,14 +155,19 @@ function addToDeviceQueue(track: JOTrack, autoPlay: boolean, keepId: boolean): J
             };
 
             if (device === Device.Sonos) {
-                const { promise } = RNFS.downloadFile({
+                const directory = RNFS.DocumentDirectoryPath + '/sonos/';
+                RNFS.mkdir(directory);
+
+                const toFile = directory + ytTrack.videoId + '.mp4';
+                const { jobId, promise } = RNFS.downloadFile({
                     fromUrl: ytTrack.url.uri,
-                    toFile: RNFS.DocumentDirectoryPath + '/' + ytTrack.videoId + '.mp4'
+                    toFile
                 });
 
                 newTrack = {
                     ...newTrack,
-                    url: { uri: "http://" + getState().playerState.localhost + ":8000/" + ytTrack.videoId + '.mp4' }
+                    url: { uri: global.server._origin + "/sonos/" + ytTrack.videoId + '.mp4' },
+                    downloadJobId: jobId
                 };
 
                 promise.then(console.log);
@@ -171,9 +189,9 @@ export function autoAddToQueue(track: JOTrack): JOThunkAction {
 export function manualAddToQueue(track: JOTrack, keepId = false): JOThunkAction {
     return async (dispatch, getState) => {
         const { queue, device } = getState().playerState;
-        const lastInQueue = queue[queue.length - 1]
+        const lastInQueue = queue[queue.length - 1];
         if (lastInQueue !== undefined && lastInQueue.autoPlay !== undefined && lastInQueue.autoPlay === true) {
-            await dispatch(removeFromQueue(lastInQueue))
+            await dispatch(removeFromQueue(lastInQueue));
         }
 
         return dispatch(addToDeviceQueue(track, false, true));
@@ -206,7 +224,7 @@ export function autoSetCurrentTrack(track: JOTrack): JOThunkAction {
 
 export function playPlaylist(playlist: Playlist, trackId: string): JOThunkAction {
     return async (dispatch) => {
-        dispatch(reset());
+        dispatch(resetQueue());
 
         for (let track of playlist.tracks) {
             try {
@@ -239,10 +257,15 @@ export function switchSonos(sonos: any): JOThunkAction {
                 global.server.stop();
             }
         }
-        const localhost = await NetworkInfo.getIPAddress();
+        const localhost = await NetworkInfo.getIPV4Address();
         return dispatch({
             type: JOACTION_TYPES.SET_DEVICE,
             value: { device, localhost }
         });
     }
 }
+
+export const setPlayerState = (state: JOTrackPlayer.State) => ({
+    type: 'SET_STATE',
+    value: state
+});

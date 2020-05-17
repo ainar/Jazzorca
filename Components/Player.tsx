@@ -1,4 +1,4 @@
-import React, { Component, ComponentProps } from 'react'
+import React, { Component } from 'react'
 import { StyleSheet, View, TouchableHighlight, ActivityIndicator } from 'react-native'
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
@@ -15,11 +15,10 @@ import { search } from 'react-native-sonos'
 import JOModal from './Elements/JOModal'
 import JOButton from './Elements/JOButton'
 import { JOThunkDispatch } from '../helpers/types'
-import { switchSonos } from '../store/actions'
+import { switchSonos, resetQueue } from '../store/actions'
 import { connect } from 'react-redux'
 import { JOState } from '../store/configureStore'
 import { Device } from '../store/reducers/playerStateReducer'
-import JOTrackPlayer from '../helpers/trackPlayerWrapper'
 
 interface PlayerProps {
     navigation: PlayerTabNavigationProp,
@@ -56,7 +55,7 @@ class Player extends Component<PlayerProps> {
     _searchSonos() {
         this.setState({
             searchingSonosSpeakers: true
-        })
+        });
         setTimeout(() => {
             this.setState({
                 searchingSonosSpeakers: false
@@ -108,13 +107,16 @@ class Player extends Component<PlayerProps> {
     _setDevice(sonos: any) {
         const { dispatch } = this.props;
         this._sonosSpeakerModal?.hide();
+
         this.setState({
             searchingSonosSpeakers: false
         });
+
         if (sonos !== undefined) {
-            sonos.flush();
-            sonos.selectQueue();
+            dispatch(resetQueue());
         }
+
+        dispatch(resetQueue());
         dispatch(switchSonos(sonos));
     }
 
