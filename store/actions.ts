@@ -6,6 +6,7 @@ import { Playlist, JOAction, JOTrack, JOThunkAction, RNTPSTATE_PLAYING } from '.
 import JOTrackPlayer from '../helpers/trackPlayerWrapper'
 import { getTrack } from '../API/YouTubeAPI';
 import { JOACTION_TYPES } from './configureStore';
+import { Device } from './reducers/playerStateReducer';
 
 const fetchStart = (): JOAction => ({
     type: 'FETCHING',
@@ -178,9 +179,25 @@ export function playPlaylist(playlist: Playlist, trackId: string): JOThunkAction
     }
 }
 
-export function switchSonos() {
+export function switchSonos(): JOThunkAction {
     console.log(global.server);
-    return {
-        type: JOACTION_TYPES.SWITCH_SONOS
+    return async (dispatch, getState) => {
+        const currentDevice = getState().playerState.device;
+        let newDevice;
+        if (currentDevice !== Device.Sonos) {
+            newDevice = Device.Sonos;
+            if (!global.server.started) {
+                global.server.start();
+            }
+        } else {
+            newDevice = Device.Local;
+            if (global.server.started) {
+                global.server.stop();
+            }
+        }
+        return dispatch({
+            type: JOACTION_TYPES.SET_DEVICE,
+            value: newDevice
+        });
     }
 }

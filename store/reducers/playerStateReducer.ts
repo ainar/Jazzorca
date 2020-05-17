@@ -16,7 +16,7 @@ export enum PLAYER_STATE_ACTION_TYPES {
     ADD_RELATED = "ADD_RELATED",
     RESET_QUEUE = "RESET_QUEUE",
     FETCHING = "FETCHING",
-    SWITCH_SONOS = "SWITCH_SONOS"
+    SET_DEVICE = "SET_DEVICE"
 }
 
 export interface PlayerState {
@@ -136,18 +136,11 @@ export function playerState(state = initState, action: JOAction): PlayerState {
             return newState || state;
         }
 
-        case PLAYER_STATE_ACTION_TYPES.SWITCH_SONOS: {
-            if (state.device === Device.Local) {
-                newState = {
-                    ...state,
-                    device: Device.Sonos
-                };
-            } else {
-                newState = {
-                    ...state,
-                    device: Device.Local
-                };
-            }
+        case PLAYER_STATE_ACTION_TYPES.SET_DEVICE: {
+            newState = {
+                ...state,
+                device: action.value
+            };
             return newState || state;
         }
 

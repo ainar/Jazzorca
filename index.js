@@ -6,6 +6,6 @@ import TrackPlayer from 'react-native-track-player';
 import RNFS from 'react-native-fs';
 import StaticServer from 'react-native-static-server';
 const path = RNFS.DocumentDirectoryPath;
-global.server = new StaticServer(8000, path);
+global.server = new StaticServer(8000, path, { keepAlive: true });
 AppRegistry.registerComponent(appName, () => App);
 TrackPlayer.registerPlaybackService(() => require('./service.ts').default);
