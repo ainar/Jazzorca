@@ -133,9 +133,10 @@ android {
         applicationId "com.jazzorca"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 3
-        versionName "0.1.0"
+        versionCode 5
+        versionName "0.2.1"
         multiDexEnabled true
+        archivesBaseName = "$applicationId-v$versionCode($versionName)"
     }
     splits {
         abi {
