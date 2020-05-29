@@ -136,7 +136,7 @@ android {
         versionCode 5
         versionName "0.2.1"
         multiDexEnabled true
-        archivesBaseName = "$applicationId-v$versionCode($versionName)"
+        archivesBaseName = "$applicationId-v$versionName"
     }
     splits {
         abi {
