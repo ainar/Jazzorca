@@ -126,6 +126,7 @@ interface YtFormat {
     itag: number,
     approxDurationMs: number,
     cipher?: string,
+    signatureCipher?: string,
     url?: string
 }
 
@@ -169,7 +170,7 @@ function _getThumbnailUrl(playerResponse: playerResponse) {
         .url;
 }
 
-function compatParseMap(input: string): Cipher {
+function parseCipher(input: string): Cipher {
     let map = Object()
     for (let arg of input.split("&")) {
         let splitArg = arg.split("=");
@@ -203,19 +204,20 @@ export async function getTrackFromYT(videoId: string, quality?: number[]) {
     const { items, continuation, clickTrackingParams } = parseRelated(initialData);
 
     let url;
-    if (audioTrack['url'] !== undefined) {
-        console.log('got an url')
-        url = audioTrack['url'];
-    } else if (audioTrack['cipher'] !== undefined) {
-        console.log('got a cipher')
+    console.log(audioTrack);
+    if (audioTrack.url !== undefined) {
+        console.log('got an url');
+        url = audioTrack.url;
+    } else if (audioTrack.cipher || audioTrack.signatureCipher) {
+        console.log('got a cipher');
         const playerCode = await getPlayerCode(playerConfig);
         const decrypt = loadDecryptionCode(playerCode);
-        const streamCipher = audioTrack['cipher'];
-        const cipher = compatParseMap(streamCipher);
-        url = cipher['url'] + "&" + cipher['sp'] + "=" + decrypt(cipher['s']);
+        const signatureCipherString = <string>(audioTrack.cipher || audioTrack.signatureCipher);
+        const signatureCipher = parseCipher(signatureCipherString);
+        url = signatureCipher.url + "&" + signatureCipher.sp + "=" + decrypt(signatureCipher.s);
     } else {
-        console.log('no track found')
-        throw "no track found!";
+        console.log(audioTrack);
+        throw "neither url, cipher or signatureCipher found";
     }
 
     let track: {
