@@ -101,10 +101,8 @@ export function playerState(state = initState, action: JOAction): PlayerState {
 
         case PLAYER_STATE_ACTION_TYPES.ADD_RELATED:
             if (state.currentTrack === undefined) {
-                console.error('current track is undefined');
                 return state;
             }
-
             newCache = { ...state.cache };
             const currentTrackVideoId = state.currentTrack.videoId;
             newCache[currentTrackVideoId].related = {

@@ -31,8 +31,7 @@ function getDecryptionFuncName(playerCode: string) {
             return funcName;
     }
 
-    console.error('decryption function name not found');
-    return ''
+    throw 'decryption function name not found\n';
 }
 
 function loadDecryptionCode(playerCode: string): Function {
@@ -49,8 +48,7 @@ function loadDecryptionCode(playerCode: string): Function {
         decryptionFunction = "var " + playerCodeMatch[1] + ";";
         innerDecryptionFunction = playerCodeMatch[2];
     } else {
-        console.error('decryption function not found');
-        return (a: string): string => a;
+        throw 'decryption function not found\n';
     }
 
     const helperObjectNameMatch = decryptionFunction.match(/;([A-Za-z0-9_\$]{2})\...\(/);
@@ -59,8 +57,7 @@ function loadDecryptionCode(playerCode: string): Function {
     if (helperObjectNameMatch && helperObjectNameMatch.length >= 2) {
         helperObjectName = helperObjectNameMatch[1];
     } else {
-        console.error('helper object name not found');
-        return (a: string): string => a;
+        throw 'helper object name not found\n';
     }
 
     let helperPattern = new RegExp(
@@ -74,7 +71,7 @@ function loadDecryptionCode(playerCode: string): Function {
     if (innerHelperObjectMatch && innerHelperObjectMatch.length >= 2) {
         innerHelperObject = innerHelperObjectMatch[2];
     } else {
-        console.error('helper object not found');
+        throw 'helper object not found\n';
     }
 
     const decrypt = Function(
@@ -191,7 +188,7 @@ interface Cipher {
 
 export async function getTrackFromYT(videoId: string, quality?: number[]) {
     if (!videoId || !videoId.length) {
-        console.error('videoId cannot be empty')
+        throw 'videoId cannot be empty\n';
     }
 
     const videoPage = await getVideoPage(videoId);
@@ -217,7 +214,7 @@ export async function getTrackFromYT(videoId: string, quality?: number[]) {
         url = signatureCipher.url + "&" + signatureCipher.sp + "=" + decrypt(signatureCipher.s);
     } else {
         console.log(audioTrack);
-        throw "neither url, cipher or signatureCipher found";
+        throw "neither url, cipher or signatureCipher found\n";
     }
 
     let track: {
@@ -274,23 +271,15 @@ function parseInitialData(pageContent: string) {
     if (resultsYtInitialDataRaw !== null && resultsYtInitialDataRaw.length >= 2)
         ytInitialDataRaw = resultsYtInitialDataRaw[1]
     else {
-        console.error('cannot find the patterns for related videos (ytInitialDataRaw)')
         console.log(pageContent)
-        return {
-            initialData: '',
-            xsrfToken: ''
-        }
+        throw 'cannot find the patterns for related videos (ytInitialDataRaw)\n';
     }
 
     const resultsXsrfToken: RegExpMatchArray | null = pageContent.match(xsrfTokenPattern)
     if (resultsXsrfToken !== null && resultsXsrfToken.length >= 2) {
         xsrfToken = resultsXsrfToken[1]
     } else {
-        console.error('cannot find the patterns for related videos (xsrfToken)')
-        return {
-            initialData: '',
-            xsrfToken: ''
-        }
+        throw 'cannot find the patterns for related videos (xsrfToken)\n';
     }
 
     return {
@@ -532,7 +521,7 @@ export function ytNextPage(
             videoRendererObjectName = 'compactVideoRenderer'
             break;
         default:
-            console.error('No type specified')
+            throw 'no type specified to find next page\n';
             sectionName = ['', '']
             break;
     }
@@ -583,15 +572,7 @@ export function ytNextPage(
             }
         })
         .catch(error => {
-            console.error(error);
-            return {
-                results: [],
-                continuationInfos: {
-                    continuation: '',
-                    itct: '',
-                    session_token: ''
-                }
-            }
+            throw 'error while fetching next page: ' + error + '\n';
         });
 
 }

@@ -10,6 +10,7 @@ import { connect } from 'react-redux'
 import TrackModal from './Elements/TrackModal'
 import { PlaylistScreenRouteProp } from '../Navigation/Navigation'
 import { JOState } from '../store/configureStore'
+import JOText from './Elements/JOText'
 
 interface PlaylistScreenProps {
     playlist: Playlist,
@@ -20,17 +21,30 @@ interface PlaylistScreenProps {
 
 class PlaylistScreen extends Component<PlaylistScreenProps> {
     trackModal: TrackModal | null
+    errorModal: TrackModal | null
+    state: {
+        error: string
+    }
 
     constructor(props:PlaylistScreenProps) {
         super(props);
         this.trackModal = null;
+        this.errorModal = null;
+        this.state = {
+            error: ""
+        }
     }
 
     async _onPress(track: JOTrack) {
         const { dispatch, playlists, route } = this.props;
         const playlist: Playlist = playlists.find(({ id }) => id === route.params.playlist.id)!;
         dispatch(playPlaylist(playlist, track.id))
-            .catch((e: string) => console.error(e));
+            .catch((e) => this._displayError(e));
+    }
+
+    _displayError(error: string) {
+        this.setState({ error });
+        this.errorModal!.show();
     }
 
     private _removeFromPlaylist(track: JOTrack) {
@@ -44,6 +58,18 @@ class PlaylistScreen extends Component<PlaylistScreenProps> {
 
         return (
             <Screen>
+                <TrackModal
+                    modalStyle={{ backgroundColor: 'red', padding: 7 }}
+                    autoHide={2000}
+                    ref={ref => { this.errorModal = ref }}
+                >
+                    <JOText style={{ textAlign: 'center', fontSize: 20, fontWeight: 'bold', marginBottom: 5 }}>
+                        Une erreur est survenue
+                    </JOText>
+                    <JOText style={{ textAlign: 'left', fontSize: 15, fontFamily: 'monospace' }}>
+                        {this.state.error}
+                    </JOText>
+                </TrackModal>
                 <JOSubTitle>{playlist.name}</JOSubTitle>
                 <TrackList
                     data={playlist.tracks}

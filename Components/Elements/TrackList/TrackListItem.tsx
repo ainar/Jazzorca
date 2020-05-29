@@ -9,19 +9,18 @@ import JOButton from '../JOButton'
 import TrackModal from '../TrackModal'
 import JOModal from '../JOModal'
 import { Picker } from '@react-native-community/picker'
-import { Playlist, JOTrack } from '../../../helpers/types'
+import { Playlist, JOTrack, JOThunkDispatch } from '../../../helpers/types'
 
 interface JOTrackListItemProps {
     nowPlaying: JOTrack,
     track: JOTrack,
-    onPress: Function,
-    onPlay: Function,
-    dispatch: Function,
+    onPress: (track: JOTrack) => Promise<any>,
+    dispatch: JOThunkDispatch,
     loading: boolean,
     playlists: Playlist[],
-    modalExtra?: (t: JOTrack) => React.ReactNode,
-    modalRef: (t: TrackModal | null) => void,
-    currentTrackChecker?: (t1: JOTrack, t2: JOTrack) => boolean,
+    modalExtra?: (track: JOTrack) => React.ReactNode,
+    modalRef: (trackModal: TrackModal | null) => void,
+    currentTrackChecker?: (track1: JOTrack, track2: JOTrack) => boolean,
     horizontal: boolean
 }
 
@@ -29,7 +28,8 @@ class JOTrackListItem extends React.Component<JOTrackListItemProps> {
     state: {
         loading: boolean,
         modalVisible: boolean,
-        errorModalVisible: boolean
+        errorModalVisible: boolean,
+        error: string
     }
 
     playerLoading: boolean;
@@ -42,7 +42,8 @@ class JOTrackListItem extends React.Component<JOTrackListItemProps> {
         this.state = {
             loading: false,
             modalVisible: false,
-            errorModalVisible: false
+            errorModalVisible: false,
+            error: ""
         };
 
         this.playerLoading = false;
@@ -72,7 +73,8 @@ class JOTrackListItem extends React.Component<JOTrackListItemProps> {
     _onPress() {
         this.setState({ loading: true });
         this.props.onPress(this.props.track)
-            .catch(() => {
+            .catch((error) => {
+                this.setState({ error });
                 this.errorModal!.show();
                 this.props.dispatch(resetCurrentTrack());
             })
@@ -83,7 +85,10 @@ class JOTrackListItem extends React.Component<JOTrackListItemProps> {
         const { track, dispatch } = this.props
         this.modal!.hide();
         dispatch(manualAddToQueue(track))
-            .catch(() => this.errorModal!.show());
+            .catch((error) => {
+                this.setState({ error });
+                this.errorModal!.show();
+            });
     }
 
     _watchOnYouTube() {
@@ -124,11 +129,16 @@ class JOTrackListItem extends React.Component<JOTrackListItemProps> {
         return (
             <>
                 <TrackModal
-                    modalStyle={{ backgroundColor: 'red' }}
+                    modalStyle={{ backgroundColor: 'red', padding: 7 }}
                     autoHide={2000}
                     ref={ref => { this.errorModal = ref }}
                 >
-                    <JOText style={{ textAlign: 'center', fontSize: 20 }}>Une erreur est survenue lors de la récupération de la vidéo sur YouTube.</JOText>
+                    <JOText style={{ textAlign: 'center', fontSize: 20, fontWeight: 'bold', marginBottom: 5 }}>
+                        Une erreur est survenue
+                    </JOText>
+                    <JOText style={{ textAlign: 'left', fontSize: 15, fontFamily: 'monospace' }}>
+                        {this.state.error}
+                    </JOText>
                 </TrackModal>
                 <TrackModal
                     ref={ref => { this.modal = ref; if (this.props.modalRef) this.props.modalRef(ref); }}

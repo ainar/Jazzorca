@@ -72,12 +72,7 @@ class App extends React.Component {
         const { dispatch } = Store;
         const { queue }: PlayerState = Store.getState().playerState;
 
-        if (queueId === undefined) {
-            return
-        }
-
-        if (queue === undefined) {
-            console.error('queue should be defined here');
+        if (queueId === undefined || queue === undefined) {
             return
         }
 

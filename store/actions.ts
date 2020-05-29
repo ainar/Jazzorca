@@ -91,7 +91,7 @@ export function playNow(track: JOTrack): JOThunkAction {
         try {
             await JOTrackPlayer.pause();
         } catch (e) {
-            console.error('error while pausing')
+            throw 'error while pausing:\n' + e;
         }
 
         if (global.sonos === undefined) {
@@ -101,7 +101,7 @@ export function playNow(track: JOTrack): JOThunkAction {
         try {
             await dispatch(manualAddToQueue(track));
         } catch (e) {
-            console.error('error while adding to queue');
+            throw 'error while adding to queue:\n' + e;
         }
 
         if (global.sonos !== undefined) {
@@ -115,7 +115,7 @@ export function playNow(track: JOTrack): JOThunkAction {
                     }
                 });
             } catch (e) {
-                console.error('error while retrieving the queue: ' + e);
+                throw 'error while retrieving the queue:\n' + e;
             }
             try {
                 await JOTrackPlayer.getState().then(state => {
@@ -124,7 +124,7 @@ export function playNow(track: JOTrack): JOThunkAction {
                     }
                 });
             } catch (e) {
-                console.error('error while playing');
+                throw 'error while playing:\n' + e;
             }
         }
 
@@ -147,36 +147,37 @@ function addToDeviceQueue(track: JOTrack | ResultJOTrack , autoPlay: boolean, ke
         const { cache, device } = getState().playerState;
         const quality = (device === Device.Sonos) ? [141, 140, 139] : undefined; // mp4 audio only
 
+        let ytTrack;
+    
         try {
-            const ytTrack = await getTrack(track, cache, keepId, quality);
-            let newTrack = {
-                ...ytTrack,
-                autoPlay
-            };
-
-            if (device === Device.Sonos) {
-                const directory = RNFS.DocumentDirectoryPath + '/sonos/';
-                RNFS.mkdir(directory);
-
-                const toFile = directory + ytTrack.videoId + '.mp4';
-                const { jobId, promise } = RNFS.downloadFile({
-                    fromUrl: ytTrack.url.uri,
-                    toFile
-                });
-
-                newTrack = {
-                    ...newTrack,
-                    url: { uri: global.server._origin + "/sonos/" + ytTrack.videoId + '.mp4' },
-                    downloadJobId: jobId
-                };
-
-                promise.then(console.log);
-            }
-
-            return dispatch(addToQueue(newTrack));
-        } catch (e) {
-            throw "cannot get track";
+            ytTrack = await getTrack(track, cache, keepId, quality)
+        } catch(e) {
+            throw "failed to get track:\n" + e;
         }
+    
+        let newTrack = {
+            ...ytTrack,
+            autoPlay
+        };
+
+        if (device === Device.Sonos) {
+            const directory = RNFS.DocumentDirectoryPath + '/sonos/';
+            RNFS.mkdir(directory);
+
+            const toFile = directory + ytTrack.videoId + '.mp4';
+            const { jobId } = RNFS.downloadFile({
+                fromUrl: ytTrack.url.uri,
+                toFile
+            });
+
+            newTrack = {
+                ...newTrack,
+                downloadJobId: jobId,
+                url: { uri: global.server._origin + "/sonos/" + ytTrack.videoId + '.mp4' }
+            };
+        }
+
+        return dispatch(addToQueue(newTrack));
     }
 }
 
@@ -188,7 +189,7 @@ export function autoAddToQueue(track: JOTrack | ResultJOTrack): JOThunkAction {
 
 export function manualAddToQueue(track: JOTrack, keepId = false): JOThunkAction {
     return async (dispatch, getState) => {
-        const { queue, device } = getState().playerState;
+        const { queue } = getState().playerState;
         const lastInQueue = queue[queue.length - 1];
         if (lastInQueue !== undefined && lastInQueue.autoPlay !== undefined && lastInQueue.autoPlay === true) {
             await dispatch(removeFromQueue(lastInQueue));
@@ -210,7 +211,7 @@ export function removeFromQueue(track: JOTrack): JOThunkAction {
 
 export function autoSetCurrentTrack(track: JOTrack): JOThunkAction {
     if (track === undefined) {
-        console.error('track is undefined')
+        throw 'track is undefined\n';
     }
 
     return async (dispatch) => {
@@ -233,7 +234,7 @@ export function playPlaylist(playlist: Playlist, trackId: string): JOThunkAction
                     JOTrackPlayer.skip(trackId);
                 }
             } catch (error) {
-                console.error('cannot add track ' + track.videoId + ' to queue: ' + error);
+                throw 'cannot add track ' + track.videoId + ' from playlist ' + playlist.id + ' to queue:\n' + error;
             }
         };
     }
